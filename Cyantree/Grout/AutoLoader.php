@@ -24,7 +24,7 @@ class AutoLoader
     public static function init()
     {
         spl_autoload_register(array('\\Cyantree\\Grout\\AutoLoader', 'onAutoLoad'));
-        self::registerNamespace('Cyantree\\Grout\\', __DIR__ . '/');
+//        self::registerNamespace('Cyantree\\Grout\\', __DIR__ . '/');
     }
 
     /** Registers a namespace for auto loading.

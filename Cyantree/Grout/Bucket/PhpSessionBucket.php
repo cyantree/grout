@@ -1,7 +1,9 @@
 <?php
 namespace Cyantree\Grout\Bucket;
 
-class SessionBucket extends Bucket
+use Cyantree\Grout\Bucket\Bucket;
+
+class PhpSessionBucket extends Bucket
 {
     public $containerName = 'CT_SessionBuckets';
 
@@ -53,7 +55,7 @@ class SessionBucket extends Bucket
 
         $t = time();
 
-        /** @var $bucket SessionBucket */
+        /** @var $bucket \Cyantree\Grout\Bucket\PhpSessionBucket */
         foreach ($_SESSION[$this->containerName] as $bucket) {
             if ($bucket->expires < $t) {
                 unset($_SESSION[$this->containerName][$bucket->id]);
@@ -73,7 +75,7 @@ class SessionBucket extends Bucket
         $this->_checkContainer();
 
         if ($returnNewBucket) {
-            $b = new SessionBucket();
+            $b = new PhpSessionBucket();
             $b->_mergeSettings($this);
         } else {
             $b = $this;
@@ -104,7 +106,7 @@ class SessionBucket extends Bucket
             return false;
         }
 
-        /** @var $b SessionBucket */
+        /** @var $b \Cyantree\Grout\Bucket\PhpSessionBucket */
         $b = $_SESSION[$this->containerName][$id];
 
         if ($context !== false && $b->context != $context) {

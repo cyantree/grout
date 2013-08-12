@@ -12,12 +12,12 @@ class Bucket
     public $data;
     public $expires;
 
-    /** @return Bucket */
+    /** @return \Cyantree\Grout\Bucket\Bucket */
     public function create($data = '', $expires = null, $context = null, $id = null, $returnNewBucket = true)
     {
     }
 
-    /** @return Bucket|bool */
+    /** @return \Cyantree\Grout\Bucket\Bucket|bool */
     public function load($id, $context = null, $returnNewBucket = true)
     {
     }

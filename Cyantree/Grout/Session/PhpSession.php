@@ -4,7 +4,7 @@ namespace Cyantree\Grout\Session;
 use Cyantree\Grout\Tools\ArrayTools;
 use Cyantree\Grout\Tools\StringTools;
 
-class NativeSession
+class PhpSession
 {
     public $id;
     public $useCookie = true;

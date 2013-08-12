@@ -1,17 +1,17 @@
 <?php
 namespace Cyantree\Grout\Session;
 
-use Cyantree\Grout\Buckets\Bucket;
+use Cyantree\Grout\Bucket\Bucket;
 use Cyantree\Grout\Filter\ArrayFilter;
 use Cyantree\Grout\Tools\ArrayTools;
 use Cyantree\Grout\Tools\StringTools;
 
 class BucketSession
 {
-    /** @var Bucket */
+    /** @var \Cyantree\Grout\Bucket\Bucket */
     public $bucketBase;
 
-    /** @var Bucket */
+    /** @var \Cyantree\Grout\Bucket\Bucket */
     public $bucket;
 
     public $id;

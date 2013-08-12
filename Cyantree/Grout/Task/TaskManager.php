@@ -1,6 +1,7 @@
 <?php
 namespace Cyantree\Grout\Task;
 
+use Cyantree\Grout\Task\Task;
 use Cyantree\Grout\Tools\StringTools;
 
 class TaskManager

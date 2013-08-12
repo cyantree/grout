@@ -2,7 +2,7 @@
 namespace Cyantree\Grout\App;
 
 use Cyantree\Grout\AutoLoader;
-use Cyantree\Grout\Events;
+use Cyantree\Grout\Event\Events;
 use Cyantree\Grout\Filter\ArrayFilter;
 use Cyantree\Grout\Tools\NamespaceTools;
 use Cyantree\Grout\Tools\StringTools;

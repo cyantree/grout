@@ -2,7 +2,7 @@
 namespace Cyantree\Grout\Database;
 
 use Cyantree\Grout\ErrorHandler;
-use Cyantree\Grout\Events;
+use Cyantree\Grout\Event\Events;
 use Cyantree\Grout\Tools\StringTools;
 use Exception;
 

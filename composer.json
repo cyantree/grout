@@ -1,6 +1,7 @@
 {
     "name": "cyantree/grout",
-    "type": "library","version":"0.0.1",
+    "type": "library",
+    "version": "0.0.1",
     "description": "Framework and toolkit",
     "keywords": ["framework", "application", "mvc", "grout"],
     "homepage": "https://github.com/cyantree/grout",
@@ -8,8 +9,8 @@
     "authors": [
         {"name": "Christoph Schreiber", "email": "mail@cyantree.com"}
     ],
-	 "autoload": {
-        "psr-0": { "Cyantree\\Grout": "Cyantree/Grout/" }
+    "autoload": {
+        "psr-0": { "Cyantree\\Grout": "" }
     },
     "require": {
         "php": ">=5.3.2"

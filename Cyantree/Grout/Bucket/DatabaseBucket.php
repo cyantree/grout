@@ -1,6 +1,7 @@
 <?php
 namespace Cyantree\Grout\Bucket;
 
+use Cyantree\Grout\Bucket\Bucket;
 use Cyantree\Grout\Database\Database;
 use Cyantree\Grout\Database\DatabaseConnection;
 use Cyantree\Grout\DateTime\DateTime;

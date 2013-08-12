@@ -1,6 +1,8 @@
 <?php
 namespace Cyantree\Grout\Bucket;
 
+use Cyantree\Grout\Bucket\Bucket;
+
 class FileBucket extends Bucket
 {
     public $directory;

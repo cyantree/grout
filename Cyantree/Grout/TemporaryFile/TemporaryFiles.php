@@ -1,6 +1,7 @@
 <?php
 namespace Cyantree\Grout\TemporaryFile;
 
+use Cyantree\Grout\TemporaryFile\TemporaryFile;
 use Cyantree\Grout\Tools\StringTools;
 
 class TemporaryFiles

@@ -1,7 +1,7 @@
 <?php
 namespace Cyantree\Grout\Form;
 
-use Cyantree\Grout\Buckets\Bucket;
+use Cyantree\Grout\Bucket\Bucket;
 use Cyantree\Grout\Buckets\Buckets;
 use Cyantree\Grout\Filter\ArrayFilter;
 use Cyantree\Grout\Tools\ArrayTools;
@@ -25,7 +25,7 @@ class AdvancedForm
     public static $MESSAGE_ERROR_EARLY = 'Please wait a moment before submitting this form.';
     public static $MESSAGE_ERROR_DELETED = 'Your inquiry has expired.';
 
-    /** @var Bucket */
+    /** @var \Cyantree\Grout\Bucket\Bucket */
     public static $defaultBucketBase;
 
     public $id;
@@ -47,10 +47,10 @@ class AdvancedForm
     public $action;
     public $isSubmit;
 
-    /** @var Bucket */
+    /** @var \Cyantree\Grout\Bucket\Bucket */
     public $bucketBase;
 
-    /** @var Bucket */
+    /** @var \Cyantree\Grout\Bucket\Bucket */
     private $_bucket;
 
     /** @var FormStatus */

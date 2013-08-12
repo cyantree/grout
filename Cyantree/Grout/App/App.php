@@ -3,7 +3,7 @@ namespace Cyantree\Grout\App;
 
 use Cyantree\Grout\App\Types\ResponseCode;
 use Cyantree\Grout\AutoLoader;
-use Cyantree\Grout\Events;
+use Cyantree\Grout\Event\Events;
 use Cyantree\Grout\Filter\ArrayFilter;
 use Cyantree\Grout\Tools\AppTools;
 use Cyantree\Grout\Tools\ArrayTools;

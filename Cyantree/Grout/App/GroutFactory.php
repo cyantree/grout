@@ -2,7 +2,7 @@
 namespace Cyantree\Grout\App;
 
 use Cyantree\Grout\App\Generators\Template\TemplateGenerator;
-use Cyantree\Grout\Events;
+use Cyantree\Grout\Event\Events;
 use Cyantree\Grout\Filter\ArrayFilter;
 use Cyantree\Grout\Ui\Ui;
 
@@ -11,7 +11,7 @@ class GroutFactory
     /** @var App */
     public $app;
 
-    /** @var Events */
+    /** @var \Cyantree\Grout\Event\Events */
     public $events;
 
     private static $_instances = array();
