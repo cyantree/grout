@@ -144,7 +144,7 @@ class ArrayTools
         return $new;
     }
 
-    public static function mergeProperties(&$elements, $properties, $mergeByProperty = false)
+    public static function mergeProperties($elements, $properties, $mergeByProperty = false)
     {
         // Copies selection of properties from elements to new array
 
