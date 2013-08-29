@@ -266,8 +266,14 @@ class ImageTools
 
         // Get extension
         $extension = explode('.', $filename);
-        if (count($extension) == 1) $extension = strtolower($extension[0]);
-        else $extension = strtolower($extension[count($extension) - 1]);
+        $count = count($extension);
+        if($count == 1){
+            $result->errors[] = ImageToolsCheckFileResult::ERROR_INVALID;
+
+            return $result;
+        }else{
+            $extension = strtolower($extension[$count - 1]);
+        }
 
         ServerTools::suppressErrors(true);
 
