@@ -9,6 +9,8 @@ class GroutQuick extends Quick
     /** @var App */
     protected $_app;
 
+    public $publicAssetUrl;
+
     public function __construct($app)
     {
         $this->_app = $app;
@@ -34,16 +36,20 @@ class GroutQuick extends Quick
 
     public function a($uri, $parameters = null)
     {
-        $data = AppTools::decodeUri($uri, $this->_app, $this->_app->currentTask->module, $this->_app->currentTask->plugin);
-        if($data[0]){
-            /** @var Module $m */
-            $m = $data[0];
-            return $m->getPublicUrl($data[2], true, $parameters);
-        }elseif($data[1]){
-            /** @var Plugin $p */
-            $p = $data[1];
-            return $p->getPublicUrl($data[2], true, $parameters);
+        if($this->publicAssetUrl !== null && strpos($uri, ':') === false){
+            return $this->publicAssetUrl . $uri;
+        }else{
+            $data = AppTools::decodeUri($uri, $this->_app, $this->_app->currentTask->module, $this->_app->currentTask->plugin);
+            if($data[0]){
+                /** @var Module $m */
+                $m = $data[0];
+                return $m->getPublicUrl($data[2], true, $parameters);
+            }elseif($data[1]){
+                /** @var Plugin $p */
+                $p = $data[1];
+                return $p->getPublicUrl($data[2], true, $parameters);
+            }
+            return null;
         }
-        return null;
     }
 }
