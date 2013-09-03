@@ -9,6 +9,8 @@ class GroutAppConfig
 
     public $developmentMode = false;
 
+    public $assetUrl = 'assets/global/';
+
     private $_configs = array();
 
     /** @var App */
