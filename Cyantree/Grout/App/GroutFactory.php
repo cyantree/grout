@@ -207,6 +207,7 @@ class GroutFactory
         }
 
         $tool = new GroutQuick($this->app);
+        $tool->publicAssetUrl = $this->app->publicUrl . $this->appConfig()->assetUrl;
 
         $this->_setAppTool(__FUNCTION__, $tool);
         return $tool;
