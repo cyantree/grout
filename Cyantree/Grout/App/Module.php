@@ -215,17 +215,13 @@ class Module
 
         $directory = str_replace('\\', '/', $type);
 
+        $path = $this->app->path . 'plugins/' . $directory . '/';
+
         // Add plugin path to auto loading
         if (!class_exists('Grout\\' . $type, false)) {
-            if (is_dir($this->path . 'plugins/' . $directory . '/')) {
-                $path = $this->path . 'plugins/' . $directory . '/';
-            } else {
-                $path = $this->app->path . 'plugins/' . $directory . '/';
-            }
+            AutoLoader::registerNamespace('Grout\\' . $type . '\\', $path . '/');
+            AutoLoader::registerNamespace('Grout\\' . $type . '\\', $path . '/source/');
         }
-
-        AutoLoader::registerNamespace('Grout\\' . $type . '\\', $path . '/');
-        AutoLoader::registerNamespace('Grout\\' . $type . '\\', $path . '/source/');
 
         $class = 'Grout\\' . $type . '\\' . $class;
         /** @var $p Plugin */
