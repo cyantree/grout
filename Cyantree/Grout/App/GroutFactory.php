@@ -11,6 +11,8 @@ class GroutFactory
     /** @var App */
     public $app;
 
+    public $context;
+
     /** @var \Cyantree\Grout\Event\Events */
     public $events;
 
@@ -19,17 +21,24 @@ class GroutFactory
     /** @var ArrayFilter */
     private $_tools;
 
-    public static function _getInstance($app, $factoryClass)
+    public static function _getInstance($app, $factoryClass, $factoryContext = null)
     {
-        if (!isset(self::$_instances[$factoryClass.'_'.$app->id])) {
+        if (!isset(self::$_instances[$factoryClass.'_'.$factoryContext.'_'.$app->id])) {
             $f = new $factoryClass();
             $f->app = $app;
+            $f->context = $factoryContext;
             $f->_tools = new ArrayFilter(array());
+            $f->_onInit();
 
-            self::$_instances[$factoryClass.'_'.$app->id] = $f;
+            self::$_instances[$factoryClass.'_'.$factoryContext.'_'.$app->id] = $f;
         }
 
-        return self::$_instances[$factoryClass.'_'.$app->id];
+        return self::$_instances[$factoryClass.'_'.$factoryContext.'_'.$app->id];
+    }
+
+    protected function _onInit()
+    {
+
     }
 
     protected function _getTaskTool($tool, $definitionClass)
