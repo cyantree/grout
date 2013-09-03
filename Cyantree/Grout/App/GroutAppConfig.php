@@ -8,6 +8,8 @@ class GroutAppConfig
     public $internalAccessKey = null;
 
     public $developmentMode = false;
+	
+	public $assetUrl = 'assets/global/';
 
     private $_configs = array();
 
