@@ -8,6 +8,8 @@ class Crypt
 
     public $useBase64Encoding = true;
 
+    public $randomSource = MCRYPT_RAND;
+
     private $_crypt;
 
     function __construct()
@@ -17,7 +19,7 @@ class Crypt
 
     public function createIv()
     {
-        return $this->iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($this->_crypt));
+        return $this->iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($this->_crypt), $this->randomSource);
     }
 
     public function createKey()
