@@ -229,4 +229,9 @@ class GroutFactory
     {
         $this->app->events->trigger('log', $data);
     }
+
+    public function logException($exception)
+    {
+        $this->app->events->trigger('logException', $exception);
+    }
 }
