@@ -3,7 +3,74 @@ namespace Cyantree\Grout\Tools;
 
 class FileTools
 {
-    public static function deleteDirectory($directory, $deleteOnlyContents = false)
+    public static function deleteContents($directory, $excludes = null, $includes = null)
+    {
+        $directories = array('');
+
+        $directory = str_replace('\\', '/', $directory);
+
+        $emptyDirectories = array();
+
+        while (($dir = array_pop($directories)) !== null) {
+            $contents = scandir($directory . $dir);
+
+            $ignoredDirectoryContent = false;
+
+            foreach ($contents as $content) {
+                if ($content == '.' || $content == '..') {
+                    continue;
+                }
+
+                $path = $dir . $content;
+                $isDir = is_dir($directory . $path);
+                if ($isDir) {
+                    $path .= '/';
+                }
+
+                $ignorePath = false;
+
+                if ($excludes !== null) {
+                    foreach ($excludes as $exclude) {
+                        if ((substr($exclude, 0, 1) == '@' && preg_match($exclude, $path)) || $exclude == $path) {
+                            $ignorePath = true;
+                            break;
+                        }
+                    }
+                }
+
+                if ($ignorePath && $includes !== null) {
+                    foreach ($includes as $include) {
+                        if ((substr($include, 0, 1) == '@' && preg_match($include, $path)) || $include == $path) {
+                            $ignorePath = false;
+                            break;
+                        }
+                    }
+                }
+
+                if ($ignorePath) {
+                    $ignoredDirectoryContent = true;
+                    continue;
+                }
+
+                if ($isDir) {
+                    $directories[] = $path;
+
+                } else if (is_file($directory . $path)) {
+                    unlink($directory . $path);
+                }
+            }
+
+            if (!$ignoredDirectoryContent && $dir !== '') {
+                $emptyDirectories[] = $directory . $dir;
+            }
+        }
+
+        while (($directory = array_pop($emptyDirectories)) !== null) {
+            rmdir($directory);
+        }
+    }
+
+    public static function deleteDirectory($directory)
     {
         $directory = str_replace('\\', '/', $directory);
         if(substr($directory, strlen($directory) - 1) != '/'){
@@ -15,11 +82,7 @@ class FileTools
         }
 
         $directories = array($directory);
-        $deleteDirectories = array();
-
-        if(!$deleteOnlyContents){
-            $deleteDirectories[] = $directory;
-        }
+        $deleteDirectories = array($directory);
 
         while ($directory = array_pop($directories)) {
             $contents = scandir($directory);

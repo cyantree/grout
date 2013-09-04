@@ -215,10 +215,12 @@ class Module
 
         $directory = str_replace('\\', '/', $type);
 
+        $path = $this->app->path . 'plugins/' . $directory . '/';
+
         // Add plugin path to auto loading
         if (!class_exists('Grout\\' . $type, false)) {
-            AutoLoader::registerNamespace('Grout\\' . $type . '\\', $this->path . 'plugins/' . $directory . '/');
-            AutoLoader::registerNamespace('Grout\\' . $type . '\\', $this->path . 'plugins/' . $directory . '/source/');
+            AutoLoader::registerNamespace('Grout\\' . $type . '\\', $path . '/');
+            AutoLoader::registerNamespace('Grout\\' . $type . '\\', $path . '/source/');
         }
 
         $class = 'Grout\\' . $type . '\\' . $class;
@@ -226,7 +228,7 @@ class Module
         $p = new $class();
         $p->type = $type;
         $p->config = new ArrayFilter($config);
-        $p->path = $this->path . 'plugins/' . $directory . '/';
+        $p->path = $path;
         $p->namespace = NamespaceTools::getNamespaceOfInstance($p).'\\';
         $p->module = $this;
         $p->app = $this->app;
@@ -254,28 +256,4 @@ class Module
     {
         return isset($this->routes[$route]);
     }
-
-//    public function importPlugins($config = null)
-//    {
-//        $plugins = scandir($this->path . 'plugins/');
-//
-//        foreach ($plugins as $plugin) {
-//            if ($plugin == '.' || $plugin == '..') {
-//                continue;
-//            }
-//
-//            if (is_dir($this->path . 'plugins/' . $plugin)) {
-//                require_once($this->path . 'plugins/' . $plugin . '/' . $plugin . '.plg.php');
-//
-//                $class = $plugin . 'Plugin';
-//                /** @var $p Plugin */
-//                $p = new $class();
-//                $p->config = new ArrayFilter($config);
-//                $p->path = $this->path . 'plugins/' . $plugin . '/';
-//                $p->module = $this;
-//                $p->app = $this->app;
-//                $p->init();
-//            }
-//        }
-//    }
 }
