@@ -80,7 +80,7 @@ class ImageContent extends Content
         return $this->saveDirectoryUrl . $this->_v . ($this->valueContainsExtension ? '' : '.' . $this->saveFormat);
     }
 
-    public function populate($data, $namespace)
+    public function populate($data, $namespace = null)
     {
         $this->uploadedFile = ArrayTools::getPrepared($_FILES, $namespace, 'file');
     }
