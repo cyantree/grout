@@ -13,6 +13,8 @@ class Validator
     public $errors = array();
     public $success = true;
 
+    public $stopOnError = true;
+
     public function validate($value, $id)
     {
         $this->_currentValue = $value;
@@ -33,7 +35,7 @@ class Validator
 
     public function length($minLength = null, $maxLength = null, $options = null)
     {
-        if(!$this->hasValidated($this->_currentId)){
+        if($this->stopOnError && !$this->hasValidated($this->_currentId)){
             return $this;
         }
 
@@ -51,7 +53,7 @@ class Validator
 
     public function email($options = null)
     {
-        if(!$this->hasValidated($this->_currentId)){
+        if($this->stopOnError && !$this->hasValidated($this->_currentId)){
             return $this;
         }
 
@@ -64,7 +66,7 @@ class Validator
 
     public function manual($isCorrect, $options = null)
     {
-        if(!$this->hasValidated($this->_currentId)){
+        if($this->stopOnError && !$this->hasValidated($this->_currentId)){
             return $this;
         }
 
