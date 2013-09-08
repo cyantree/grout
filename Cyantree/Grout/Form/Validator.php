@@ -33,6 +33,10 @@ class Validator
 
     public function length($minLength = null, $maxLength = null, $options = null)
     {
+        if(!$this->hasValidated($this->_currentId)){
+            return $this;
+        }
+
         $len = mb_strlen($this->_currentValue);
         if ($minLength !== null && $len < $minLength) {
             $this->_addError('minLength', ArrayTools::get($options, 'message'));
@@ -47,6 +51,10 @@ class Validator
 
     public function email($options = null)
     {
+        if(!$this->hasValidated($this->_currentId)){
+            return $this;
+        }
+
         if (!StringTools::isMailAddress($this->_currentValue)) {
             $this->_addError('email', ArrayTools::get($options, 'message'));
         }
@@ -56,6 +64,10 @@ class Validator
 
     public function manual($isCorrect, $options = null)
     {
+        if(!$this->hasValidated($this->_currentId)){
+            return $this;
+        }
+
         if(!$isCorrect){
             $this->_addError('incorrect', ArrayTools::get($options, 'message'));
         }
