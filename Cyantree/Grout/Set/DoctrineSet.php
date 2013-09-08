@@ -55,6 +55,21 @@ class DoctrineSet extends Set
         return $a;
     }
 
+    public function getListQueryData()
+    {
+        return array(
+            'select' => array(
+                'query' => 'SELECT {e} FROM {entity} WHERE {filter} ORDER BY {order}',
+                'parameters' => array(),
+                'defaultOrder' => null,
+            ),
+            'count' => array(
+                'query' => 'SELECT COUNT({e}) FROM {entity} WHERE {filter}',
+                'parameters' => array(),
+            )
+        );
+    }
+
 
     protected function _collectData()
     {
