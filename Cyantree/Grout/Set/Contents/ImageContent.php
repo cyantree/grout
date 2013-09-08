@@ -56,18 +56,18 @@ class ImageContent extends Content
         'tooLarge' => 'Das Bild „%name%“ darf nicht größer als %width%x%height% Pixel sein.'
     );
 
-    public function render($mode, $namespace = null)
+    public function render($mode)
     {
         if ($mode == Set::MODE_DELETE || $mode == Set::MODE_LIST) {
             if ($this->_v) {
-                return '<img id="' . $namespace . '_preview" src="' .
+                return '<img id="' . $this->name . '_preview" src="' .
                 StringTools::escapeHtml($this->_getImageUrl()) . '" alt="" />';
             }
 
             return '';
         }
 
-        $c = '<input type="file" name="' . $namespace . '" />';
+        $c = '<input type="file" name="' . $this->name . '" />';
         if ($this->_v) {
             $c .= '<br /><br /><img src="' . StringTools::escapeHtml($this->_getImageUrl()) . '" alt="" />';
         }
@@ -80,9 +80,9 @@ class ImageContent extends Content
         return $this->saveDirectoryUrl . $this->_v . ($this->valueContainsExtension ? '' : '.' . $this->saveFormat);
     }
 
-    public function populate($data, $namespace)
+    public function populate($data)
     {
-        $this->uploadedFile = ArrayTools::getPrepared($_FILES, $namespace, 'file');
+        $this->uploadedFile = ArrayTools::getPrepared($_FILES, $this->name, 'file');
     }
 
     public function check()

@@ -43,9 +43,9 @@ class FileContent extends Content
         parent::__construct();
     }
 
-    public function render($mode, $namespace = null)
+    public function render($mode)
     {
-        $c = '<input type="file" name="' . $namespace . '" />';
+        $c = '<input type="file" name="' . $this->name . '" />';
         if ($this->_v) {
             $c .= '<br /><br />' . StringTools::escapeHtml($this->_getFileUrl());
         }
@@ -58,9 +58,9 @@ class FileContent extends Content
         return $this->saveDirectoryUrl . $this->_v;
     }
 
-    public function populate($data, $namespace)
+    public function populate($data)
     {
-        $this->uploadedFile = ArrayTools::getPrepared($_FILES, $namespace, 'file');
+        $this->uploadedFile = ArrayTools::getPrepared($_FILES, $this->name, 'file');
     }
 
     public function check()

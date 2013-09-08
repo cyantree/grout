@@ -20,7 +20,7 @@ class CustomContent extends Content
         $this->name = StringTools::random(32);
     }
 
-    public function render($mode, $namespace = null)
+    public function render($mode)
     {
         if ($mode == Set::MODE_ADD) {
             if ($this->contentAdd !== null) {
