@@ -3,6 +3,7 @@ namespace Cyantree\Grout\App;
 
 use Cyantree\Grout\App\Types\ResponseCode;
 use Cyantree\Grout\AutoLoader;
+use Cyantree\Grout\DataStorage;
 use Cyantree\Grout\Event\Events;
 use Cyantree\Grout\Filter\ArrayFilter;
 use Cyantree\Grout\Tools\AppTools;
@@ -51,6 +52,12 @@ class App
     public $events;
 
     public $onEmergencyShutdown;
+
+    /** @var DataStorage */
+    public $dataStorage;
+
+    /** @var DataStorage */
+    public $cacheStorage;
 
     private $_routes = array();
 
@@ -122,6 +129,9 @@ class App
         if (!$this->id) {
             $this->id = md5($this->path);
         }
+
+        $this->dataStorage = new DataStorage($this->dataPath . 'data/');
+        $this->cacheStorage = new DataStorage($this->dataPath . 'cache/');
     }
 
     /**
