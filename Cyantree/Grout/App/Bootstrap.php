@@ -52,6 +52,21 @@ class Bootstrap
         $r->server = $this->_server;
         $r->method = strtoupper($this->_server->get('REQUEST_METHOD'));
 
+        // Removed GET config parameters (Grout_*) and move them to config array
+        $get = $this->_get->getData();
+        $config = array();
+        foreach ($get as $key => $value) {
+            if (substr($key, 0, 6) === 'Grout_') {
+                $config[$key] = $value;
+            }
+        }
+
+        foreach ($config as $key => $value) {
+            unset($get[$key]);
+        }
+        $r->get->setData($get);
+        $r->config->setData($config);
+
         return $r;
     }
 
