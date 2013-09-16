@@ -11,6 +11,9 @@ class TemplateGenerator
     /** @var App */
     public $app;
 
+    /** @var TemplateContext */
+    private $_templateContext;
+
     public $baseTemplate = null;
 
     private function _decodeName($name)
@@ -26,14 +29,24 @@ class TemplateGenerator
         return $template;
     }
 
+    public function setTemplateContext(TemplateContext $context)
+    {
+        $context->generator = $this;
+        $context->app = $this->app;
+
+        $this->_templateContext = $context;
+    }
+
     public function load($name, $in = null, $baseTemplate = null)
     {
         $file = $this->_decodeName($name);
 
-        $c = new TemplateContext();
-        $c->generator = $this;
+        if (!$this->_templateContext) {
+            $this->setTemplateContext(new TemplateContext());
+        }
+
+        $c = clone $this->_templateContext;
         $c->task = $this->app->currentTask;
-        $c->app = $this->app;
         $c->out = new ArrayFilter();
         $c->baseTemplate = $baseTemplate !== null ? $baseTemplate : $this->baseTemplate;
         $c->parse($file, $in);
