@@ -1,6 +1,7 @@
 <?php
 namespace Cyantree\Grout\App;
 
+use Cyantree\Grout\ErrorWrapper\PhpNoticeException;
 use Cyantree\Grout\Quick;
 use Cyantree\Grout\Tools\AppTools;
 
