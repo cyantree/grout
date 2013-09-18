@@ -18,7 +18,25 @@ class GroutQuick extends Quick
         parent::__construct();
     }
 
+    public function er($uri, $arguments = null, $parameters = null, $escapeContext = 'html')
+    {
+        return $this->e($this->p($uri, $arguments, $parameters), $escapeContext);
+    }
+
+    public function ea($uri, $parameters = null, $escapeContext = 'html')
+    {
+        return $this->e($this->a($uri, $parameters), $escapeContext);
+    }
+
+    /** @deprecated */
     public function p($uri, $arguments = null, $parameters = null)
+    {
+        $this->_app->events->trigger('logException', new PhpNoticeException('GroutQuick->p() is deprecated. Use GroutQuick->r() instead.'));
+
+        return $this->r($uri, $arguments, $parameters);
+    }
+
+    public function r($uri, $arguments = null, $parameters = null)
     {
         $data = AppTools::decodeUri($uri, $this->_app, $this->_app->currentTask->module, $this->_app->currentTask->plugin);
         if($data[0]){
