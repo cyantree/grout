@@ -21,7 +21,7 @@ class GroutQuick extends Quick
 
     public function er($uri, $arguments = null, $parameters = null, $escapeContext = 'html')
     {
-        return $this->e($this->p($uri, $arguments, $parameters), $escapeContext);
+        return $this->e($this->r($uri, $arguments, $parameters), $escapeContext);
     }
 
     public function ea($uri, $parameters = null, $escapeContext = 'html')
