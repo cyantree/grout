@@ -37,6 +37,8 @@ class AdvancedForm
     /** @var ArrayFilter */
     public $dataIn;
 
+    public $data;
+
     /** @var ArrayFilter */
     public $dataFiles;
 
@@ -93,11 +95,10 @@ class AdvancedForm
         $isNew = !$requestedID;
 
         if (!$this->bucketBase) {
-            $this->bucketBase = AdvancedForm::$defaultBucketBase;
-
-            if (!$this->bucketBase) {
-                $this->bucketBase = Buckets::$default;
+            if (!AdvancedForm::$defaultBucketBase) {
+                trigger_error('Could not find valid bucket base. Specify with $form->bucketBase set AdvancedForm::$defaultBucketBase', E_USER_ERROR);
             }
+            $this->bucketBase = AdvancedForm::$defaultBucketBase;
         }
 
         // PreInit form
@@ -322,6 +323,7 @@ class AdvancedForm
     /** @return mixed */
     protected function _createDataObject()
     {
+        return null;
     }
 
     protected function _getStepData($step)

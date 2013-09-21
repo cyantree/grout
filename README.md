@@ -1,6 +1,16 @@
 grout
 =====
 
+### 0.0.9
+
+-   **BUG**: AdvancedForm didn't worked because of some API incompatibility.
+
+-   **CHANGE**: AdvancedForm. $data wasn't declared previously. _createDataObject() now returns by default.
+
+-   **CHANGE**: Form. _createDataObject() now returns by default.
+
+-   **BUG**: DataStorage. clearAllStorages() and deleteAllStorages() didn't worked.
+
 ### 0.0.8
 
 -   **DEPRECATED:** GroutQuick. Use r() instead of p() because p() stands for

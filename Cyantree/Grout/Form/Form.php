@@ -113,6 +113,7 @@ class Form
     /** @return mixed */
     protected function _createDataObject()
     {
+        return null;
     }
 
     protected function _getData()

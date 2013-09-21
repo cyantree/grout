@@ -33,10 +33,8 @@ class DataStorage
         $storages = glob($this->directory . '*');
 
         foreach ($storages as $storage) {
-            $path = $this->directory . $storage;
-
-            if (is_dir($path)) {
-                FileTools::deleteContents($path);
+            if (is_dir($storage)) {
+                FileTools::deleteContents($storage);
             }
         }
     }
@@ -52,10 +50,8 @@ class DataStorage
         $storages = glob($this->directory . '*');
 
         foreach ($storages as $storage) {
-            $path = $this->directory . $storage;
-
-            if (is_dir($path)) {
-                FileTools::deleteDirectory($path);
+            if (is_dir($storage)) {
+                FileTools::deleteDirectory($storage);
             }
         }
     }
