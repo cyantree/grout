@@ -275,23 +275,19 @@ class ImageTools
             $extension = strtolower($extension[$count - 1]);
         }
 
-        ServerTools::suppressErrors(true);
-
         $type = null;
 
         // Load image
         if ($extension == 'jpg' || $extension == 'jpeg') {
-            $image = imagecreatefromjpeg($file);
+            $image = @imagecreatefromjpeg($file);
             $type = 'jpg';
         } else if ($extension == 'gif') {
-            $image = imagecreatefromgif($file);
+            $image = @imagecreatefromgif($file);
             $type = 'gif';
         } else if ($extension == 'png') {
-            $image = imagecreatefrompng($file);
+            $image = @imagecreatefrompng($file);
             $type = 'png';
         } else $image = null;
-
-        ServerTools::suppressErrors(false);
 
         if (!$image) {
             $result->errors[] = ImageToolsCheckFileResult::ERROR_INVALID;

@@ -1,6 +1,14 @@
 grout
 =====
 
+### 0.0.10
+
+-   **CHANGE**: ArrayFilter->asFilter() now checks whether the key points to an array.
+
+-   **CHANGE**: ImageTools::checkFile(). Errors will be suppressed with "@" now.
+
+-   **CHANGE**: FileUpload::fromPhpFileArray(). Now will return null when no file has been selected (error = "4").
+
 ### 0.0.9
 
 -   **BUG**: AdvancedForm didn't worked because of some API incompatibility.

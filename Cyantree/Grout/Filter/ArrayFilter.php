@@ -37,7 +37,12 @@ class ArrayFilter
 
     public function asFilter($key)
     {
-        return new ArrayFilter($this->get($key));
+        $data = $this->get($key);
+        if (!is_array($data)) {
+            $data = null;
+        }
+
+        return new ArrayFilter($data);
     }
 
     public function has($key)

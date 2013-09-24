@@ -20,7 +20,7 @@ class FileUpload
 
     public static function fromPhpFileArray($data)
     {
-        if(!$data){
+        if(!$data || $data['error'] == 4){
             return null;
         }
 
