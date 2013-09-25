@@ -1,6 +1,20 @@
 grout
 =====
 
+### 0.1.0
+
+-   **BUG**: Request. POST data hasn't been assigned correctly when passed via constructor.
+
+-   **CHANGE**: ListContent. List won't be displayed anymore when editing has been disabled.
+
+-   **CHANGE**: TextContent. Won't retun null anymore. Instead returns empty string.
+
+-   **CHANGE**: App. Modules will now be initiated as soon as possible.
+
+-   **FEATURE**: Added basic support for unit testing with PHPUnit
+
+-   **CHANGE**: Changed some error messages
+
 ### 0.0.10
 
 -   **CHANGE**: ArrayFilter->asFilter() now checks whether the key points to an array.

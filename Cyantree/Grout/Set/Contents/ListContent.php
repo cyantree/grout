@@ -41,7 +41,7 @@ class ListContent extends Content{
     }
 
     public function render($mode) {
-        if($mode == Set::MODE_DELETE || $mode == Set::MODE_LIST){
+        if($mode == Set::MODE_DELETE || $mode == Set::MODE_LIST || !$this->editable){
             return '<p>'.StringTools::escapeHtml($this->options[$this->_value]).'</p>';
 
         }elseif($mode == Set::MODE_EDIT || $mode == Set::MODE_ADD){

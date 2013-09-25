@@ -38,7 +38,7 @@ class Request
         }
 
         if($post === null){
-            $get = new ArrayFilter();
+            $post = new ArrayFilter();
         }
 
         if($config === null){

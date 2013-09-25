@@ -91,7 +91,7 @@ class Module
         if (isset($this->routes[$id])) {
             return $this->routes[$id];
         } else {
-            trigger_error('[CWF] Page "' . $id . '" was not found in module "' . get_class($this) . '"', E_USER_WARNING);
+            trigger_error('Route "' . $id . '" was not found in module "' . get_class($this) . '"', E_USER_WARNING);
         }
 
         return null;

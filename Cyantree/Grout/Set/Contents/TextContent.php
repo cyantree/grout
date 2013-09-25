@@ -8,7 +8,7 @@ use Cyantree\Grout\Tools\StringTools;
 // Fake calls to enable gettext extraction
 if(0){
     _('Das Feld „%name%“ darf nicht leer sein.');
-    ('Das Feld „%name%“ hat kein gültiges Format.');
+    _('Das Feld „%name%“ hat kein gültiges Format.');
     _('Im Feld „%name%“ wurde keine gültige E-Mail-Adresse angegeben.');
     _('Im Feld „%name%“ wurde keine gültige URL angegeben.');
     _('Das Feld „%name%“ darf nicht kürzer als %length% Zeichen sein.');
@@ -45,7 +45,7 @@ class TextContent extends Content{
     }
 
     public function encode() {
-        return $this->_value;
+        return $this->_value === null ? '' : $this->_value;
     }
 
     public function populate($data) {

@@ -132,6 +132,8 @@ class App
 
         $this->dataStorage = new DataStorage($this->dataPath . 'data/');
         $this->cacheStorage = new DataStorage($this->dataPath . 'cache/');
+
+        $this->_initiated = true;
     }
 
     /**
@@ -141,24 +143,6 @@ class App
     public function processRequest($request)
     {
         $request->prepare();
-
-        $isInitiated = $this->_initiated;
-        $this->_initiated = true;
-
-        // Init modules
-        // <<
-        if (!$isInitiated) {
-            foreach ($this->modules as $module) {
-                $module->app = $this;
-
-                if (!$module->initiated) {
-                    $module->initiated = true;
-                    $module->init();
-                }
-            }
-            $this->events->trigger('log', 'Initial modules initiated');
-        }
-        // >>
 
         // Create task
         $task = new Task();
@@ -223,11 +207,6 @@ class App
         $this->events->trigger('log0', 'Request: ' . $task->request->url);
         $this->events->trigger('log', 'Find matching routes');
 
-        // Set back request url to compatible type
-//        if ($task->request->url == '') {
-//            $task->request->url = '/';
-//        }
-
         // Get matching route
         // <<
         /** @var $foundRoute Route */
@@ -265,7 +244,7 @@ class App
         if ($foundRoute) {
             $task->setRoute($foundRoute, $routeVars);
         } else {
-            trigger_error('[CWF] No matching addRoute found for URL "' . $task->request->url . '"', E_USER_ERROR);
+            trigger_error('No matching route found for URL "' . $task->request->url . '"', E_USER_ERROR);
         }
 
         $this->events->trigger('log', 'Prepare parsing');
@@ -285,7 +264,7 @@ class App
         } elseif ($classData[0]) {
             $class = NamespaceTools::getNamespaceOfInstance($classData[0]) . '\Pages\\' . $classData[2];
         } else {
-            trigger_error('[CWF] No page class found for "' . $task->request->url . '" with "' . $task->route->page . '"');
+            trigger_error('No page class found for "' . $task->request->url . '" with "' . $task->route->page . '"');
             $class = null;
         }
 
@@ -300,7 +279,7 @@ class App
         }
 
         if (!$task->page) {
-            trigger_error('[CWF] No page was set', E_USER_ERROR);
+            trigger_error('No page was set', E_USER_ERROR);
         }
 
         $this->events->trigger('log', 'Parse request');
@@ -333,7 +312,7 @@ class App
 
     public function destroy()
     {
-        $this->events->trigger('log', '[APP] Destroy');
+        $this->events->trigger('log', 'Destroy');
         foreach ($this->modules as $module) {
             $module->destroy();
         }
@@ -527,14 +506,14 @@ class App
         } elseif ($classData[0]) {
             $class = NamespaceTools::getNamespaceOfInstance($classData[0]) . '\Pages\\' . $classData[2];
         } else {
-            trigger_error('[CWF] No page class found for "' . $task->request->url . '" with "' . $task->route->page . '"');
+            trigger_error('No page class found for "' . $task->request->url . '" with "' . $task->route->page . '"');
             $class = null;
         }
 
         $task->setPage(new $class());
 
         if (!$task->page) {
-            trigger_error('[CWF] No page was set', E_USER_ERROR);
+            trigger_error('No page was set', E_USER_ERROR);
         }
 
         $task->page->task = $task;
@@ -551,7 +530,7 @@ class App
         $task->setPage($page);
 
         if (!$task->page) {
-            trigger_error('[CWF] No page was set', E_USER_ERROR);
+            trigger_error('No page was set', E_USER_ERROR);
         }
 
         $task->page->task = $task;
