@@ -21,12 +21,19 @@ class Form
     /** @var FormStatus */
     public $status;
 
+    public function getDataIn()
+    {
+        return new ArrayFilter($_POST);
+    }
+
     public function execute()
     {
-        $this->status = new FormStatus();
-
         // PreInit form
         $this->_preInit();
+
+        $this->status = new FormStatus();
+
+        $this->dataIn = $this->getDataIn();
 
         if ($this->status->error) {
             $this->_deInit();
