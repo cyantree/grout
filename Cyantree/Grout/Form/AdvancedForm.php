@@ -19,8 +19,7 @@ class AdvancedForm
 
     public static $earlyTimeout = 2;
 
-    /** FLAG_ACTION_TIME | FLAG_JAVASCRIPT by default */
-    public static $defaultFlags = 3;
+    public static $defaultFlags = 0;
 
     public static $MESSAGE_ERROR_EARLY = 'Please wait a moment before submitting this form.';
     public static $MESSAGE_ERROR_DELETED = 'Your inquiry has expired.';
@@ -76,6 +75,9 @@ class AdvancedForm
 
     public function execute()
     {
+        // PreInit form
+        $this->_preInit();
+
         if ($this->flags == -1) {
             $this->flags = self::$defaultFlags;
         }
@@ -100,9 +102,6 @@ class AdvancedForm
             }
             $this->bucketBase = AdvancedForm::$defaultBucketBase;
         }
-
-        // PreInit form
-        $this->_preInit();
 
         $context = $this->getContext();
 
