@@ -111,9 +111,6 @@ class FormStatus
     /** @param $v Validator */
     public function fromValidator($v, $mergeFieldErrors = true)
     {
-        $this->success = $v->success;
-        $this->error = !$v->success;
-
         $results = $v->errors;
         foreach($results as $field => $errors){
             if($mergeFieldErrors){
