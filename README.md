@@ -1,13 +1,27 @@
 grout
 =====
 
+### 0.1.1
+
+-   **CHANGE:** AdvancedForm. Changed defaultFlags to 0 (no JS, no minimum
+    action time), moved execution of method _preInit()
+
+-   **FIX:** FormStatus. Fixed status import from Validator.
+
+-   **FEATURE:** Events. Added option to prepend event registration.
+
+-   **FEATURE:** Form. added method getDataIn()
+
 ### 0.1.0
 
--   **BUG**: Request. POST data hasn't been assigned correctly when passed via constructor.
+-   **BUG**: Request. POST data hasn't been assigned correctly when passed via
+    constructor.
 
--   **CHANGE**: ListContent. List won't be displayed anymore when editing has been disabled.
+-   **CHANGE**: ListContent. List won't be displayed anymore when editing has
+    been disabled.
 
--   **CHANGE**: TextContent. Won't retun null anymore. Instead returns empty string.
+-   **CHANGE**: TextContent. Won't retun null anymore. Instead returns empty
+    string.
 
 -   **CHANGE**: App. Modules will now be initiated as soon as possible.
 
@@ -17,21 +31,25 @@ grout
 
 ### 0.0.10
 
--   **CHANGE**: ArrayFilter->asFilter() now checks whether the key points to an array.
+-   **CHANGE**: ArrayFilter->asFilter() now checks whether the key points to an
+    array.
 
 -   **CHANGE**: ImageTools::checkFile(). Errors will be suppressed with "@" now.
 
--   **CHANGE**: FileUpload::fromPhpFileArray(). Now will return null when no file has been selected (error = "4").
+-   **CHANGE**: FileUpload::fromPhpFileArray(). Now will return null when no
+    file has been selected (error = "4").
 
 ### 0.0.9
 
 -   **BUG**: AdvancedForm didn't worked because of some API incompatibility.
 
--   **CHANGE**: AdvancedForm. $data wasn't declared previously. _createDataObject() now returns by default.
+-   **CHANGE**: AdvancedForm. $data wasn't declared previously.
+    _createDataObject() now returns by default.
 
 -   **CHANGE**: Form. _createDataObject() now returns by default.
 
--   **BUG**: DataStorage. clearAllStorages() and deleteAllStorages() didn't worked.
+-   **BUG**: DataStorage. clearAllStorages() and deleteAllStorages() didn't
+    worked.
 
 ### 0.0.8
 
