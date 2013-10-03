@@ -56,8 +56,16 @@ class Request
         $this->urlParts = new ArrayFilter();
     }
 
+    public function setPostData($dataArray)
+    {
+        $this->post->setData($dataArray);
+        $this->method = 'POST';
+    }
+
     public function prepare()
     {
+        $this->method = strtoupper($this->method);
+
         // Normalize URL and create URL parts
         if (substr($this->url, 0, 1) == '/') {
             $this->url = substr($this->url, 1);
@@ -70,10 +78,6 @@ class Request
 
         $urlParts = explode('/', $this->url);
         array_pop($urlParts);
-
-//        if (!count($urlParts)) {
-//            $urlParts[] = '';
-//        }
 
         $this->urlParts = new ArrayFilter($urlParts);
     }

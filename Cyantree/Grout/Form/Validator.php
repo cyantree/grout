@@ -64,6 +64,61 @@ class Validator
         return $this;
     }
 
+    public function ereg($expression, $options = null)
+    {
+        if($this->stopOnError && !$this->hasValidated($this->_currentId)){
+            return $this;
+        }
+
+        if (!preg_match($expression, $this->_currentValue)) {
+            $this->_addError('ereg', ArrayTools::get($options, 'message'));
+        }
+
+        return $this;
+    }
+
+    public function integer($options = null)
+    {
+        if($this->stopOnError && !$this->hasValidated($this->_currentId)){
+            return $this;
+        }
+
+        if (strval(intval(($this->_currentValue))) !== strval($this->_currentValue)) {
+            $this->_addError('integer', ArrayTools::get($options, 'message'));
+        }
+
+        return $this;
+    }
+
+    public function float($options = null)
+    {
+        if($this->stopOnError && !$this->hasValidated($this->_currentId)){
+            return $this;
+        }
+
+        if (strval(floatval(($this->_currentValue))) !== floatval($this->_currentValue)) {
+            $this->_addError('float', ArrayTools::get($options, 'message'));
+        }
+
+        return $this;
+    }
+
+    public function limit($min = null, $max = null, $options = null)
+    {
+        if($this->stopOnError && !$this->hasValidated($this->_currentId)){
+            return $this;
+        }
+
+        if ($min !== null && $this->_currentValue < $min) {
+            $this->_addError('limit', ArrayTools::get($options, 'message'));
+
+        } elseif ($max !== null && $this->_currentValue > $max) {
+            $this->_addError('limit', ArrayTools::get($options, 'message'));
+        }
+
+        return $this;
+    }
+
     public function manual($isCorrect, $options = null)
     {
         if($this->stopOnError && !$this->hasValidated($this->_currentId)){

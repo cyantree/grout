@@ -1,6 +1,18 @@
 grout
 =====
 
+### 0.1.2
+
+-   **CHANGE:** Request. Method will be converted to upper case.AdvancedForm.
+    Changed defaultFlags to 0 (no JS, no minimum action time), moved execution
+    of method _preInit()
+
+-   **FEATURE:** Request. Added method setPostData() which will also change the
+    request method.
+
+-   **FEATURE:** Validator. Added methods ereg(), limit(), integer() and
+    float().
+
 ### 0.1.1
 
 -   **CHANGE:** AdvancedForm. Changed defaultFlags to 0 (no JS, no minimum
