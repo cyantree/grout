@@ -51,20 +51,36 @@ class Page
 
     public function parseError($code, $data = null)
     {
-        if($code == ResponseCode::CODE_404){
-            if($this->task->plugin && $this->task->plugin->hasRoute('GroutError404')){
+        if ($code == ResponseCode::CODE_403) {
+            if ($this->task->plugin && $this->task->plugin->hasRoute('GroutError403')) {
+                $this->task->redirectToRoute($this->task->plugin->getRoute('GroutError403'));
+
+            } elseif ($this->task->module && $this->task->module->hasRoute('GroutError403')) {
+                $this->task->redirectToRoute($this->task->module->getRoute('GroutError403'));
+
+            } else {
+                $this->setResult('You are not allowed to access this page.', ContentType::TYPE_PLAIN_UTF8, ResponseCode::CODE_403);
+            }
+
+        } elseif ($code == ResponseCode::CODE_404) {
+            if ($this->task->plugin && $this->task->plugin->hasRoute('GroutError404')) {
                 $this->task->redirectToRoute($this->task->plugin->getRoute('GroutError404'));
-            }elseif($this->task->module && $this->task->module->hasRoute('GroutError404')){
+
+            } elseif ($this->task->module && $this->task->module->hasRoute('GroutError404')) {
                 $this->task->redirectToRoute($this->task->module->getRoute('GroutError404'));
-            }else{
+
+            } else {
                 $this->setResult('The requested page does not exist.', ContentType::TYPE_PLAIN_UTF8, ResponseCode::CODE_404);
             }
-        }else{
-            if($this->task->plugin && $this->task->plugin->hasRoute('GroutError500')){
+
+        } else {
+            if ($this->task->plugin && $this->task->plugin->hasRoute('GroutError500')) {
                 $this->task->redirectToRoute($this->task->plugin->getRoute('GroutError500'));
-            }elseif($this->task->module && $this->task->module->hasRoute('GroutError500')){
+
+            } elseif ($this->task->module && $this->task->module->hasRoute('GroutError500')) {
                 $this->task->redirectToRoute($this->task->module->getRoute('GroutError500'));
-            }else{
+
+            } else {
                 $this->setResult('An unknown error has occurred.', ContentType::TYPE_PLAIN_UTF8, ResponseCode::CODE_500);
             }
         }

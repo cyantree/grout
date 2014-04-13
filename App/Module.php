@@ -1,6 +1,7 @@
 <?php
 namespace Cyantree\Grout\App;
 
+use Cyantree\Grout\App\Types\ResponseCode;
 use Cyantree\Grout\AutoLoader;
 use Cyantree\Grout\Event\Events;
 use Cyantree\Grout\Filter\ArrayFilter;
@@ -289,5 +290,28 @@ class Module
     public function hasRoute($route)
     {
         return isset($this->routes[$route]);
+    }
+
+    /** @return Route */
+    public function addErrorRoute($code, $page, $pageData = null)
+    {
+        $f = new ArrayFilter($pageData);
+        if (!$f->has('responseCode')) {
+            $f->set('responseCode', $code);
+        }
+
+        $url = null;
+        $activated = false;
+        $priority = 0;
+
+        if ($code == ResponseCode::CODE_404) {
+            $url = '%%url,.*%%';
+            $activated = true;
+            $priority = -1;
+        }
+
+        $codeDigit = substr($code, 0, 3);
+
+        return $this->addNamedRoute('GroutError' . $codeDigit, $url, $page, $f->getData(), $priority, $activated);
     }
 }
