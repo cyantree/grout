@@ -2,8 +2,8 @@
 namespace Cyantree\Grout\Form;
 
 use Cyantree\Grout\Bucket\Bucket;
-use Cyantree\Grout\Buckets\Buckets;
 use Cyantree\Grout\Filter\ArrayFilter;
+use Cyantree\Grout\StatusContainer;
 use Cyantree\Grout\Tools\ArrayTools;
 use Cyantree\Grout\Tools\StringTools;
 
@@ -54,7 +54,7 @@ class AdvancedForm
     /** @var \Cyantree\Grout\Bucket\Bucket */
     private $_bucket;
 
-    /** @var FormStatus */
+    /** @var StatusContainer */
     public $status;
 
     private $_internalID;
@@ -82,7 +82,7 @@ class AdvancedForm
             $this->flags = self::$defaultFlags;
         }
 
-        $this->status = new FormStatus();
+        $this->status = new StatusContainer();
 
         if (!$this->id) {
             $this->id = get_class($this);
@@ -120,6 +120,7 @@ class AdvancedForm
                 $this->_processSecurityError(self::ERROR_DELETED);
             } else {
                 $this->formData = $this->_bucket->data;
+
                 $this->data = $this->formData->data;
 
                 // Bucket is valid but doesn't fit to this form
@@ -355,9 +356,9 @@ class AdvancedForm
     protected function _processSecurityError($id)
     {
         if ($id == self::ERROR_DELETED) {
-            $this->status->postError('CT_Form_Security', self::$MESSAGE_ERROR_DELETED);
+            $this->status->addError('GroutFormSecurity', self::$MESSAGE_ERROR_DELETED);
         } else if ($id == self::ERROR_EARLY) {
-            $this->status->postError('CT_Form_Security', self::$MESSAGE_ERROR_EARLY);
+            $this->status->addError('GroutFormSecurity', self::$MESSAGE_ERROR_EARLY);
         }
     }
 

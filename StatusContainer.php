@@ -1,21 +1,23 @@
 <?php
-namespace Cyantree\Grout\Form;
+namespace Cyantree\Grout;
 
 use Cyantree\Grout\Ui\Ui;
 
-class FormStatus
+class StatusContainer
 {
     public $error = false;
     public $errors = array();
     public $hasErrorMessages = false;
+
     public $success = false;
     public $successMessages = array();
     public $hasSuccessMessages = false;
+
     public $info = false;
     public $infoMessages = array();
     public $hasInfoMessages = false;
 
-    public function postError($id, $message = null)
+    public function addError($id, $message = null)
     {
         if($id){
             $this->errors[$id] = $message;
@@ -29,7 +31,28 @@ class FormStatus
         }
     }
 
-    public function postInfo($id, $message = null)
+    public function addErrors($errors)
+    {
+        foreach ($errors as $code => $message) {
+            $this->addError($code, $message);
+        }
+    }
+
+    public function addInfos($infos)
+    {
+        foreach ($infos as $code => $message) {
+            $this->addInfo($code, $message);
+        }
+    }
+
+    public function addSuccesses($successes)
+    {
+        foreach ($successes as $code => $message) {
+            $this->addSuccess($code, $message);
+        }
+    }
+
+    public function addInfo($id, $message = null)
     {
         if($id){
             $this->infoMessages[$id] = $message;
@@ -43,7 +66,7 @@ class FormStatus
         }
     }
 
-    public function postSuccess($id, $message = null)
+    public function addSuccess($id, $message = null)
     {
         if($id){
             $this->successMessages[$id] = $message;
@@ -106,21 +129,5 @@ class FormStatus
         $this->errors = array();
         $this->successMessages = array();
         $this->infoMessages = array();
-    }
-
-    /** @param $v Validator */
-    public function fromValidator($v, $mergeFieldErrors = true)
-    {
-        $results = $v->errors;
-        foreach($results as $field => $errors){
-            if($mergeFieldErrors){
-                $this->postError($field, implode(' ', $errors));
-            }else{
-                $this->postError($field);
-                foreach($errors as $code => $message){
-                    $this->postError($field.'.'.$code, $message);
-                }
-            }
-        }
     }
 }

@@ -1,7 +1,7 @@
 <?php
 namespace Cyantree\Grout\Ui;
 
-use Cyantree\Grout\Form\FormStatus;
+use Cyantree\Grout\StatusContainer;
 use Cyantree\Grout\Tools\ArrayTools;
 use Cyantree\Grout\Tools\StringTools;
 
@@ -377,18 +377,20 @@ class Ui
         return $this->_addStatus($textOrTexts, 'error');
     }
 
-    /** @param FormStatus|UiElement|string $status */
+    /** @param StatusContainer|UiElement|string $status */
     public function status($status, $parameters = null){
-        $isFormStatus = $status instanceof FormStatus;
+        $isStatusContainer = $status instanceof StatusContainer;
 
         $noStatus = $status === '' ||
-              ($isFormStatus && !$status->hasSuccessMessages && !$status->hasErrorMessages && !$status->hasInfoMessages);
+              ($isStatusContainer && !$status->hasSuccessMessages && !$status->hasErrorMessages && !$status->hasInfoMessages);
 
         if($noStatus && !ArrayTools::get($parameters, 'showIfEmpty')){
             return '';
         }
 
-        if ($isFormStatus) {
+        if ($isStatusContainer) {
+            /** @var $status StatusContainer */
+
             $includeStatusCodes = ArrayTools::get($parameters, 'include');
             $excludeStatusCodes = ArrayTools::get($parameters, 'exclude');
 

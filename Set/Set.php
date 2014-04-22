@@ -2,7 +2,7 @@
 namespace Cyantree\Grout\Set;
 
 use Cyantree\Grout\Filter\ArrayFilter;
-use Cyantree\Grout\Form\FormStatus;
+use Cyantree\Grout\StatusContainer;
 
 class Set
 {
@@ -29,13 +29,13 @@ class Set
     /** @var ArrayFilter */
     public $config;
 
-    /** @var FormStatus */
+    /** @var StatusContainer */
     public $status;
 
     public function __construct()
     {
         $this->config = new ArrayFilter();
-        $this->status = new FormStatus();
+        $this->status = new StatusContainer();
     }
 
     public function onList($elements)
@@ -164,7 +164,7 @@ class Set
     {
         $this->status->reset();
 
-        foreach($this->contents as $name => $content){
+        foreach($this->contents as $content){
             if($content->editable){
                 $content->check();
             }
@@ -173,7 +173,7 @@ class Set
 
     public function save()
     {
-        foreach($this->contents as $name => $content){
+        foreach($this->contents as $content){
             if($content->editable){
                 $content->save();
             }
@@ -309,7 +309,7 @@ class Set
         $m->message = $message;
         $m->values = $messageReplaces;
 
-        $this->status->postError($code, $m);
+        $this->status->addError($code, $m);
     }
 
     public function postInfo($code, $message = null, $messageReplaces = null)
@@ -319,7 +319,7 @@ class Set
         $m->message = $message;
         $m->values = $messageReplaces;
 
-        $this->status->postInfo($code, $m);
+        $this->status->addInfo($code, $m);
     }
 
     public function postSuccess($code, $message = null, $messageReplaces = null)
@@ -329,7 +329,7 @@ class Set
         $m->message = $message;
         $m->values = $messageReplaces;
 
-        $this->status->postSuccess($code, $m);
+        $this->status->addSuccess($code, $m);
     }
 
     /** @return SetListResult */

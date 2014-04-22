@@ -2,6 +2,7 @@
 namespace Cyantree\Grout\Form;
 
 use Cyantree\Grout\Filter\ArrayFilter;
+use Cyantree\Grout\StatusContainer;
 use Cyantree\Grout\Tools\ArrayTools;
 
 class Form
@@ -18,7 +19,7 @@ class Form
     public $mode;
     public $isSubmit;
 
-    /** @var FormStatus */
+    /** @var StatusContainer */
     public $status;
 
     public function getDataIn()
@@ -31,7 +32,7 @@ class Form
         // PreInit form
         $this->_preInit();
 
-        $this->status = new FormStatus();
+        $this->status = new StatusContainer();
 
         $this->dataIn = $this->getDataIn();
 
