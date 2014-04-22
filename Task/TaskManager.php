@@ -1,9 +1,9 @@
 <?php
 namespace Cyantree\Grout\Task;
 
+use Cyantree\Grout\FilesystemLock;
 use Cyantree\Grout\Task\Task;
 use Cyantree\Grout\Tools\StringTools;
-use Grout\FilesystemLock;
 
 class TaskManager
 {

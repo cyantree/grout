@@ -49,7 +49,6 @@ class ImageTools
     }
 
     /** Resizes an image
-     * @param $background background color. -1 uses transparent background
      */
     public static function resizeImage($image, $newWidth, $newHeight, $autoRotate = false, $mode = ImageTools::MODE_SCALE_CROP, $backgroundColor = 0x00000000)
     {

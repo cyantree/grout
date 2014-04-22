@@ -80,7 +80,7 @@ class DoctrineTools
             } else if ($type == 'd') {
                 $param['type'] = 'datetime';
                 if (!is_object($val)) {
-                    $v = new DateTime();
+                    $v = new \DateTime();
                     $v->setTimestamp($val);
                     $val = $v;
                 }
