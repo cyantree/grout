@@ -1,7 +1,6 @@
 <?php
 namespace Cyantree\Grout\Set\Contents;
 
-use Cyantree\Grout\Filter\ArrayFilter;
 use Cyantree\Grout\Set\Content;
 
 class InternalContent extends Content

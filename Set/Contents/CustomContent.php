@@ -2,7 +2,6 @@
 namespace Cyantree\Grout\Set\Contents;
 
 use Cyantree\Grout\Set\Content;
-use Cyantree\Grout\Set\Set;
 use Cyantree\Grout\Tools\StringTools;
 
 class CustomContent extends Content

@@ -4,7 +4,7 @@ namespace Cyantree\Grout\App\Generators\Template;
 use Cyantree\Grout\App\App;
 use Cyantree\Grout\App\Module;
 use Cyantree\Grout\App\Plugin;
-use Cyantree\Grout\App\Task;
+
 use Cyantree\Grout\Filter\ArrayFilter;
 use Cyantree\Grout\Tools\AppTools;
 

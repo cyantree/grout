@@ -55,9 +55,9 @@ class Content
         return '';
     }
 
-    public function prepareRendering($mode)
-    {
-    }
+//    public function prepareRendering($mode)
+//    {
+//    }
 
     /**
      * @param $data ArrayFilter
@@ -89,7 +89,7 @@ class Content
 
     public function postError($code, $message = null, $messageReplaces = null)
     {
-        $this->set->status->postError($this->name);
+        $this->set->status->addError($this->name);
 
         if($message){
             if($messageReplaces === null){
@@ -106,13 +106,13 @@ class Content
         $m->message = $message;
         $m->values = $messageReplaces;
 
-        $this->set->status->postError($this->name.'.'.$code, $m);
+        $this->set->status->addError($this->name.'.'.$code, $m);
 //        $this->set->status->postError($this->name.'.'.$code, $message);
     }
 
     public function postInfo($code, $message = null, $messageReplaces = null)
     {
-        $this->set->status->postInfo($this->name);
+        $this->set->status->addInfo($this->name);
 
         if($message){
             if($messageReplaces === null){
@@ -129,13 +129,13 @@ class Content
         $m->message = $message;
         $m->values = $messageReplaces;
 
-        $this->set->status->postInfo($this->name.'.'.$code, $m);
+        $this->set->status->addInfo($this->name.'.'.$code, $m);
 //        $this->set->status->postInfo($this->name.'.'.$code, $message);
     }
 
     public function postSuccess($code, $message = null, $messageReplaces = null)
     {
-        $this->set->status->postSuccess($this->name);
+        $this->set->status->addSuccess($this->name);
 
         if($message){
             if($messageReplaces === null){
@@ -152,7 +152,7 @@ class Content
         $m->message = $message;
         $m->values = $messageReplaces;
 
-        $this->set->status->postSuccess($this->name.'.'.$code, $m);
+        $this->set->status->addSuccess($this->name.'.'.$code, $m);
 //        $this->set->status->postSuccess($this->name.'.'.$code, $message);
     }
 }

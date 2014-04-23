@@ -19,9 +19,10 @@ class StatusContainer
 
     public function addError($id, $message = null)
     {
-        if($id){
+        if ($id) {
             $this->errors[$id] = $message;
-        }else{
+
+        } else {
             $this->errors[] = $message;
         }
 
@@ -54,9 +55,10 @@ class StatusContainer
 
     public function addInfo($id, $message = null)
     {
-        if($id){
+        if ($id) {
             $this->infoMessages[$id] = $message;
-        }else{
+
+        } else {
             $this->infoMessages[] = $message;
         }
 
@@ -68,9 +70,10 @@ class StatusContainer
 
     public function addSuccess($id, $message = null)
     {
-        if($id){
+        if ($id) {
             $this->successMessages[$id] = $message;
-        }else{
+
+        } else {
             $this->successMessages[] = $message;
         }
 
@@ -84,42 +87,42 @@ class StatusContainer
     {
         if (is_array($id)) {
             foreach ($id as $i) {
-                if (isset($this->errors[$i])) {
+                if (array_key_exists($i, $this->errors)) {
                     return true;
                 }
             }
 
             return false;
         }
-        return isset($this->errors[$id]);
+        return array_key_exists($id, $this->errors);
     }
 
     public function hasSuccessMessage($id)
     {
         if (is_array($id)) {
             foreach ($id as $i) {
-                if (isset($this->successMessages[$i])) {
+                if (array_key_exists($i, $this->successMessages)) {
                     return true;
                 }
             }
 
             return false;
         }
-        return isset($this->successMessages[$id]);
+        return array_key_exists($id, $this->successMessages);
     }
 
     public function hasInfoMessage($id)
     {
         if (is_array($id)) {
             foreach ($id as $i) {
-                if (isset($this->infoMessages[$i])) {
+                if (array_key_exists($i, $this->infoMessages)) {
                     return true;
                 }
             }
 
             return false;
         }
-        return isset($this->infoMessages[$id]);
+        return array_key_exists($id, $this->infoMessages);
     }
 
     public function reset()

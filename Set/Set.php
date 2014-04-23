@@ -32,6 +32,8 @@ class Set
     /** @var StatusContainer */
     public $status;
 
+    public $mode;
+
     public function __construct()
     {
         $this->config = new ArrayFilter();
@@ -237,10 +239,12 @@ class Set
 
     public function prepareRendering($mode)
     {
+        $this->mode = $mode;
+
         $this->_doPrepareRendering($mode);
-        foreach ($this->contents as $content) {
-            $content->prepareRendering($mode);
-        }
+//        foreach ($this->contents as $content) {
+//            $content->prepareRendering($mode);
+//        }
     }
 
     protected function _doPrepareRendering($mode)
@@ -265,13 +269,13 @@ class Set
         }
     }
 
-    public function render($mode, $nameOrContent)
+    public function render($nameOrContent)
     {
         if(is_object($nameOrContent)){
-            return $nameOrContent->render($mode, $nameOrContent->name);
+            return $nameOrContent->render($this->mode, $nameOrContent->name);
         }
 
-        return $this->contents[$nameOrContent]->render($mode, $nameOrContent);
+        return $this->contents[$nameOrContent]->render($this->mode, $nameOrContent);
     }
 
     protected function _onLoaded()
