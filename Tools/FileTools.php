@@ -32,7 +32,7 @@ class FileTools
 
                     if ($includeDirectories) {
                         if ($absolutePaths) {
-                            $items[] = $dir . $path;
+                            $items[] = $directory . $path;
 
                         } else {
                             $items[] = $path;
@@ -42,7 +42,7 @@ class FileTools
                 } else {
                     if ($includeFiles) {
                         if ($absolutePaths) {
-                            $items[] = $dir . $path;
+                            $items[] = $directory . $path;
 
                         } else {
                             $items[] = $path;
