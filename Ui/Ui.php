@@ -521,6 +521,10 @@ class Ui
             $element->attributes['onblur'] = $attributes['onblur'];
         }
 
+        if (isset($attributes['disabled']) && $attributes['disabled']) {
+            $element->attributes['disabled'] = 'disabled';
+        }
+
         if (isset($attributes['data'])) {
             foreach ($attributes['data'] as $k => $v) {
                 $element->attributes['data-' . $k] = $v;
@@ -530,6 +534,12 @@ class Ui
         if (isset($attributes['error']) && $attributes['error']) {
             $element->metadata['error'] = true;
             $element->addClass('error');
+        }
+
+        if (isset($attributes['attributes'])) {
+            foreach ($attributes['attributes'] as $k => $v) {
+                $element->attributes[$k] = $v;
+            }
         }
     }
 
