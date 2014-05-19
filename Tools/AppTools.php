@@ -138,7 +138,7 @@ class AppTools
 
         if (count($string) == 1) {
             $string = $string[0];
-            if($string != '' && strrpos($string, '/') === false){
+            if($string != '' && substr($string, -1) !== '/'){
                 $string .= '/';
             }
 
