@@ -136,7 +136,7 @@ class TemporaryFiles
         return $f;
     }
 
-    public function createFromExistingFile($file, $expirationDate = 86400, $id = null, $leaveFile = true, $metadata = null)
+    public function createFromExistingFile($file, $expirationDate = 86400, $id = null, $leaveFile = true, $metadata = null, $originalFilename = null)
     {
         if ($this->filesExpire) {
             $t = time();
@@ -167,7 +167,7 @@ class TemporaryFiles
         $f->expires = $expirationDate;
         $f->url = $this->baseUrl . $f->id . $this->extension;
 
-        $f->originalFilename = basename($file);
+        $f->originalFilename = $originalFilename === null ? basename($file) : $originalFilename;
         $f->metadata = $metadata;
 
         if ($this->pathChunkSize) {
@@ -186,7 +186,7 @@ class TemporaryFiles
         return $f;
     }
 
-    public function createFromContent($content, $expirationDate = 86400, $id = null, $metadata = null)
+    public function createFromContent($content, $expirationDate = 86400, $id = null, $metadata = null, $originalFilename = null)
     {
         if ($this->filesExpire) {
             $t = time();
@@ -214,6 +214,7 @@ class TemporaryFiles
             } while ($exists);
         }
 
+        $f->originalFilename = $originalFilename;
         $f->expires = $expirationDate;
         $f->url = $this->baseUrl . $f->id . $this->extension;
         $f->metadata = $metadata;
