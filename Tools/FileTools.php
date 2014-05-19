@@ -3,7 +3,7 @@ namespace Cyantree\Grout\Tools;
 
 class FileTools
 {
-    public static function listDirectory($directory, $includeDirectories = true, $includeFiles = true, $absolutePaths = false)
+    public static function listDirectory($directory, $includeDirectories = true, $includeFiles = true, $absolutePaths = false, $recursive = true)
     {
         $directory = str_replace('\\', '/', $directory);
 
@@ -28,7 +28,10 @@ class FileTools
 
                 if ($isDir) {
                     $path .= '/';
-                    $directories[] = $path;
+
+                    if ($recursive) {
+                        $directories[] = $path;
+                    }
 
                     if ($includeDirectories) {
                         if ($absolutePaths) {
