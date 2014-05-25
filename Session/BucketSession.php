@@ -114,7 +114,7 @@ class BucketSession
             $this->bucket->delete();
         }
 
-        if ($this->useCookie) {
+        if ($this->useCookie && !headers_sent()) {
             unset($_COOKIE[$this->name]);
             setcookie($this->name, '', time() - 100, $this->cookiePath, $this->cookieDomain, $this->cookieSecure, $this->cookieHttpOnly);
         }

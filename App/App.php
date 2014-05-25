@@ -278,6 +278,8 @@ class App
 //            call_user_func($task->page->callback, array($task));
 //        }
 
+        $this->events->trigger('beforeParsing', $task);
+
         foreach ($this->modules as $module) {
             $module->beforeParsing($task);
         }
@@ -292,6 +294,8 @@ class App
         $task->page->beforeParsing();
         $task->page->{$action}();
         $task->page->afterParsing();
+
+        $this->events->trigger('afterParsing', $task);
 
         foreach ($this->modules as $module) {
             $module->afterParsing($task);
@@ -317,6 +321,9 @@ class App
     public function destroy()
     {
         $this->events->trigger('log', 'Destroy');
+
+        $this->events->trigger('destroy');
+
         foreach ($this->modules as $module) {
             $module->destroy();
         }

@@ -37,11 +37,12 @@ class Events
         }
     }
 
-    public function trigger($type, $data = null)
+    public function trigger($type, $data = null, $context = null)
     {
         $e = new Event();
         $e->type = $type;
         $e->data = $data;
+        $e->context = $context;
 
         if (!isset($this->_events[$type])) return $e;
 

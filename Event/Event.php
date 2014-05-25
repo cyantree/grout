@@ -5,5 +5,6 @@ class Event
 {
     public $type;
     public $data;
+    public $context;
     public $stopPropagation;
 }

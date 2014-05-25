@@ -33,7 +33,7 @@ class GroutFactory
             if (is_object($activeModuleTypeOrInstance)) {
                 $module = $activeModuleTypeOrInstance;
                 $factoryContext = $module->id;
-                
+
             } elseif ($app->currentTask && get_class($app->currentTask->module) == 'Grout\\' . $activeModuleTypeOrInstance) {
                 $module = $app->currentTask->module;
                 $factoryContext = $module->id;
@@ -43,7 +43,7 @@ class GroutFactory
                 if (count($modules) == 1) {
                     $module = $modules[0];
                     $factoryContext = $module->id;
-                    
+
                 } else {
                     trigger_error('Can\'t find matching module ' . $activeModuleTypeOrInstance, E_USER_WARNING);
 
@@ -102,6 +102,16 @@ class GroutFactory
         return null;
     }
 
+    protected function _deleteAppTool($tool)
+    {
+        $this->_tools->delete($tool);
+    }
+
+    protected function _deleteTaskTool($tool)
+    {
+        $this->_tools->delete($this->app->currentTask->id . '_' . $tool);
+    }
+
     protected function _getAppTool($tool, $definitionClass)
     {
         $t = $this->_tools->get($tool);
@@ -109,24 +119,25 @@ class GroutFactory
             return $t;
         }
 
-        if(get_class($this) != $definitionClass){
-            $c = get_parent_class($this);
+        $event = $this->events->trigger($tool);
 
-            $t = $c::get($this->app)->$tool();
-            if($t){
-                $this->_tools->set($tool, $t);
-                return $t;
+        if ($event->data) {
+            $t = $event->data;
+        }
+
+        if (!$t) {
+            if(get_class($this) != $definitionClass){
+                $c = get_parent_class($this);
+
+                $t = $c::get($this->app)->$tool();
             }
         }
 
-        $event = $this->events->trigger($tool);
-
-        if($event->data){
+        if ($t) {
             $this->_tools->set($tool, $event->data);
-            return $event->data;
         }
 
-        return null;
+        return $t;
     }
 
     protected function _setTaskTool($id, $tool)

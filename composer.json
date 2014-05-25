@@ -1,6 +1,6 @@
 {
     "name": "cyantree/grout",
-    "version": "2.1",
+    "version": "3.0",
     "type": "library",
     "description": "Framework and toolkit",
     "keywords": ["framework", "application", "mvc", "grout"],
