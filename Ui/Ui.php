@@ -241,7 +241,7 @@ class Ui
         $el = new UiElement('input', array('type' => 'radio'));
         $el->type = 'RadioButton';
 
-        if ($selected === true || strval($selected) === strval($selected)) {
+        if ($selected === true || strval($value) === strval($selected)) {
             $el->attributes['checked'] = 'checked';
         }
         if ($name) {
