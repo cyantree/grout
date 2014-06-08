@@ -21,9 +21,9 @@ class AutoLoader
     /**
      * Initializes the auto loader and registers the Grout namespace.
      */
-    public static function init()
+    public static function init($prepend = false)
     {
-        spl_autoload_register(array('\\Cyantree\\Grout\\AutoLoader', 'onAutoLoad'));
+        spl_autoload_register(array('\\Cyantree\\Grout\\AutoLoader', 'onAutoLoad'), true, $prepend);
 //        self::registerNamespace('Cyantree\\Grout\\', __DIR__ . '/');
     }
 
