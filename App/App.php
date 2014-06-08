@@ -371,6 +371,10 @@ class App
     {
         if ($id === null) {
             $id = str_replace('\\', '', $type);
+
+            if ($this->getModuleById($id)) {
+                $id .=  '_' . count($this->modules);
+            }
         }
 
         if ($this->getModuleById($id)) {
