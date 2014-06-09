@@ -28,6 +28,8 @@ class Content
     /** @var Content  */
     public $previousContent = null;
 
+    protected $_data;
+
     public function __construct()
     {
         $this->config = new ArrayFilter(array('visible' => true));
@@ -35,11 +37,12 @@ class Content
 
     public function setData($data)
     {
+        $this->_data = $data;
     }
 
     public function getData()
     {
-        return '';
+        return $this->_data;
     }
 
     public function onLoaded()
@@ -64,6 +67,7 @@ class Content
      */
     public function populate($data)
     {
+        $this->_data = $data->get($this->name);
     }
 
     public function check()

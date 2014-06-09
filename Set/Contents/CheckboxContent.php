@@ -18,15 +18,13 @@ class CheckboxContent extends Content
     public $label;
     public $value = true;
 
-    private $_value;
-
     public static $errorCodes = array(
         'notSelected' => 'Das Feld „%name%“ wurde nicht ausgewählt.'
     );
 
     public function render($mode)
     {
-        $attributes = $this->_value == $this->value ? ' checked="checked"' : '';
+        $attributes = $this->_data == $this->value ? ' checked="checked"' : '';
         if ($mode == Set::MODE_LIST || $mode == Set::MODE_DELETE || !$this->editable) {
             $attributes .= ' disabled="disabled"';
         }
@@ -42,30 +40,20 @@ class CheckboxContent extends Content
         return $c;
     }
 
-    public function setData($data)
-    {
-        $this->_value = $data;
-    }
-
     public function getData()
     {
-        return $this->_value !== null && $this->_value !== false;
-    }
-
-    public function populate($data)
-    {
-        $this->_value = $data->get($this->name);
+        return $this->_data !== null && $this->_data !== false;
     }
 
     public function check()
     {
-        if ($this->required && $this->_value != $this->value) {
+        if ($this->required && $this->_data != $this->value) {
             $this->postError('notSelected', self::$errorCodes['notSelected']);
         }
     }
 
     public function save()
     {
-        $this->_value = $this->_value == $this->value ? $this->value : null;
+        $this->_data = $this->_data == $this->value ? $this->value : null;
     }
 }

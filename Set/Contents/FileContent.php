@@ -27,8 +27,6 @@ class FileContent extends Content
     /** @var FileUpload */
     public $uploadedFile;
 
-    protected $_v;
-
     public static $errorCodes;
 
     public function __construct()
@@ -46,7 +44,7 @@ class FileContent extends Content
     public function render($mode)
     {
         $c = '<input type="file" name="' . $this->name . '" />';
-        if ($this->_v) {
+        if ($this->_data) {
             $c .= '<br /><br />' . StringTools::escapeHtml($this->_getFileUrl());
         }
 
@@ -55,7 +53,7 @@ class FileContent extends Content
 
     protected function _getFileUrl()
     {
-        return $this->saveDirectoryUrl . $this->_v;
+        return $this->saveDirectoryUrl . $this->_data;
     }
 
     public function populate($data)
@@ -65,7 +63,7 @@ class FileContent extends Content
 
     public function check()
     {
-        if (!$this->_v && !$this->uploadedFile && $this->required) {
+        if (!$this->_data && !$this->uploadedFile && $this->required) {
             $this->postError('notSelected', self::$errorCodes['notSelected']);
             return;
         }
@@ -81,8 +79,8 @@ class FileContent extends Content
 
     public function save()
     {
-        if ($this->_v) {
-            unlink($this->saveDirectory . $this->_v);
+        if ($this->_data) {
+            unlink($this->saveDirectory . $this->_data);
         }
 
         if ($this->saveFilename) {
@@ -98,23 +96,13 @@ class FileContent extends Content
             $this->_v = FileTools::createUniqueFilename($this->saveDirectory, $extension, 32, true) . $extension;
         }
 
-        move_uploaded_file($this->uploadedFile->file, $this->saveDirectory . $this->_v);
-    }
-
-    public function getData()
-    {
-        return $this->_v;
-    }
-
-    public function setData($data)
-    {
-        $this->_v = $data;
+        move_uploaded_file($this->uploadedFile->file, $this->saveDirectory . $this->_data);
     }
 
     public function onDelete()
     {
-        if ($this->_v) {
-            unlink($this->saveDirectory . $this->_v);
+        if ($this->_data) {
+            unlink($this->saveDirectory . $this->_data);
         }
     }
 }

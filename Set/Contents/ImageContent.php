@@ -46,8 +46,6 @@ class ImageContent extends Content
 
     protected $_image;
 
-    protected $_v;
-
     public static $errorCodes = array(
         'notSelected' => 'Im Feld „%name%“ wurde kein Bild ausgewählt.',
         'invalidImage' => 'Im Feld „%name%“ wurde kein gültiges Bild ausgewählt.',
@@ -59,7 +57,7 @@ class ImageContent extends Content
     public function render($mode)
     {
         if ($mode == Set::MODE_DELETE || $mode == Set::MODE_LIST) {
-            if ($this->_v) {
+            if ($this->_data) {
                 return '<img id="' . $this->name . '_preview" src="' .
                 StringTools::escapeHtml($this->_getImageUrl()) . '" alt="" />';
             }
@@ -68,7 +66,7 @@ class ImageContent extends Content
         }
 
         $c = '<input type="file" name="' . $this->name . '" />';
-        if ($this->_v) {
+        if ($this->_data) {
             $c .= '<br /><br /><img src="' . StringTools::escapeHtml($this->_getImageUrl()) . '" alt="" />';
         }
 
@@ -77,7 +75,7 @@ class ImageContent extends Content
 
     protected function _getImageUrl()
     {
-        return $this->saveDirectoryUrl . $this->_v . ($this->valueContainsExtension ? '' : '.' . $this->saveFormat);
+        return $this->saveDirectoryUrl . $this->_data . ($this->valueContainsExtension ? '' : '.' . $this->saveFormat);
     }
 
     public function populate($data)
@@ -87,7 +85,7 @@ class ImageContent extends Content
 
     public function check()
     {
-        if (!$this->_v && !$this->uploadedFile && $this->required) {
+        if (!$this->_data && !$this->uploadedFile && $this->required) {
             $this->postError('notSelected', self::$errorCodes['notSelected']);
             return;
         }
@@ -126,18 +124,18 @@ class ImageContent extends Content
         if ($this->_image) {
             $this->onProcessImage($this->_image);
 
-            if ($this->_v) {
-                $this->saveFilename = $this->_v;
+            if ($this->_data) {
+                $this->saveFilename = $this->_data;
                 if (!$this->valueContainsExtension) {
                     $this->saveFilename .= '.' . $this->saveFormat;
                 }
             } else if (!$this->saveFilename) {
-                $this->_v = FileTools::createUniqueFilename($this->saveDirectory, '.' . $this->saveFormat, 32, true);
+                $this->_data = FileTools::createUniqueFilename($this->saveDirectory, '.' . $this->saveFormat, 32, true);
 
                 if ($this->valueContainsExtension)
-                    $this->saveFilename = $this->_v = $this->_v . '.' . $this->saveFormat;
+                    $this->saveFilename = $this->_data = $this->_data . '.' . $this->saveFormat;
                 else
-                    $this->saveFilename = $this->_v . '.' . $this->saveFormat;
+                    $this->saveFilename = $this->_data . '.' . $this->saveFormat;
             }
 
             if ($this->resizeToWidth) {
@@ -167,18 +165,8 @@ class ImageContent extends Content
     {
     }
 
-    public function getData()
-    {
-        return $this->_v;
-    }
-
-    public function setData($data)
-    {
-        $this->_v = $data;
-    }
-
     public function onDelete()
     {
-        if ($this->_v) unlink($this->saveDirectory . $this->_v . ($this->valueContainsExtension ? '' : '.' . $this->saveFormat));
+        if ($this->_data) unlink($this->saveDirectory . $this->_data . ($this->valueContainsExtension ? '' : '.' . $this->saveFormat));
     }
 }

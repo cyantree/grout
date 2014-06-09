@@ -16,8 +16,6 @@ if(0){
 }
 
 class TextContent extends Content{
-    protected $_value;
-
     public $multiline = false;
 
     public $type;
@@ -40,36 +38,28 @@ class TextContent extends Content{
         'maxLength' => 'Das Feld „%name%“ darf nicht länger als %length% Zeichen sein.'
     );
 
-    public function setData($data) {
-        $this->_value = $data;
-    }
-
     public function getData() {
-        return $this->_value === null ? '' : $this->_value;
-    }
-
-    public function populate($data) {
-        $this->_value = $data->get($this->name);
+        return $this->_data === null ? '' : $this->_data;
     }
 
     public function check() {
-        $l = mb_strlen($this->_value);
+        $l = mb_strlen($this->_data);
 
         if($this->required && !$l){
             $this->postError('invalid', self::$errorCodes['invalid']);
             return;
         }
 
-        if($this->pattern !== null && !preg_match($this->pattern, $this->_value)){
+        if($this->pattern !== null && !preg_match($this->pattern, $this->_data)){
             $this->postError('invalidPattern', self::$errorCodes['invalidPattern']);
             return;
         }
 
-        if($this->type == self::TYPE_EMAIL && !StringTools::isEmailAddress($this->_value)){
+        if($this->type == self::TYPE_EMAIL && !StringTools::isEmailAddress($this->_data)){
             $this->postError('invalidEmail', self::$errorCodes['invalidEmail']);
             return;
 
-        }else if($this->type == self::TYPE_URL && !StringTools::isUrl($this->_value)){
+        }else if($this->type == self::TYPE_URL && !StringTools::isUrl($this->_data)){
             $this->postError('invalidUrl', self::$errorCodes['invalidUrl']);
             return;
         }
@@ -97,7 +87,7 @@ class TextContent extends Content{
 
     public function render($mode) {
         if($mode == Set::MODE_DELETE || $mode == Set::MODE_LIST || !$this->editable){
-            return '<p>'.StringTools::escapeHtml($this->_value).'</p>';
+            return '<p>'.StringTools::escapeHtml($this->_data).'</p>';
         }
 
 
@@ -115,9 +105,9 @@ class TextContent extends Content{
         }
 
         if($this->multiline){
-            return '<textarea name="'.$this->name.'"' . $additionalAttributes . '>'.StringTools::escapeHtml($this->_value).'</textarea>';
+            return '<textarea name="'.$this->name.'"' . $additionalAttributes . '>'.StringTools::escapeHtml($this->_data).'</textarea>';
         }
 
-        return '<input type="text" name="'.$this->name.'" value="'.StringTools::escapeHtml($this->_value).'"' . $additionalAttributes . ' />';
+        return '<input type="text" name="'.$this->name.'" value="'.StringTools::escapeHtml($this->_data).'"' . $additionalAttributes . ' />';
     }
 }
