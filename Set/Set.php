@@ -11,12 +11,14 @@ class Set
     const MODE_EDIT = 'edit';
     const MODE_DELETE = 'delete';
     const MODE_SHOW = 'show';
+    const MODE_EXPORT = 'export';
 
     public $allowList = true;
     public $allowShow = true;
     public $allowEdit = true;
     public $allowAdd = true;
     public $allowDelete = true;
+    public $allowExport = true;
 
     /** @var Content[] */
     public $contents = array();

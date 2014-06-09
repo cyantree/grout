@@ -86,7 +86,11 @@ class TextContent extends Content{
     }
 
     public function render($mode) {
-        if($mode == Set::MODE_DELETE || $mode == Set::MODE_LIST || !$this->editable){
+        if ($mode == Set::MODE_EXPORT) {
+            return $this->_data;
+        }
+
+        if($mode == Set::MODE_SHOW || $mode == Set::MODE_DELETE || $mode == Set::MODE_LIST || !$this->editable){
             return '<p>'.StringTools::escapeHtml($this->_data).'</p>';
         }
 

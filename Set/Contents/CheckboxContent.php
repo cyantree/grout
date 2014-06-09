@@ -24,8 +24,15 @@ class CheckboxContent extends Content
 
     public function render($mode)
     {
-        $attributes = $this->_data == $this->value ? ' checked="checked"' : '';
-        if ($mode == Set::MODE_LIST || $mode == Set::MODE_DELETE || !$this->editable) {
+        $isChecked = $this->_data == $this->value;
+
+        if ($mode == Set::MODE_EXPORT) {
+            return $isChecked ? $this->label : '';
+        }
+
+        $attributes = $isChecked ? ' checked="checked"' : '';
+
+        if ($mode == Set::MODE_SHOW || $mode == Set::MODE_LIST || $mode == Set::MODE_DELETE || !$this->editable) {
             $attributes .= ' disabled="disabled"';
         }
 

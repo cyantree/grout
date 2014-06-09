@@ -8,6 +8,7 @@ use Cyantree\Grout\Tools\FileTools;
 use Cyantree\Grout\Tools\ImageTools;
 use Cyantree\Grout\Tools\StringTools;
 use Cyantree\Grout\Types\FileUpload;
+use JsonSchema\Constraints\String;
 
 // Fake calls to enable gettext extraction
 if (0) {
@@ -56,18 +57,31 @@ class ImageContent extends Content
 
     public function render($mode)
     {
-        if ($mode == Set::MODE_DELETE || $mode == Set::MODE_LIST) {
-            if ($this->_data) {
-                return '<img id="' . $this->name . '_preview" src="' .
-                StringTools::escapeHtml($this->_getImageUrl()) . '" alt="" />';
-            }
+        $url = $this->_getImageUrl();
 
-            return '';
+        if ($mode == Set::MODE_EXPORT) {
+            return $url ? $url : $this->_data;
         }
 
-        $c = '<input type="file" name="' . $this->name . '" />';
+        if ($this->editable && ($mode == Set::MODE_ADD || $mode == Set::MODE_EDIT)) {
+            $c = '<input type="file" name="' . $this->name . '" />';
+
+        } else {
+            $c = '';
+        }
+
         if ($this->_data) {
-            $c .= '<br /><br /><img src="' . StringTools::escapeHtml($this->_getImageUrl()) . '" alt="" />';
+            if ($c) {
+                $c .= '<br /><br />';
+            }
+
+            if ($url) {
+                $c .= '<img id="' . $this->name . '_preview" src="' .
+                      StringTools::escapeHtml($url) . '" alt="" />';
+
+            } else {
+                $c .= StringTools::escapeHtml($this->_data);
+            }
         }
 
         return $c;

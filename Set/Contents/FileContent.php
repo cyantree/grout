@@ -2,6 +2,7 @@
 namespace Cyantree\Grout\Set\Contents;
 
 use Cyantree\Grout\Set\Content;
+use Cyantree\Grout\Set\Set;
 use Cyantree\Grout\Tools\ArrayTools;
 use Cyantree\Grout\Tools\FileTools;
 use Cyantree\Grout\Tools\StringTools;
@@ -43,9 +44,30 @@ class FileContent extends Content
 
     public function render($mode)
     {
-        $c = '<input type="file" name="' . $this->name . '" />';
+        $url = $this->_getFileUrl();
+
+        if ($mode == Set::MODE_EXPORT) {
+            return $url ? $url : $this->_data;
+        }
+
+        if ($this->editable && ($mode == Set::MODE_ADD || $mode == Set::MODE_EDIT)) {
+            $c = '<input type="file" name="' . $this->name . '" />';
+
+        } else {
+            $c = '';
+        }
+
         if ($this->_data) {
-            $c .= '<br /><br />' . StringTools::escapeHtml($this->_getFileUrl());
+            if ($c != '') {
+                $c .= '<br /><br />';
+            }
+
+            if ($url) {
+                $c .= '<a href="' . StringTools::escapeHtml($url) . '" target="_blank">' . StringTools::escapeHtml($url) . '</a>';
+
+            } else {
+                $c .= StringTools::escapeHtml($this->_data);
+            }
         }
 
         return $c;
@@ -84,7 +106,7 @@ class FileContent extends Content
         }
 
         if ($this->saveFilename) {
-            $this->_v = $this->saveFilename;
+            $this->_data = $this->saveFilename;
         } else {
             if ($this->keepExtension) {
                 $extension = explode('.', $this->uploadedFile->name);
@@ -93,7 +115,7 @@ class FileContent extends Content
                 $extension = '.dat';
             }
 
-            $this->_v = FileTools::createUniqueFilename($this->saveDirectory, $extension, 32, true) . $extension;
+            $this->_data = FileTools::createUniqueFilename($this->saveDirectory, $extension, 32, true) . $extension;
         }
 
         move_uploaded_file($this->uploadedFile->file, $this->saveDirectory . $this->_data);
