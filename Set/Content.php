@@ -58,9 +58,9 @@ class Content
         return '';
     }
 
-//    public function prepareRendering($mode)
-//    {
-//    }
+    public function prepareRendering($mode)
+    {
+    }
 
     /**
      * @param $data ArrayFilter

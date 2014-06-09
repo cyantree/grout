@@ -242,9 +242,10 @@ class Set
         $this->mode = $mode;
 
         $this->_doPrepareRendering($mode);
-//        foreach ($this->contents as $content) {
-//            $content->prepareRendering($mode);
-//        }
+
+        foreach ($this->contents as $content) {
+            $content->prepareRendering($mode);
+        }
     }
 
     protected function _doPrepareRendering($mode)
