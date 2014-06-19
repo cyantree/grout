@@ -10,11 +10,10 @@ class FilesystemLock
         $this->directory = $directory;
     }
 
-
-    public function lock($expiresOn)
+    private function _lock($lifetime)
     {
         $exists = is_dir($this->directory);
-        $valid = $exists && filemtime($this->directory) > time();
+        $valid = $exists && (filemtime($this->directory) + $lifetime) > time();
 
         if ($valid) {
             return false;
@@ -37,7 +36,25 @@ class FilesystemLock
             return false;
         }
 
-        touch($this->directory, $expiresOn);
+        return true;
+    }
+
+    public function lock($lifetime, $waitDuration = 0, $waitInterval = .2)
+    {
+        if (!$waitDuration) {
+            return $this->_lock($lifetime);
+        }
+
+        $waitStarted = microtime(true);
+
+        while (!$this->_lock($lifetime)) {
+            if (microtime(true) - $waitStarted > $waitDuration) {
+                return false;
+            }
+
+            usleep($waitInterval * 1000000);
+            clearstatcache(true, $this->directory);
+        }
 
         return true;
     }
