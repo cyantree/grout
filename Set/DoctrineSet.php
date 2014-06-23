@@ -150,6 +150,8 @@ class DoctrineSet extends Set
         $offset = $options->get('offset', 0);
         $count = $options->get('count', 0);
 
+        $parameters = array();
+
         // Create queries
         $data = $this->_getListQueryData($options);
 
@@ -226,6 +228,8 @@ class DoctrineSet extends Set
         $queryData = $data['select'];
         $query = str_replace($queryClauseLookUps, $queryClauseReplaces, $queryData['query']);
         $query = str_replace($queryLookUps, $queryReplaces, $query);
+        $parameters = array_merge($parameters, $queryData['parameters'], $data['parameters']);
+
         $query = $this->_getEntityManager()->createQuery($query);
 
         if ($offset) {
@@ -236,8 +240,8 @@ class DoctrineSet extends Set
             $query->setMaxResults($count);
         }
 
-        if ($queryData['parameters'] || $data['parameters']) {
-            $query->setParameters(array_merge($queryData['parameters'], $data['parameters']));
+        if ($parameters) {
+            $query->setParameters($parameters);
         }
 
         $result = new DoctrineSetListResult($this, $query->getResult());
@@ -248,8 +252,8 @@ class DoctrineSet extends Set
         $query = str_replace($queryLookUps, $queryReplaces, $query);
 
         $query = $this->_getEntityManager()->createQuery($query);
-        if ($queryData['parameters'] || $data['parameters']) {
-            $query->setParameters(array_merge($queryData['parameters'], $data['parameters']));
+        if ($parameters) {
+            $query->setParameters($parameters);
         }
 
         $result->countAll = $query->getSingleScalarResult();
