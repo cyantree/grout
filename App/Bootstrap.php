@@ -90,9 +90,6 @@ class Bootstrap
             $this->app->url = 'https://' . $this->_server->needs('HTTP_HOST');
         } else {
             $this->app->url = 'http://' . $this->_server->needs('HTTP_HOST');
-            if ($this->_server->get('SERVER_PORT') != 80){
-                $this->app->url .= ':' . $this->_server->get('SERVER_PORT');
-            }
         }
 
         if ($this->usesModRewrite) {
