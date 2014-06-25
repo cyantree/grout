@@ -384,6 +384,6 @@ class ImageTools
 
     public static function colorRgbaToHex($color)
     {
-        return $color['a'] + $color['b'] << 8 + $color['g'] << 16 + $color['r'] * pow(2, 24);
+        return $color['a'] + ($color['b'] << 8) + ($color['g'] << 16) + ($color['r'] << 24);
     }
 }
