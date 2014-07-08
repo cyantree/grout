@@ -22,7 +22,13 @@ class TaskManager
         $t->manager = null;
 
         $t->onSerialize();
-        file_put_contents($this->directory . $t->priority . '_' . $t->id . '.tsk', serialize($t));
+
+        $file = $this->directory . str_pad($t->priority, 3, '0', STR_PAD_LEFT) . '_' . $t->id . '.tsk';
+        file_put_contents($file, serialize($t));
+
+        if ($t->executeAt) {
+            touch($file, $t->executeAt);
+        }
 
         /** @var $t Task */
         $t->manager = $this;
@@ -50,13 +56,12 @@ class TaskManager
             foreach ($tasks as $taskFile) {
                 $time = microtime(true);
 
-                /** @var $task Task */
-                $task = unserialize(file_get_contents($taskFile));
-
-                if ($task->executeAt !== null && $task->executeAt > $time) {
+                if (filemtime($taskFile) > $time) {
                     continue;
                 }
 
+                /** @var $task Task */
+                $task = unserialize(file_get_contents($taskFile));
                 $task->manager = $this;
                 $task->onUnserialize();
 
@@ -68,7 +73,7 @@ class TaskManager
 
                 if (preg_match('!^active_[0-9]+_[a-zA-Z0-9]+\.tsk$!', $basename)) {
                     if ($this->keepFailedTasks) {
-                        rename($taskFile, $this->directory . 'error_' . $task->priority . '_' . $task->id . '.tsk');
+                        rename($taskFile, $this->directory . 'error_' . str_pad($task->priority, 3, '0', STR_PAD_LEFT) . '_' . $task->id . '.tsk');
 
                     } else {
                         unlink($taskFile);
@@ -78,7 +83,7 @@ class TaskManager
 
                 } else if (!preg_match('!^error_[0-9]+_[a-zA-Z0-9]+\.tsk$!', $basename)) {
 
-                    $newTaskFile = $this->directory . 'active_' . $task->priority . '_' . $task->id . '.tsk';
+                    $newTaskFile = $this->directory . 'active_' . str_pad($task->priority, 3, '0', STR_PAD_LEFT) . '_' . $task->id . '.tsk';
                     rename($taskFile, $newTaskFile);
 
                     $task->execute();
