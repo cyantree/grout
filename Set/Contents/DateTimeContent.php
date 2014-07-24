@@ -19,11 +19,13 @@ class DateTimeContent extends Content
 
     public function render($mode)
     {
+        $date = $this->_data ? $this->_data->format($this->format) : '';
+
         if ($mode == Set::MODE_EXPORT) {
-            return $this->_data->format($this->format);
+            return $date;
 
         } else {
-            return '<p>' . StringTools::escapeHtml($this->_data->format($this->format)) . '</p>';
+            return '<p>' . StringTools::escapeHtml($date) . '</p>';
         }
     }
 }
