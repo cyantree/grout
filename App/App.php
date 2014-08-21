@@ -451,7 +451,7 @@ class App
             return $this->moduleTypes[$type];
         }
 
-        return null;
+        return array();
     }
 
     /** @return Module */
