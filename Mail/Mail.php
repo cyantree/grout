@@ -20,7 +20,7 @@ class Mail
 
     public $returnPath;
 
-    public function __construct($recipients = null, $subject = null, $text, $htmlText = null, $from = null)
+    public function __construct($recipients = null, $subject = null, $text = null, $htmlText = null, $from = null)
     {
         $this->recipients = $recipients;
         $this->subject = $subject;
@@ -31,6 +31,8 @@ class Mail
 
     public function send()
     {
+        $lineFeed = "\r\n";
+
         if (!is_array($this->recipients)) {
             $this->recipients = array($this->recipients);
         }
@@ -59,7 +61,7 @@ class Mail
                     $recipientsTemp[] = MailTools::encodeString($recipientName) . ' <' . $recipientMail . '>';
                 } else $recipientsTemp[] = $recipientName;
             }
-            $headers .= chr(10) . 'CC: ' . implode(",\n ", $recipientsTemp);
+            $headers .= $lineFeed . 'CC: ' . implode(",\n ", $recipientsTemp);
         }
 
         // Encode recipients Bcc
@@ -72,11 +74,13 @@ class Mail
                 } else $recipientsTemp[] = $recipientName;
             }
 
-            $headers .= chr(10) . 'BCC: ' . implode(",\n ", $recipientsTemp);
+            $headers .= $lineFeed . 'BCC: ' . implode(",\n ", $recipientsTemp);
         }
 
         // Encode subject
         $subject = MailTools::encodeString($this->subject);
+
+        $headers .= $lineFeed . "MIME-Version: 1.0";
 
         // Create body
         if ($this->htmlText !== null && $this->htmlText !== '') {
@@ -84,30 +88,31 @@ class Mail
 
             $boundary = 'bd_' . md5(mt_rand() . time());
 
-            $headers .= chr(10) . 'Content-Type: multipart/alternative;' . "\n\t" . 'boundary="' . $boundary . '"';
-            $headers .= chr(10) . "MIME-Version: 1.0";
+            $headers .= $lineFeed . 'Content-Type: multipart/alternative;' . "\n\t" . 'boundary="' . $boundary . '"';
 
-            $body .= "\n\n--{$boundary}\n";
-            $body .= 'Content-Type: text/plain; charset=utf-8' . "\n";
-            $body .= 'Content-Transfer-Encoding: binary' . "\n\n";
-            $body .= $this->text;
+            $body .= $lineFeed . $lineFeed . "--{$boundary}" . $lineFeed;
+            $body .= 'Content-Type: text/plain; charset=utf-8' . $lineFeed;
+            $body .= 'Content-Transfer-Encoding: quoted-printable' . $lineFeed . $lineFeed;
+            $body .= quoted_printable_encode(str_replace(array("\r\n", "\n"), array("\n", "\r\n"), $this->text));
 
-            $body .= "\n\n--{$boundary}\n";
-            $body .= 'Content-Type: text/html; charset=utf-8' . "\n";
-            $body .= 'Content-Transfer-Encoding: binary' . "\n\n";
-            $body .= str_replace("\r\n", "\n", $this->htmlText);
-            $body .= "\n\n--{$boundary}--\n\n\n";
+            $body .= $lineFeed . $lineFeed . "--{$boundary}" . $lineFeed;
+            $body .= 'Content-Type: text/html; charset=utf-8' . $lineFeed;
+            $body .= 'Content-Transfer-Encoding: quoted-printable' . $lineFeed . $lineFeed;
+            $body .= quoted_printable_encode(str_replace(array("\r\n", "\n"), array("\n", "\r\n"), $this->htmlText));
+            $body .= $lineFeed . $lineFeed . "--{$boundary}--" . $lineFeed . $lineFeed . $lineFeed;
+
         } else {
-            $headers .= chr(10) . 'Content-Type: text/plain; charset=utf-8' . chr(10) . 'Content-Transfer-Encoding: binary';
-            $body = $this->text;
+            $headers .= $lineFeed . 'Content-Type: text/plain; charset=utf-8' .
+                  $lineFeed . 'Content-Transfer-Encoding: quoted-printable';
+            $body = quoted_printable_encode(str_replace(array("\r\n", "\n"), array("\n", "\r\n"), $this->text));
         }
 
         if($this->returnPath){
-            $additionalParameters = '-f '.$this->returnPath;
+            $additionalParameters = '-f'.$this->returnPath;
         }else{
             $additionalParameters = null;
         }
 
-        mail(implode(",\n ", $recipients), $subject, $body, $headers, $additionalParameters);
+        mail(implode(",\r\n ", $recipients), $subject, $body, $headers, $additionalParameters);
     }
 }
