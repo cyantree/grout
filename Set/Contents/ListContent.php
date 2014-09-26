@@ -38,8 +38,9 @@ class ListContent extends Content{
 
             $c = '<select name="'.$this->name.'">';
 
+            $data = strval($this->_data);
             foreach($this->options as $key => $value){
-                $selected = $key === $this->_data ? ' selected="selected"' : '';
+                $selected = strval($key) === $data ? ' selected="selected"' : '';
                 $c .= '<option value="'.StringTools::escapeHtml($key).'"'.$selected.'>'.StringTools::escapeHtml($value).'</option>';
             }
 
