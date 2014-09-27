@@ -12,7 +12,7 @@ class DatabaseInsertQuery
         $this->table = $table;
     }
 
-    public function getQuery($databaseConnection)
+    public function getQuery(Database $databaseConnection)
     {
         if (count($this->fields) == 0) {
             return '';
