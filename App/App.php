@@ -226,14 +226,25 @@ class App
 
                 $res = $route->matches($task->request->url, $task->request->method);
 
-                if ($res['matches']) {
-                    if (($route->module && $route->module->routeRetrieved($task, $route)) ||
-                          ($route->plugin && $route->plugin->routeRetrieved($task, $route))
-                    ) {
-                        $foundRoute = $route;
-                        $routeVars = $res['vars'];
-                        break 2;
+                if (!$res['matches']) {
+                    continue;
+                }
+
+                if ($route->data->has('onMatch')) {
+                    /** @var $onMatch callable */
+                    $onMatch = $route->data->get('onMatch');
+
+                    if (!$onMatch($task->request->url, $res['vars'])) {
+                        continue;
                     }
+                }
+
+                if (($route->module && $route->module->routeRetrieved($task, $route)) ||
+                      ($route->plugin && $route->plugin->routeRetrieved($task, $route))
+                ) {
+                    $foundRoute = $route;
+                    $routeVars = $res['vars'];
+                    break 2;
                 }
             }
         }
