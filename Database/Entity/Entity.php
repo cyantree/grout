@@ -2,7 +2,6 @@
 namespace Cyantree\Grout\Database\Entity;
 
 use Cyantree\Grout\Database\Database;
-use Grout\AppModule\LinksPlugin\Entities\Link;
 
 class Entity
 {
@@ -84,8 +83,11 @@ class Entity
      */
     public static function loadById($type, $id)
     {
-        if (is_string($type))
+        if (is_string($type)) {
             $type = self::getDefaultType($type);
+        }
+
+        /** @var EntityType $type */
 
         $singleItem = !is_array($id);
 
@@ -150,8 +152,11 @@ class Entity
     /** @param $type Entity|string */
     public static function loadByQuery($type, $whereClause = null, $args = null)
     {
-        if (is_string($type))
+        if (is_string($type)) {
             $type = self::getDefaultType($type);
+        }
+
+        /** @var EntityType $type */
 
         // Get helper variables
         $template = self::_getTemplate($type);
