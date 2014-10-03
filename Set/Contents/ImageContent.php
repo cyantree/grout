@@ -166,6 +166,8 @@ class ImageContent extends Content
 
             if ($image != $this->_image) imagedestroy($this->_image);
             imagedestroy($image);
+
+            $this->uploadedFile->delete();
         }
     }
 

@@ -118,7 +118,7 @@ class FileContent extends Content
             $this->_data = FileTools::createUniqueFilename($this->saveDirectory, $extension, 32, true) . $extension;
         }
 
-        move_uploaded_file($this->uploadedFile->file, $this->saveDirectory . $this->_data);
+        $this->uploadedFile->move($this->saveDirectory . $this->_data);
     }
 
     public function onDelete()
