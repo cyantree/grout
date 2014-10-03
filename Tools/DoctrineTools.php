@@ -1,9 +1,11 @@
 <?php
 namespace Cyantree\Grout\Tools;
 
+use Doctrine\DBAL\Connection;
+
 class DoctrineTools
 {
-    /** @param $connection \Doctrine\DBAL\Connection */
+    /** @param $connection Connection */
     public static function prepareQuery($connection, $query, $args = null)
     {
         $argsIsObject = is_object($args);
@@ -86,13 +88,13 @@ class DoctrineTools
                 }
             } // Integer array
             else if ($type == 'i[]') {
-                $param['type'] = \Doctrine\DBAL\Connection::PARAM_INT_ARRAY;
+                $param['type'] = Connection::PARAM_INT_ARRAY;
             } // Integer array
             else if ($type == 'f[]') {
-                $param['type'] = \Doctrine\DBAL\Connection::PARAM_STR_ARRAY;
+                $param['type'] = Connection::PARAM_STR_ARRAY;
             } // String array
             else if ($type == 's[]') {
-                $param['type'] = \Doctrine\DBAL\Connection::PARAM_STR_ARRAY;
+                $param['type'] = Connection::PARAM_STR_ARRAY;
             } // Raw array
             else if ($type == 'r[]') {
                 $replacement = implode(',', $val);
