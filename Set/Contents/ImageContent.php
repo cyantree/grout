@@ -137,29 +137,37 @@ class ImageContent extends Content
         if ($this->_image) {
             $this->onProcessImage($this->_image);
 
-            if ($this->_data) {
-                $this->saveFilename = $this->_data;
-                if (!$this->valueContainsExtension) {
-                    $this->saveFilename .= '.' . $this->saveFormat;
-                }
+            $saveFilename = null;
+            $oldSaveFilename = $this->_data;
+
+            if ($oldSaveFilename && !$this->valueContainsExtension) {
+                $oldSaveFilename .= '.' . $this->saveFormat;
+            }
+
+            if ($this->saveFilename) {
+                $this->_data = $saveFilename = $this->saveFilename;
+
             } else if (!$this->saveFilename) {
                 $this->_data = FileTools::createUniqueFilename($this->saveDirectory, '.' . $this->saveFormat, 32, true);
 
                 if ($this->valueContainsExtension)
-                    $this->saveFilename = $this->_data = $this->_data . '.' . $this->saveFormat;
+                    $saveFilename = $this->_data = $this->_data . '.' . $this->saveFormat;
                 else
-                    $this->saveFilename = $this->_data . '.' . $this->saveFormat;
+                    $saveFilename = $this->_data . '.' . $this->saveFormat;
             }
 
             if ($this->resizeToWidth) {
                 $image = ImageTools::resizeImage($this->_image, $this->resizeToWidth, $this->resizeToHeight, false, $this->resizeImageToolsScaleMode, $this->resizeImageToolsBackground);
             } else $image = $this->_image;
 
+            if ($oldSaveFilename && $oldSaveFilename != $saveFilename) {
+                unlink($this->saveDirectory . $oldSaveFilename);
+            }
 
             if ($this->saveFormat == 'jpg') {
-                imagejpeg($image, $this->saveDirectory . $this->saveFilename, $this->saveQuality);
+                imagejpeg($image, $this->saveDirectory . $saveFilename, $this->saveQuality);
             } else if ($this->saveFormat == 'png') {
-                imagepng($image, $this->saveDirectory . $this->saveFilename);
+                imagepng($image, $this->saveDirectory . $saveFilename);
             }
 
             $this->onImageProcessed($this->_image);
