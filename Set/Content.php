@@ -91,6 +91,16 @@ class Content
     {
     }
 
+    public function hasError($code)
+    {
+        return $this->set->status->hasError($this->name . '.' . $code);
+    }
+
+    public function hasErrors()
+    {
+        return $this->set->status->hasError($this->name);
+    }
+
     public function postError($code, $message = null, $messageReplaces = null)
     {
         $this->set->status->addError($this->name);
