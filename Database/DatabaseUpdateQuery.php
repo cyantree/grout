@@ -24,7 +24,7 @@ class DatabaseUpdateQuery
         $this->_where = array($field, $value, $type);
     }
 
-    public function getQuery($databaseConnection)
+    public function getQuery(Database $databaseConnection)
     {
         if (count($this->_fields) == 0) {
             return '';
