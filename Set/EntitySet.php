@@ -3,7 +3,7 @@ namespace Cyantree\Grout\Set;
 
 use Cyantree\Grout\Database\Entity\Entity;
 
-class EntitySet extends Set
+abstract class EntitySet extends Set
 {
     /** @var Entity */
     public $entity;

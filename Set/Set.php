@@ -4,7 +4,7 @@ namespace Cyantree\Grout\Set;
 use Cyantree\Grout\Filter\ArrayFilter;
 use Cyantree\Grout\StatusContainer;
 
-class Set
+abstract class Set
 {
     const MODE_LIST = 'list';
     const MODE_ADD = 'add';

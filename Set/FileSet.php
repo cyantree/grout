@@ -6,7 +6,7 @@ use Cyantree\Grout\Filter\ArrayFilter;
 use Cyantree\Grout\Set\Set;
 use Cyantree\Grout\Tools\StringTools;
 
-class FileSet extends Set
+abstract class FileSet extends Set
 {
     public $setId;
 

@@ -108,7 +108,6 @@ class StringTools
         for ($str_pos = 0; $str_pos < strlen($utf); $str_pos++) {
             $old_chr = $utf{$str_pos};
             $old_val = ord($old_chr);
-            $new_val = 0;
 
             $utf8_marker = 0;
 
@@ -151,7 +150,6 @@ class StringTools
                 $str_pos = $str_pos + $str_off;
             } else {
                 $html .= $old_chr;
-                $new_val = $old_val;
             }
         }
 

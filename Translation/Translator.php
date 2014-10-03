@@ -1,10 +1,7 @@
 <?php
 namespace Cyantree\Grout\Translation;
 
-class Translator
+abstract class Translator
 {
-    public function translate($message, $textDomain = null, $locale = null)
-    {
-        return null;
-    }
+    abstract public function translate($message, $textDomain = null, $locale = null);
 }

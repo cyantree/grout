@@ -119,7 +119,9 @@ class AdvancedForm
                 $isNew = true;
                 $this->_processSecurityError(self::ERROR_DELETED);
             } else {
-                $this->formData = $this->_bucket->data;
+                /** @var AdvancedFormData $formData */
+                $formData = $this->_bucket->data;
+                $this->formData = $formData;
 
                 $this->data = $this->formData->data;
 

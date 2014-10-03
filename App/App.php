@@ -375,8 +375,11 @@ class App
 
     /**
      * @param $type
-     * @param array|null $config
-     * @return Module
+     * @param string $urlPrefix
+     * @param array $config
+     * @param string $id
+     * @param int $priority
+     * @return Module|null
      */
     public function importModule($type, $urlPrefix = null, $config = null, $id = null, $priority = 0)
     {
