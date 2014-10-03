@@ -278,7 +278,13 @@ class StringTools
     {
         if ($args == null || !count($args)) return '';
 
-        return ($questionMarkWhenNeeded ? '?' : '') . http_build_query($args, '', '&');
+        $query = http_build_query($args, '', '&');
+
+        if ($query && $questionMarkWhenNeeded) {
+            return '?' . $query;
+        }
+
+        return $query;
     }
 
     public static function md5($data, $salt = '', $extraRounds = 10000)
