@@ -158,13 +158,14 @@ abstract class Set
         return null;
     }
 
-    public function populate($rawData)
+    public function populate($rawData, $rawFiles = null)
     {
         $d = new ArrayFilter($rawData);
+        $files = new ArrayFilter($rawFiles);
 
-        foreach($this->contents as $name => $content){
+        foreach($this->contents as $content){
             if($content->editable){
-                $content->populate($d, $name);
+                $content->populate($d, $files);
             }
         }
     }

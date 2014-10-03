@@ -78,9 +78,9 @@ class FileContent extends Content
         return $this->saveDirectoryUrl . $this->_data;
     }
 
-    public function populate($data)
+    public function populate($data, $files)
     {
-        $this->uploadedFile = ArrayTools::getPrepared($_FILES, $this->name, 'file');
+        $this->uploadedFile = $files->get($this->name);
     }
 
     public function check()

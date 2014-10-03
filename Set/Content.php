@@ -64,8 +64,9 @@ class Content
 
     /**
      * @param $data ArrayFilter
+     * @param $files ArrayFilter
      */
-    public function populate($data)
+    public function populate($data, $files)
     {
         $this->_data = $data->get($this->name);
     }

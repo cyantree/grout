@@ -12,7 +12,7 @@ class DateTimeContent extends Content
     /** @var \DateTime */
     protected $_data;
 
-    public function populate($data)
+    public function populate($data, $files)
     {
 
     }
