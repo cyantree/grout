@@ -8,7 +8,6 @@ use Cyantree\Grout\Tools\FileTools;
 use Cyantree\Grout\Tools\ImageTools;
 use Cyantree\Grout\Tools\StringTools;
 use Cyantree\Grout\Types\FileUpload;
-use JsonSchema\Constraints\String;
 
 // Fake calls to enable gettext extraction
 if (0) {

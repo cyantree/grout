@@ -193,7 +193,7 @@ class MySqlConnection extends DatabaseConnection
         return $replaces;
     }
 
-    public function insert($table, $fields, $values, $nestedRows = false, $rowsPerInsert = 100, $returnQueries = false)
+    public function insert($table, $fields, $values, $nestedRows = null, $rowsPerInsert = 100, $returnQueries = false)
     {
         if ($returnQueries) {
             $queries = array();

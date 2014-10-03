@@ -57,10 +57,6 @@ class JsonDriver extends ServiceDriver
         $this->postResults($results);
     }
 
-    private function _stringifyResults($results){
-        return json_encode($results);
-    }
-
     public function postResults($results)
     {
         $this->_task->response->postContent(json_encode($results), ContentType::TYPE_PLAIN_UTF8);

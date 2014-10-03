@@ -340,15 +340,7 @@ class Set
     }
 
     /** @return SetListResult */
-    public function listSets($options)
-    {
-        /** @var SetListResult $r */
-        $r = null;
-
-        throw new \Exception('Your set class must override listSets()');
-
-        return $r;
-    }
+    abstract public function listSets($options);
 
     /** @return SetTypeCapabilities */
     public function getCapabilities()

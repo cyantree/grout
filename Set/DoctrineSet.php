@@ -13,22 +13,9 @@ class DoctrineSet extends Set
     public static $capabilities;
 
     /** @return EntityManager */
-    protected function _getEntityManager()
-    {
-        /** @var EntityManager $e */
-        $e = null;
+    abstract protected function _getEntityManager();
 
-        throw new \Exception('DoctrineSet::_getEntityManager() needs to be overriden');
-
-        return $e;
-    }
-
-    protected function _getEntityClass()
-    {
-        throw new \Exception('DoctrineSet::_getEntityClass() needs to be overriden');
-
-        return null;
-    }
+    abstract protected function _getEntityClass();
 
     protected function _getIdField()
     {

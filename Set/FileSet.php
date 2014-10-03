@@ -26,12 +26,7 @@ class FileSet extends Set
         }
     }
 
-    protected function _getDirectory()
-    {
-        throw new \Exception('FileSet::_getDirectory() needs to be overriden');
-
-        return null;
-    }
+    abstract protected function _getDirectory();
 
     protected function _getExtension()
     {
