@@ -24,7 +24,7 @@ class Bootstrap
     /** @var ArrayFilter */
     protected $_cookies;
 
-    public $frameworkPath;
+    public $applicationPath;
 
     public $usesModRewrite;
 
@@ -109,7 +109,7 @@ class Bootstrap
     protected function _setBasePaths()
     {
         // Set server base paths
-        $this->app->path = str_replace('\\', '/', realpath($this->frameworkPath)).'/';
+        $this->app->path = str_replace('\\', '/', realpath($this->applicationPath)).'/';
         $this->app->publicPath = str_replace('\\', '/', dirname($_SERVER['SCRIPT_FILENAME'])).'/';
     }
 
