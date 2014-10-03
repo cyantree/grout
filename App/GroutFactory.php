@@ -176,7 +176,7 @@ class GroutFactory
     }
 
     /** @return TemplateGenerator */
-    public function appTemplates()
+    public function templates()
     {
         if($tool = $this->_getAppTool(__FUNCTION__, __CLASS__)){
             return $tool;
@@ -234,7 +234,7 @@ class GroutFactory
     }
 
     /** @return GroutQuick */
-    public function appQuick()
+    public function quick()
     {
         if($tool = $this->_getAppTool(__FUNCTION__, __CLASS__)){
             return $tool;
@@ -248,7 +248,7 @@ class GroutFactory
     }
 
     /** @return Ui */
-    public function appUi()
+    public function ui()
     {
         if($tool = $this->_getAppTool(__FUNCTION__, __CLASS__)){
             return $tool;
