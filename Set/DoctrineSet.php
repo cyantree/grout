@@ -5,7 +5,7 @@ use Cyantree\Grout\Database\Entity\Entity;
 use Cyantree\Grout\Filter\ArrayFilter;
 use Doctrine\ORM\EntityManager;
 
-class DoctrineSet extends Set
+abstract class DoctrineSet extends Set
 {
     public $entity;
 
