@@ -42,6 +42,11 @@ abstract class Set
         $this->status = new StatusContainer();
     }
 
+    public function init()
+    {
+
+    }
+
     public function onList($elements)
     {
 
