@@ -51,18 +51,14 @@ class Validator
         $this->errors[$this->_currentId][$code] = $message;
     }
 
-    public function check(Check $check)
+    public function check(Check $check, $options = null)
     {
         if($this->stopOnError && !$this->hasValidated($this->_currentId)){
             return $this;
         }
 
-        $check->check($this->_currentValue);
-
-        if ($check->hasErrors) {
-            foreach ($check->errors as $code => $message) {
-                $this->_addError($code, $message);
-            }
+        if (!$check->isValid($this->_currentValue)) {
+            $this->_addError($check->id, ArrayTools::get($options, 'message'));
         }
 
         return $this;
