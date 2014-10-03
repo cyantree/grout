@@ -1,6 +1,8 @@
 <?php
 namespace Cyantree\Grout\Types;
 
+use Cyantree\Grout\Tools\ArrayTools;
+
 class FileUpload
 {
     public $name;
@@ -18,6 +20,28 @@ class FileUpload
         );
     }
 
+    public function move($target, $copyIfNotUploaded = true)
+    {
+        if (is_uploaded_file($this->file)) {
+            move_uploaded_file($this->file, $target);
+
+        } else {
+            if ($copyIfNotUploaded) {
+                copy($this->file, $target);
+
+            } else {
+                rename($this->file, $target);
+            }
+        }
+    }
+
+    public function delete($keepIfNotUploaded = true)
+    {
+        if (!$keepIfNotUploaded || is_uploaded_file($this->file)) {
+            unlink($this->file);
+        }
+    }
+
     public static function fromPhpFileArray($data)
     {
         if(!$data || $data['error'] == 4){
@@ -31,5 +55,54 @@ class FileUpload
         $f->error = $data['error'];
 
         return $f;
+    }
+
+    public static function fromFile($path)
+    {
+        $f = new FileUpload();
+        $f->name = basename($path);
+        $f->file = realpath($path);
+        $f->size = filesize($path);
+        $f->error = 0;
+
+        return $f;
+    }
+
+    public static function fromMultiplePhpFileUploads($data)
+    {
+        $result = array();
+
+        foreach ($data as $name => $upload) {
+            if (!isset($upload['tmp_name'])) {
+                continue;
+            }
+
+            if (is_array($upload['tmp_name'])) {
+                $files = array();
+
+                $upload = ArrayTools::unpack($upload);
+
+                foreach ($upload as $uploadFile) {
+                    $file = self::fromPhpFileArray($uploadFile);
+
+                    if ($file) {
+                        $files[] = $file;
+                    }
+                }
+
+                if ($files) {
+                    $result[$name] = $files;
+                }
+
+            } else {
+                $file = self::fromPhpFileArray($upload);
+
+                if ($file) {
+                    $result[$name] = $file;
+                }
+            }
+        }
+
+        return $result;
     }
 }
