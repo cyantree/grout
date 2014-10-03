@@ -11,6 +11,9 @@ class GroutFactory
     /** @var App */
     public $app;
 
+    /** @var Module */
+    public $module;
+
     public $context;
 
     /** @var \Cyantree\Grout\Event\Events */
@@ -53,6 +56,7 @@ class GroutFactory
         }
 
         if (!isset(self::$_instances[$factoryClass.'_'.$factoryContext.'_'.$app->id])) {
+            /** @var GroutFactory $f */
             $f = new $factoryClass();
             $f->app = $app;
             if ($module) {
