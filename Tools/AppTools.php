@@ -153,7 +153,8 @@ class AppTools
 
         foreach ($string as $item) {
             if (!$isInside) {
-                $eReg .= $item;
+                $eReg .= preg_quote($item, '@');
+
             } else {
                 $type = explode(',', $item, 2);
                 $mappings[] = $type[0];
