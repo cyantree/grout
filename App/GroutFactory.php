@@ -37,6 +37,7 @@ class GroutFactory
             $app = App::$current;
         }
 
+        /** @var Module $module */
         $module = null;
 
         if ($activeModuleTypeOrInstance) {
@@ -55,14 +56,14 @@ class GroutFactory
                     $factoryContext = $module->id;
 
                 } else {
-                    trigger_error('Can\'t find matching module ' . $activeModuleTypeOrInstance, E_USER_WARNING);
-
-                    $factoryContext = null;
+                    throw new \Exception('Can\'t find matching module ' . $activeModuleTypeOrInstance);
                 }
             }
         }
 
-        if (!isset(self::$_instances[$factoryClass.'_'.$factoryContext.'_'.$app->id])) {
+        $factoryId = $factoryClass . '_' . $factoryContext . '_' . $app->id;
+
+        if (!isset(self::$_instances[$factoryId])) {
             /** @var GroutFactory $f */
             $f = new $factoryClass();
             $f->app = $app;
@@ -70,15 +71,25 @@ class GroutFactory
                 $f->module = $module;
             }
             $f->context = $factoryContext;
-            $f->_tools = new ArrayFilter(array());
-            $f->_reflection = new \ReflectionClass($f);
-            $f->_class = get_class($f);
             $f->_onInit();
 
-            self::$_instances[$factoryClass.'_'.$factoryContext.'_'.$app->id] = $f;
+            self::$_instances[$factoryId] = $f;
         }
 
-        return self::$_instances[$factoryClass.'_'.$factoryContext.'_'.$app->id];
+        return self::$_instances[$factoryId];
+    }
+
+    public function __construct()
+    {
+        $this->events = new Events();
+        $this->_tools = new ArrayFilter();
+        $this->_reflection = new \ReflectionClass($this);
+        $this->_class = get_class($this);
+    }
+
+    protected function _onInit()
+    {
+
     }
 
     protected function _getParentFactory()
@@ -86,11 +97,6 @@ class GroutFactory
         $class = get_parent_class($this);
 
         return $class::get($this->app);
-    }
-
-    protected function _onInit()
-    {
-
     }
 
     public function getTool($name, $executeFactoryMethod = true)
@@ -146,10 +152,5 @@ class GroutFactory
     public function setTool($name, $tool)
     {
         $this->_tools->set($name, $tool);
-    }
-
-    public function __construct()
-    {
-        $this->events = new Events();
     }
 }
