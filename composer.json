@@ -1,6 +1,5 @@
 {
     "name": "cyantree/grout",
-    "version": "4.7",
     "type": "library",
     "description": "Framework and toolkit",
     "keywords": [
