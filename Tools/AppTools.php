@@ -25,56 +25,40 @@ class AppTools
         } else if ($c == 2) {
             if ($uri[0] !== '') {
                 $module = $app->getModuleById($uri[0]);
-            }elseif($uri[0] === 'App'){
+
+            } elseif($uri[0] === 'App') {
                 $module = null;
             }
 
             return array($module, null, $uri[1]);
 
         } else if ($c == 3) {
-            $m = $uri[0];
-            $p = $uri[1];
+            $moduleId = $uri[0];
+            $pluginId = $uri[1];
 
-            if($m === 'App'){
+            if ($moduleId === 'App') {
                 $module = null;
-                if($p !== ''){
-                    $plugin = $app->pluginIds[$p];
-                }else{
-                    $plugin = null;
-                }
-            }elseif($m === 'Module'){
-                if($p !== ''){
-                    $plugin = $module->pluginIds[$p];
-                }else{
-                    $plugin = null;
-                }
-            }elseif($m !== ''){
-                $module = $app->getModuleById($m);
+                $plugin = null;
 
-                if($p !== ''){
-                    $plugin = $module->pluginIds[$p];
-                }else{
+            } elseif ($moduleId === 'Module' || $moduleId === '') {
+                if ($pluginId !== '') {
+                    $plugin = $module->pluginIds[$pluginId];
+
+                } else {
                     $plugin = null;
                 }
-            }else{
-                if($p !== ''){
-                    $plugin = $module->pluginIds[$p];
+
+            } elseif ($moduleId !== '') {
+                $module = $app->getModuleById($moduleId);
+
+                if ($pluginId !== '') {
+                    $plugin = $module->pluginIds[$pluginId];
+
+                } else {
+                    $plugin = null;
                 }
+
             }
-
-//            if ($uri[0] !== '' && $uri[0] !== '.') {
-//                $module = $app->getModuleById($uri[0]);
-//            } else if ($uri[0] === 'App') {
-//                $module = null;
-//            }
-//
-//            if ($uri[1] !== '' && $uri[1] !== '.') {
-//                if (!$module) {
-//                    $plugin = $app->pluginIds[$uri[1]];
-//                } else {
-//                    $plugin = $module->pluginIds[$uri[1]];
-//                }
-//            }
 
             return array($module, $plugin, $uri[2]);
         }

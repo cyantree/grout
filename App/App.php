@@ -41,15 +41,6 @@ class App
     /** @var Module[] */
     public $moduleIds = array();
 
-    /** @var Plugin[] */
-    public $plugins = array();
-
-    /** @var Plugin[] */
-    public $pluginTypes = array();
-
-    /** @var Plugin[] */
-    public $pluginIds = array();
-
     /** @var Events */
     public $events;
 
@@ -475,24 +466,6 @@ class App
             return $this->moduleIds[$id];
         }
 
-        return null;
-    }
-
-    /** @return Plugin[] */
-    public function getPluginsByType($type)
-    {
-        if (isset($this->pluginTypes[$type])) {
-            return $this->pluginTypes[$type];
-        }
-        return null;
-    }
-
-    /** @return Plugin */
-    public function getPluginById($id)
-    {
-        if (isset($this->pluginIds[$id])) {
-            return $this->pluginIds[$id];
-        }
         return null;
     }
 

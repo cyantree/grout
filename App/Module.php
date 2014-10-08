@@ -254,16 +254,6 @@ class Module
             $this->pluginTypes[$type][] = $p;
         }
 
-        $this->app->plugins[] = $p;
-        $this->app->pluginIds[$p->id] = $p;
-
-        if (!isset($this->app->pluginTypes[$type])) {
-            $this->app->pluginTypes[$type] = array($p);
-
-        } else {
-            $this->app->pluginTypes[$type][] = $p;
-        }
-
         $p->init();
 
         return $p;
