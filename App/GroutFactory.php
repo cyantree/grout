@@ -4,6 +4,7 @@ namespace Cyantree\Grout\App;
 use Cyantree\Grout\App\Generators\Template\TemplateGenerator;
 use Cyantree\Grout\Event\Events;
 use Cyantree\Grout\Filter\ArrayFilter;
+use Cyantree\Grout\Tools\ArrayTools;
 use Cyantree\Grout\Ui\Ui;
 
 class GroutFactory
@@ -23,6 +24,12 @@ class GroutFactory
 
     /** @var ArrayFilter */
     private $_tools;
+
+    /** @var \ReflectionClass */
+    private $_reflection;
+    private $_toolClasses = array();
+
+    private $_class;
 
     public static function _getInstance($app, $factoryClass, $factoryContext = null, $activeModuleTypeOrInstance = null)
     {
@@ -64,6 +71,8 @@ class GroutFactory
             }
             $f->context = $factoryContext;
             $f->_tools = new ArrayFilter(array());
+            $f->_reflection = new \ReflectionClass($f);
+            $f->_class = get_class($f);
             $f->_onInit();
 
             self::$_instances[$factoryClass.'_'.$factoryContext.'_'.$app->id] = $f;
@@ -84,7 +93,7 @@ class GroutFactory
 
     }
 
-    protected function _getTaskTool($tool, $definitionClass)
+    protected function _getTaskTool($tool)
     {
         $id = $tool.'_'.$this->app->currentTask->id;
 
@@ -93,22 +102,33 @@ class GroutFactory
             return $t;
         }
 
-        if(get_class($this) != $definitionClass){
-            $t = $this->_getParentFactory()->$tool();
-            if($t){
-                $this->_tools->set($id, $t);
-                return $t;
+        $event = $this->events->trigger($tool);
+        if ($event->data) {
+            $t = $event->data;
+
+        } else {
+            $declaredClass = ArrayTools::get($this->_toolClasses, $tool);
+
+            if ($declaredClass === null) {
+                if ($this->_reflection->hasMethod($tool)) {
+                    $this->_toolClasses[$tool] = $declaredClass = $this->_reflection->getMethod($tool)->getDeclaringClass()->getName();
+
+                } else {
+                    $this->_toolClasses[$tool] = $declaredClass = false;
+                }
+            }
+
+            if ($declaredClass && $this->_class != $declaredClass) {
+                $t = $this->_getParentFactory()->$tool();
             }
         }
 
-        $event = $this->events->trigger($tool);
 
-        if($event->data){
-            $this->_tools->set($id, $event->data);
-            return $event->data;
+        if($t){
+            $this->_tools->set($id, $t);
         }
 
-        return null;
+        return $t;
     }
 
     protected function _deleteAppTool($tool)
@@ -121,27 +141,39 @@ class GroutFactory
         $this->_tools->delete($this->app->currentTask->id . '_' . $tool);
     }
 
-    protected function _getAppTool($tool, $definitionClass)
+    protected function _getAppTool($tool)
     {
-        $t = $this->_tools->get($tool);
+        $id = $tool;
+
+        $t = $this->_tools->get($id);
         if($t){
             return $t;
         }
 
         $event = $this->events->trigger($tool);
-
         if ($event->data) {
             $t = $event->data;
-        }
 
-        if (!$t) {
-            if(get_class($this) != $definitionClass){
+        } else {
+            $declaredClass = ArrayTools::get($this->_toolClasses, $tool);
+
+            if ($declaredClass === null) {
+                if ($this->_reflection->hasMethod($tool)) {
+                    $this->_toolClasses[$tool] = $declaredClass = $this->_reflection->getMethod($tool)->getDeclaringClass()->getName();
+
+                } else {
+                    $this->_toolClasses[$tool] = $declaredClass = false;
+                }
+            }
+
+            if ($declaredClass && $this->_class != $declaredClass) {
                 $t = $this->_getParentFactory()->$tool();
             }
         }
 
-        if ($t) {
-            $this->_tools->set($tool, $event->data);
+
+        if($t){
+            $this->_tools->set($id, $t);
         }
 
         return $t;
@@ -181,7 +213,7 @@ class GroutFactory
     /** @return TemplateGenerator */
     public function templates()
     {
-        if($tool = $this->_getAppTool(__FUNCTION__, __CLASS__)){
+        if($tool = $this->_getAppTool(__FUNCTION__)){
             return $tool;
         }
 
@@ -239,7 +271,7 @@ class GroutFactory
     /** @return GroutQuick */
     public function quick()
     {
-        if($tool = $this->_getAppTool(__FUNCTION__, __CLASS__)){
+        if($tool = $this->_getAppTool(__FUNCTION__)){
             return $tool;
         }
 
@@ -253,7 +285,7 @@ class GroutFactory
     /** @return Ui */
     public function ui()
     {
-        if($tool = $this->_getAppTool(__FUNCTION__, __CLASS__)){
+        if($tool = $this->_getAppTool(__FUNCTION__)){
             return $tool;
         }
 
