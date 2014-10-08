@@ -81,6 +81,8 @@ class Bootstrap
             $r->url = substr($r->url, strlen($urlPrefix));
         }
 
+        $r->url = str_replace('%2F', '', urldecode($r->url));
+
         return $r;
     }
 
