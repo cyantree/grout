@@ -8,12 +8,9 @@ use Cyantree\Grout\DataStorage;
 use Cyantree\Grout\Event\Events;
 use Cyantree\Grout\Filter\ArrayFilter;
 use Cyantree\Grout\Tools\AppTools;
-use Cyantree\Grout\Tools\ArrayTools;
 use Cyantree\Grout\Tools\NamespaceTools;
-use Cyantree\Grout\Tools\ServerTools;
 use Cyantree\Grout\Tools\StringTools;
 use Cyantree\Grout\Tools\Tools;
-use Cyantree\Grout\App\GroutAppConfig;
 
 class App
 {
@@ -67,12 +64,12 @@ class App
 
     private $_emergencyShutdownInProgress;
 
-    function __construct()
+    function __construct($id = null, $timeConstructed = null)
     {
-        $this->id = md5(__FILE__ . get_class($this));
+        $this->id = $id ? $id : mt_rand(0, 9999);
 
         $this->events = new Events();
-        $this->timeConstructed = microtime(true);
+        $this->timeConstructed = $timeConstructed ? $timeConstructed : microtime(true);
         $this->configs = new ConfigContainer($this);
         $this->configs->setDefaultConfig('GroutApp', new GroutAppConfig());
 
