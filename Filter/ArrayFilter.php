@@ -185,4 +185,27 @@ class ArrayFilter
             }
         }
     }
+
+    public function getMultiple($array, $associative = true)
+    {
+        $result = array();
+
+        foreach ($array as $name => $default) {
+            if (!is_string($name)) {
+                $name = $default;
+                $default = null;
+            }
+
+            $value = $this->get($name, $default);
+
+            if ($associative) {
+                $result[$name] = $value;
+
+            } else {
+                $result[] = $value;
+            }
+        }
+
+        return $result;
+    }
 }
