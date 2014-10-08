@@ -93,13 +93,15 @@ class GroutFactory
 
     }
 
-    protected function _getTaskTool($tool)
+    private function _getTool($tool, $toolId, $executeFactoryMethod = false)
     {
-        $id = $tool.'_'.$this->app->currentTask->id;
-
-        $t = $this->_tools->get($id);
+        $t = $this->_tools->get($toolId);
         if($t){
             return $t;
+        }
+
+        if ($executeFactoryMethod && $this->_reflection->hasMethod($tool)) {
+            return $this->{$tool}();
         }
 
         $event = $this->events->trigger($tool);
@@ -125,10 +127,15 @@ class GroutFactory
 
 
         if($t){
-            $this->_tools->set($id, $t);
+            $this->_tools->set($toolId, $t);
         }
 
         return $t;
+    }
+
+    protected function _getTaskTool($tool)
+    {
+        return $this->_getTool($tool, $tool . '_' . $this->app->currentTask->id);
     }
 
     protected function _deleteAppTool($tool)
@@ -143,40 +150,7 @@ class GroutFactory
 
     protected function _getAppTool($tool)
     {
-        $id = $tool;
-
-        $t = $this->_tools->get($id);
-        if($t){
-            return $t;
-        }
-
-        $event = $this->events->trigger($tool);
-        if ($event->data) {
-            $t = $event->data;
-
-        } else {
-            $declaredClass = ArrayTools::get($this->_toolClasses, $tool);
-
-            if ($declaredClass === null) {
-                if ($this->_reflection->hasMethod($tool)) {
-                    $this->_toolClasses[$tool] = $declaredClass = $this->_reflection->getMethod($tool)->getDeclaringClass()->getName();
-
-                } else {
-                    $this->_toolClasses[$tool] = $declaredClass = false;
-                }
-            }
-
-            if ($declaredClass && $this->_class != $declaredClass) {
-                $t = $this->_getParentFactory()->$tool();
-            }
-        }
-
-
-        if($t){
-            $this->_tools->set($id, $t);
-        }
-
-        return $t;
+        return $this->_getTool($tool, $tool);
     }
 
     protected function _setTaskTool($id, $tool)
@@ -226,46 +200,12 @@ class GroutFactory
 
     public function getTaskTool($tool)
     {
-        $id = $this->app->currentTask->id.'_'.$tool;
-
-        $t = $this->_tools->get($id);
-        if($t){
-            return $t;
-        }
-
-        if(method_exists($this, $tool)){
-            return $this->{$tool}();
-        }
-
-        $event = $this->events->trigger($tool);
-
-        if($event->data){
-            $this->_tools->set($id, $event->data);
-            return $event->data;
-        }
-
-        return null;
+        return $this->_getTool($tool, $this->app->currentTask->id . '_' . $tool, true);
     }
 
     public function getAppTool($tool)
     {
-        $t = $this->_tools->get($tool);
-        if($t){
-            return $t;
-        }
-
-        if(method_exists($this, $tool)){
-            return $this->{$tool}();
-        }
-
-        $event = $this->events->trigger($tool);
-
-        if($event->data){
-            $this->_tools->set($tool, $event->data);
-            return $event->data;
-        }
-
-        return null;
+        return $this->_getTool($tool, $tool, true);
     }
 
     /** @return GroutQuick */
