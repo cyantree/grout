@@ -87,12 +87,13 @@ class Module
         return $p;
     }
 
-    public function getRoute($id)
+    public function getRoute($id, $needed = true)
     {
         if (isset($this->routes[$id])) {
             return $this->routes[$id];
-        } else {
-            trigger_error('Route "' . $id . '" was not found in module "' . get_class($this) . '"', E_USER_WARNING);
+
+        } elseif ($needed) {
+            throw new \Exception('Route "' . $id . '" was not found in module "' . get_class($this) . '"');
         }
 
         return null;
