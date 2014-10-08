@@ -72,6 +72,13 @@ class GroutFactory
         return self::$_instances[$factoryClass.'_'.$factoryContext.'_'.$app->id];
     }
 
+    protected function _getParentFactory()
+    {
+        $class = get_parent_class($this);
+
+        return $class::get($this->app);
+    }
+
     protected function _onInit()
     {
 
@@ -87,9 +94,7 @@ class GroutFactory
         }
 
         if(get_class($this) != $definitionClass){
-            $c = get_parent_class($this);
-
-            $t = $c::get($this->app)->$tool();
+            $t = $this->_getParentFactory()->$tool();
             if($t){
                 $this->_tools->set($id, $t);
                 return $t;
@@ -131,9 +136,7 @@ class GroutFactory
 
         if (!$t) {
             if(get_class($this) != $definitionClass){
-                $c = get_parent_class($this);
-
-                $t = $c::get($this->app)->$tool();
+                $t = $this->_getParentFactory()->$tool();
             }
         }
 
