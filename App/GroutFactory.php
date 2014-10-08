@@ -93,89 +93,64 @@ class GroutFactory
 
     }
 
-    private function _getTool($tool, $toolId, $executeFactoryMethod = false)
+    public function getTool($name, $executeFactoryMethod = true)
     {
-        $t = $this->_tools->get($toolId);
-        if($t){
-            return $t;
+        $tool = $this->_tools->get($name);
+        if($tool){
+            return $tool;
         }
 
-        if ($executeFactoryMethod && $this->_reflection->hasMethod($tool)) {
+        if ($executeFactoryMethod && $this->_reflection->hasMethod($name)) {
             return $this->{$tool}();
         }
 
-        $event = $this->events->trigger($tool);
+        $event = $this->events->trigger($name);
         if ($event->data) {
-            $t = $event->data;
+            $tool = $event->data;
 
         } else {
-            $declaredClass = ArrayTools::get($this->_toolClasses, $tool);
+            $declaredClass = ArrayTools::get($this->_toolClasses, $name);
 
             if ($declaredClass === null) {
-                if ($this->_reflection->hasMethod($tool)) {
-                    $this->_toolClasses[$tool] = $declaredClass = $this->_reflection->getMethod($tool)->getDeclaringClass()->getName();
+                if ($this->_reflection->hasMethod($name)) {
+                    $this->_toolClasses[$name] = $declaredClass = $this->_reflection->getMethod($name)->getDeclaringClass()->getName();
 
                 } else {
-                    $this->_toolClasses[$tool] = $declaredClass = false;
+                    $this->_toolClasses[$name] = $declaredClass = false;
                 }
             }
 
             if ($declaredClass && $this->_class != $declaredClass) {
-                $t = $this->_getParentFactory()->$tool();
+                $tool = $this->_getParentFactory()->$name();
             }
         }
 
 
-        if($t){
-            $this->_tools->set($toolId, $t);
+        if($tool){
+            $this->_tools->set($name, $tool);
         }
 
-        return $t;
+        return $tool;
     }
 
-    protected function _getTaskTool($tool)
+    public function hasTool($name)
     {
-        return $this->_getTool($tool, $tool . '_' . $this->app->currentTask->id);
+        return $this->_tools->has($name);
     }
 
-    protected function _deleteAppTool($tool)
+    public function deleteTool($name)
     {
-        $this->_tools->delete($tool);
+        $this->_tools->delete($name);
     }
 
-    protected function _deleteTaskTool($tool)
+    public function setTool($name, $tool)
     {
-        $this->_tools->delete($this->app->currentTask->id . '_' . $tool);
-    }
-
-    protected function _getAppTool($tool)
-    {
-        return $this->_getTool($tool, $tool);
-    }
-
-    protected function _setTaskTool($id, $tool)
-    {
-        $this->_tools->set($this->app->currentTask->id.'_'.$id, $tool);
-    }
-
-    protected function _setAppTool($id, $tool)
-    {
-        $this->_tools->set($id, $tool);
+        $this->_tools->set($name, $tool);
     }
 
     public function __construct()
     {
         $this->events = new Events();
-    }
-
-    public function hasTaskTool($tool)
-    {
-        return $this->_tools->has($this->app->currentTask->id.'_'.$tool);
-    }
-
-    public function hasAppTool($tool)
-    {
-        return $this->_tools->has($tool);
     }
 
     /** @return GroutFactory */
@@ -187,51 +162,38 @@ class GroutFactory
     /** @return TemplateGenerator */
     public function templates()
     {
-        if($tool = $this->_getAppTool(__FUNCTION__)){
-            return $tool;
+        if (!($tool = $this->getTool(__FUNCTION__, false))) {
+            $tool = new TemplateGenerator();
+            $tool->app = $this->app;
+
+            $this->setTool(__FUNCTION__, $tool);
         }
 
-        $tool = new TemplateGenerator();
-        $tool->app = $this->app;
-
-        $this->_setAppTool(__FUNCTION__, $tool);
         return $tool;
-    }
-
-    public function getTaskTool($tool)
-    {
-        return $this->_getTool($tool, $this->app->currentTask->id . '_' . $tool, true);
-    }
-
-    public function getAppTool($tool)
-    {
-        return $this->_getTool($tool, $tool, true);
     }
 
     /** @return GroutQuick */
     public function quick()
     {
-        if($tool = $this->_getAppTool(__FUNCTION__)){
-            return $tool;
+        if (!($tool = $this->getTool(__FUNCTION__, false))) {
+            $tool = new GroutQuick($this->app);
+            $tool->publicAssetUrl = $this->app->publicUrl . $this->app->getConfig()->assetUrl;
+
+            $this->setTool(__FUNCTION__, $tool);
         }
 
-        $tool = new GroutQuick($this->app);
-        $tool->publicAssetUrl = $this->app->publicUrl . $this->app->getConfig()->assetUrl;
-
-        $this->_setAppTool(__FUNCTION__, $tool);
         return $tool;
     }
 
     /** @return Ui */
     public function ui()
     {
-        if($tool = $this->_getAppTool(__FUNCTION__)){
-            return $tool;
+        if (!($tool = $this->getTool(__FUNCTION__, false))) {
+            $tool = new Ui();
+
+            $this->setTool(__FUNCTION__, $tool);
         }
 
-        $tool = new Ui();
-
-        $this->_setAppTool(__FUNCTION__, $tool);
         return $tool;
     }
 
