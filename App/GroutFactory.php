@@ -31,7 +31,7 @@ class GroutFactory
 
     private $_class;
 
-    public static function _getInstance($app, $factoryClass, $factoryContext = null, $activeModuleTypeOrInstance = null)
+    public static function getFactory($app, $factoryClass, $factoryContext = null, $activeModuleTypeOrInstance = null)
     {
         if (!$app) {
             $app = App::$current;
