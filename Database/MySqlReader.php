@@ -3,32 +3,32 @@ namespace Cyantree\Grout\Database;
 
 class DatabaseMySqlReader extends DatabaseReader
 {
-    private $_flags;
-    private $_data;
+    private $flags;
+    private $data;
 
-    function __construct($data = null, $flags = null)
+    public function __construct($data = null, $flags = null)
     {
-        $this->_flags = $flags;
-        $this->_data = $data;
+        $this->flags = $flags;
+        $this->data = $data;
     }
 
     public function hasResults()
     {
-        return $this->_data != null;
+        return $this->data != null;
     }
 
     public function read()
     {
-        if ($this->_flags & Database::TYPE_ASSOC && $this->_flags & Database::TYPE_NUM) {
-            return mysql_fetch_array($this->_data);
+        if ($this->flags & Database::TYPE_ASSOC && $this->flags & Database::TYPE_NUM) {
+            return mysql_fetch_array($this->data);
         }
 
-        if ($this->_flags & Database::TYPE_NUM) {
-            return mysql_fetch_row($this->_data);
+        if ($this->flags & Database::TYPE_NUM) {
+            return mysql_fetch_row($this->data);
         }
 
-        if ($this->_flags & Database::TYPE_ASSOC) {
-            return mysql_fetch_assoc($this->_data);
+        if ($this->flags & Database::TYPE_ASSOC) {
+            return mysql_fetch_assoc($this->data);
         }
 
         return null;

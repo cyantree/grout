@@ -8,7 +8,7 @@ class MySqlConnection extends DatabaseConnection
 {
     public $id = 'SQL';
 
-    private $_connection;
+    private $connection;
 
     public $conversionTarget = 'sql';
 
@@ -16,32 +16,32 @@ class MySqlConnection extends DatabaseConnection
     {
         parent::__construct();
 
-        if (self::$_filterArraySearch === null) {
-            self::$_filterArraySearch = array('\\', '"', "\0", "\n", "\r", chr(26), "'");
+        if (self::$filterArraySearch === null) {
+            self::$filterArraySearch = array('\\', '"', "\0", "\n", "\r", chr(26), "'");
         }
     }
 
 
     public function connect($host, $user, $pass, $database, $charset = 'utf8', $newConnection = true)
     {
-        if ($this->_connection) {
+        if ($this->connection) {
             return true;
         }
-        $this->_connection = mysql_connect($host, $user, $pass, $newConnection);
-        if ($this->_connection === false) {
-            $this->_connection = null;
+        $this->connection = mysql_connect($host, $user, $pass, $newConnection);
+        if ($this->connection === false) {
+            $this->connection = null;
 
             return false;
         }
 
-        $select = mysql_select_db($database, $this->_connection);
+        $select = mysql_select_db($database, $this->connection);
         if ($select === false) {
-            $this->_connection = null;
+            $this->connection = null;
 
             return false;
         }
 
-        mysql_set_charset($charset, $this->_connection);
+        mysql_set_charset($charset, $this->connection);
 
         $this->_errorHandler = ErrorHandler::getHandler(array($this, 'onError'), null, false);
 
@@ -50,22 +50,22 @@ class MySqlConnection extends DatabaseConnection
 
     public function getConnection()
     {
-        return $this->_connection;
+        return $this->connection;
     }
 
     public function useExistingConnection($connection)
     {
-        $this->_connection = $connection;
+        $this->connection = $connection;
         $this->_errorHandler = ErrorHandler::getHandler(array($this, 'onError'), null, false);
     }
 
     public function close()
     {
-        if (!$this->_connection) {
+        if (!$this->connection) {
             return;
         }
-        mysql_close($this->_connection);
-        $this->_connection = null;
+        mysql_close($this->connection);
+        $this->connection = null;
 
         $this->_errorHandler->destroy();
         $this->_errorHandler = null;
@@ -84,9 +84,9 @@ class MySqlConnection extends DatabaseConnection
 
         $query = $this->prepareQuery($query, $args, true);
         $this->_errorHandler->register($query);
-        $q = mysql_query($query, $this->_connection);
+        $q = mysql_query($query, $this->connection);
         if ($q === false) {
-            trigger_error(mysql_error($this->_connection), E_USER_ERROR);
+            trigger_error(mysql_error($this->connection), E_USER_ERROR);
         }
         $this->_errorHandler->unRegister();
 
@@ -140,24 +140,24 @@ class MySqlConnection extends DatabaseConnection
         $query = $this->prepareQuery($query, $args, true);
 
         $this->_errorHandler->register($query);
-        $res = mysql_query($query, $this->_connection);
+        $res = mysql_query($query, $this->connection);
         if ($res === false) {
-            trigger_error(mysql_error($this->_connection), E_USER_ERROR);
+            trigger_error(mysql_error($this->connection), E_USER_ERROR);
         }
         $this->_errorHandler->unRegister();
 
         if ($res === false) {
             return false;
         }
-        if (mysql_insert_id($this->_connection) == 0) {
-            return mysql_affected_rows($this->_connection);
+        if (mysql_insert_id($this->connection) == 0) {
+            return mysql_affected_rows($this->connection);
         }
 
-        return mysql_insert_id($this->_connection);
+        return mysql_insert_id($this->connection);
     }
 
-    private static $_filterArraySearch;
-    private static $_filterArrayReplace = array('\\\\', '\\"', '\\0', '\\n', '\\r', '\\Z', '\\\'');
+    private static $filterArraySearch;
+    private static $filterArrayReplace = array('\\\\', '\\"', '\\0', '\\n', '\\r', '\\Z', '\\\'');
 
     public function prepareQueryFilterCallback($replaces)
     {
@@ -166,10 +166,14 @@ class MySqlConnection extends DatabaseConnection
             $val = $replace[1];
 
             if ($type == 's') {
-                $replaces[$key] = str_replace(self::$_filterArraySearch, self::$_filterArrayReplace, $val);
+                $replaces[$key] = str_replace(self::$filterArraySearch, self::$filterArrayReplace, $val);
             } else {
                 if ($type == 't') {
-                    $replaces[$key] = '"' . str_replace(self::$_filterArraySearch, self::$_filterArrayReplace, $val) . '"';
+                    $replaces[$key] = '"' . str_replace(
+                        self::$filterArraySearch,
+                        self::$filterArrayReplace,
+                        $val
+                    ) . '"';
                 } else {
                     if ($type == 'd') {
                         $replaces[$key] = '"' . date('Y-m-d H:i:s', $val) . '"';
@@ -180,7 +184,11 @@ class MySqlConnection extends DatabaseConnection
                             if ($type == 'S' || $type == 'T') {
                                 $r = array();
                                 foreach ($val as $v) {
-                                    $r[] = '"' . str_replace(self::$_filterArraySearch, self::$_filterArrayReplace, $v) . '"';
+                                    $r[] = '"' . str_replace(
+                                        self::$filterArraySearch,
+                                        self::$filterArrayReplace,
+                                        $v
+                                    ) . '"';
                                 }
                                 $replaces[$key] = implode(',', $r);
                             }
@@ -195,9 +203,7 @@ class MySqlConnection extends DatabaseConnection
 
     public function insert($table, $fields, $values, $nestedRows = null, $rowsPerInsert = 100, $returnQueries = false)
     {
-        if ($returnQueries) {
-            $queries = array();
-        }
+        $queries = array();
 
         $fieldSnippet = ArrayTools::implode(array_keys($fields), ',', '`', '`');
         $typeSnippet = '(' . implode(',', array_values($fields)) . ')';

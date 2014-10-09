@@ -82,7 +82,7 @@ class Form
                 $this->mode = $this->submitButton;
                 return true;
             }
-        } else if (is_array($this->submitButton)) {
+        } elseif (is_array($this->submitButton)) {
             foreach ($this->submitButton as $id) {
                 if ($this->dataIn->has($id)) {
                     $this->mode = $id;
@@ -93,11 +93,12 @@ class Form
 
         $button = $this->dataIn->get('CT_Form_SubmitButton');
         if ($button) {
-            if ((is_string($this->submitButton) && $this->submitButton == $button) ||
-                  is_array($this->submitButton) && in_array($button, $this->submitButton)
+            if ((is_string($this->submitButton) && $this->submitButton == $button)
+                || is_array($this->submitButton) && in_array($button, $this->submitButton)
             ) {
                 $this->mode = $button;
                 return true;
+
             } else {
                 return false;
             }

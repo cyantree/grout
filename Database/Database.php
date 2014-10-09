@@ -33,7 +33,9 @@ class Database
     /** @return DatabaseReader|string|array|void */
     public static function query($query, $args = null, $flags = 0)
     {
-        if (!self::$default && self::$connectHandler) self::$connectHandler[0]->{self::$connectHandler[1]}();
+        if (!self::$default && self::$connectHandler) {
+            self::$connectHandler[0]->{self::$connectHandler[1]}();
+        }
 
         return self::$default->query($query, $args, $flags);
     }
@@ -41,14 +43,18 @@ class Database
     /** @return int|void */
     public static function exec($query, $args = null, $flags = 0)
     {
-        if (!self::$default && self::$connectHandler) self::$connectHandler[0]->{self::$connectHandler[1]}();
+        if (!self::$default && self::$connectHandler) {
+            self::$connectHandler[0]->{self::$connectHandler[1]}();
+        }
 
         return self::$default->exec($query, $args, $flags);
     }
 
     public static function backupLastQuery($flag)
     {
-        if (!self::$default && self::$connectHandler) self::$connectHandler[0]->{self::$connectHandler[1]}();
+        if (!self::$default && self::$connectHandler) {
+            self::$connectHandler[0]->{self::$connectHandler[1]}();
+        }
 
         self::$default->backupLastQuery($flag);
     }
@@ -56,7 +62,9 @@ class Database
     /** @return string */
     public static function getLastQuery()
     {
-        if (!self::$default && self::$connectHandler) self::$connectHandler[0]->{self::$connectHandler[1]}();
+        if (!self::$default && self::$connectHandler) {
+            self::$connectHandler[0]->{self::$connectHandler[1]}();
+        }
 
         return self::$default->getLastQuery();
     }
@@ -64,14 +72,18 @@ class Database
     /** @return string */
     public static function prepareQuery($query, $args)
     {
-        if (!self::$default && self::$connectHandler) self::$connectHandler[0]->{self::$connectHandler[1]}();
+        if (!self::$default && self::$connectHandler) {
+            self::$connectHandler[0]->{self::$connectHandler[1]}();
+        }
 
         return self::$default->prepareQuery($query, $args);
     }
 
     public static function insert($table, $fields, $values, $nestedRows = false, $rowsPerInsert = 100, $returnQueries = false)
     {
-        if (!self::$default && self::$connectHandler) self::$connectHandler[0]->{self::$connectHandler[1]}();
+        if (!self::$default && self::$connectHandler) {
+            self::$connectHandler[0]->{self::$connectHandler[1]}();
+        }
 
         return self::$default->insert($table, $fields, $values, $nestedRows, $rowsPerInsert, $returnQueries);
     }

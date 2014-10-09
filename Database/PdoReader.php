@@ -6,34 +6,34 @@ use PDOStatement;
 
 class PdoReader extends DatabaseReader
 {
-    private $_flags;
+    private $flags;
 
     /** @var PDOStatement */
-    private $_data;
+    private $data;
 
-    function __construct($data = null, $flags = null)
+    public function __construct($data = null, $flags = null)
     {
-        $this->_flags = $flags;
-        $this->_data = $data;
+        $this->flags = $flags;
+        $this->data = $data;
     }
 
     public function hasResults()
     {
-        return $this->_data != null;
+        return $this->data != null;
     }
 
     public function read()
     {
-        if ($this->_flags & Database::TYPE_ASSOC && $this->_flags & Database::TYPE_NUM) {
-            return $this->_data->fetch(PDO::FETCH_BOTH);
+        if ($this->flags & Database::TYPE_ASSOC && $this->flags & Database::TYPE_NUM) {
+            return $this->data->fetch(PDO::FETCH_BOTH);
         }
 
-        if ($this->_flags & Database::TYPE_NUM) {
-            return $this->_data->fetch(PDO::FETCH_NUM);
+        if ($this->flags & Database::TYPE_NUM) {
+            return $this->data->fetch(PDO::FETCH_NUM);
         }
 
-        if ($this->_flags & Database::TYPE_ASSOC) {
-            return $this->_data->fetch(PDO::FETCH_ASSOC);
+        if ($this->flags & Database::TYPE_ASSOC) {
+            return $this->data->fetch(PDO::FETCH_ASSOC);
         }
 
         return null;

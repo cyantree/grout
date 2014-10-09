@@ -28,15 +28,20 @@ class EntityTable
     {
         if ($type === null || $type == self::FIELD_TYPE_STRING) {
             $class = 'Cyantree\Grout\Database\Entity\EntityField';
-        } else if ($type == self::FIELD_TYPE_BOOLEAN) {
+
+        } elseif ($type == self::FIELD_TYPE_BOOLEAN) {
             $class = 'Cyantree\Grout\Database\Entity\Fields\BooleanField';
-        } else if ($type == self::FIELD_TYPE_TIMESTAMP_LOCAL) {
+
+        } elseif ($type == self::FIELD_TYPE_TIMESTAMP_LOCAL) {
             $class = 'Cyantree\Grout\Database\Entity\Fields\TimestampLocalField';
-        } else if ($type == self::FIELD_TYPE_TIMESTAMP_UTC) {
+
+        } elseif ($type == self::FIELD_TYPE_TIMESTAMP_UTC) {
             $class = 'Cyantree\Grout\Database\Entity\Fields\TimestampUtcField';
-        } else if ($type == self::FIELD_TYPE_AUTOINCREMENT) {
+
+        } elseif ($type == self::FIELD_TYPE_AUTOINCREMENT) {
             $class = 'Cyantree\Grout\Database\Entity\Fields\AutoIncrementField';
             $primaryKey = true;
+
         } else {
             $class = $type;
         }
@@ -48,6 +53,7 @@ class EntityTable
             }
 
             return null;
+
         } else {
             $f = new $class($id);
 
@@ -86,6 +92,7 @@ class EntityTable
     {
         if (is_string($idOrField)) {
             unset($this->fields[$idOrField]);
+
         } else {
             unset($this->fields[$idOrField->id]);
         }

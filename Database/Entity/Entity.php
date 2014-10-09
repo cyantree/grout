@@ -10,7 +10,7 @@ class Entity
 
     public $isNew = true;
 
-    private static $_templates = array();
+    private static $templates = array();
 
     /** @var EntityType[] */
     public static $defaultTypes = array();
@@ -42,7 +42,8 @@ class Entity
         return self::$defaultTypes[$class];
     }
 
-    public static function setDefaultType($class, $type){
+    public static function setDefaultType($class, $type)
+    {
         self::$defaultTypes[$class] = $type;
     }
 
@@ -53,8 +54,13 @@ class Entity
 
     public static function deleteItems($items)
     {
-        if (!$items) return;
-        if (!is_array($items)) $items = array($items);
+        if (!$items) {
+            return;
+        }
+
+        if (!is_array($items)) {
+            $items = array($items);
+        }
 
         /** @var $i Entity */
         $i = current($items);
@@ -91,10 +97,12 @@ class Entity
 
         $singleItem = !is_array($id);
 
-        if ($singleItem) $id = array($id);
+        if ($singleItem) {
+            $id = array($id);
+        }
 
         // Get helper variables
-        $template = self::_getTemplate($type);
+        $template = self::getTemplate($type);
         $selectQuery = $type->getSelectQuery();
         $primaryField = $type->getTable('primary')->primaryField;
         $primaryFieldName = $primaryField->id;
@@ -123,13 +131,16 @@ class Entity
             $temp[$item->{$primaryFieldName}] = $item;
         }
 
-        if ($singleItem && !isset($temp[$id[0]])) return null;
+        if ($singleItem && !isset($temp[$id[0]])) {
+            return null;
+        }
 
         // Reorder data and insert not existing elements
         $results = array();
         foreach ($id as $i) {
-            if (isset($temp[$i])) $results[$i] = $temp[$i];
-            else {
+            if (isset($temp[$i])) {
+                $results[$i] = $temp[$i];
+            } else {
                 $item = new $elementClass();
                 $item->elementType = $type;
                 $item->{$primaryFieldName} = $i;
@@ -137,15 +148,22 @@ class Entity
             }
         }
 
-        if ($singleItem) return $results[$id[0]];
-        else return $results;
+        if ($singleItem) {
+            return $results[$id[0]];
+
+        } else {
+            return $results;
+        }
     }
 
     /** @return Entity|null */
     public static function loadSingleByQuery($type, $whereClause, $args = null)
     {
         $res = self::loadByQuery($type, $whereClause . ' LIMIT 0,1', $args);
-        if (!count($res)) return null;
+        if (!count($res)) {
+            return null;
+        }
+
         return array_shift($res);
     }
 
@@ -159,7 +177,7 @@ class Entity
         /** @var EntityType $type */
 
         // Get helper variables
-        $template = self::_getTemplate($type);
+        $template = self::getTemplate($type);
         $selectQuery = $type->getWhereSelectQuery();
         $primaryField = $type->getTable('primary')->primaryField;
         $primaryFieldName = $primaryField->id;
@@ -201,7 +219,7 @@ class Entity
 
         $primaryFieldName = $type->getTable('primary')->primaryField->id;
 
-        $data = self::_preparePropertiesForQuery($this);
+        $data = self::preparePropertiesForQuery($this);
 
         // Insert
         if ($saveMode == 'insert' || ($saveMode != 'update' && $this->{$primaryFieldName} === null)) {
@@ -209,7 +227,9 @@ class Entity
 
             foreach ($queries as $tableID => $query) {
                 $result = $database->exec($query, $data);
-                if ($tableID == 'primary' && $this->{$primaryFieldName} === null) $this->{$primaryFieldName} = $result;
+                if ($tableID == 'primary' && $this->{$primaryFieldName} === null) {
+                    $this->{$primaryFieldName} = $result;
+                }
             }
 
             $this->isNew = false;
@@ -225,7 +245,7 @@ class Entity
     }
 
     /** @param $item Entity */
-    private static function _preparePropertiesForQuery($item)
+    private static function preparePropertiesForQuery($item)
     {
         $type = $item->getType();
 
@@ -241,17 +261,19 @@ class Entity
     }
 
     /** @return Entity */
-    private static function _getTemplate($type)
+    private static function getTemplate($type)
     {
         $typeClass = get_class($type);
-        if (isset(self::$_templates[$typeClass])) return self::$_templates[$typeClass];
+        if (isset(self::$templates[$typeClass])) {
+            return self::$templates[$typeClass];
+        }
 
         $className = $type->elementClass;
 
         $t = new $className();
         $t->elementType = $type;
 
-        self::$_templates[$typeClass] = $t;
+        self::$templates[$typeClass] = $t;
 
         return $t;
     }

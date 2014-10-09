@@ -8,8 +8,8 @@ class EntityType
 
     public $elementClass;
 
-    private $_queries = array();
-    private $_selectPlaceholderCache = array();
+    private $queries = array();
+    private $selectPlaceholderCache = array();
 
     public function __construct($elementClass)
     {
@@ -39,8 +39,12 @@ class EntityType
 
     public function removeTable($idOrTable)
     {
-        if (is_string($idOrTable)) unset($this->tables[$idOrTable]);
-        else unset($this->tables[$idOrTable->id]);
+        if (is_string($idOrTable)) {
+            unset($this->tables[$idOrTable]);
+
+        } else {
+            unset($this->tables[$idOrTable->id]);
+        }
     }
 
     public function getTable($id)
@@ -52,49 +56,68 @@ class EntityType
     {
         $t = new EntityType($this->elementClass);
 
-        foreach ($this->tables as $key => $table)
+        foreach ($this->tables as $key => $table) {
             $t->tables[$key] = $table->duplicate();
+        }
 
         return $t;
     }
 
     public function getInsertQueries()
     {
-        if (!isset($this->_queries['insert'])) $this->_updateInsertQueries();
-        return $this->_queries['insert'];
+        if (!isset($this->queries['insert'])) {
+            $this->updateInsertQueries();
+        }
+
+        return $this->queries['insert'];
     }
 
     public function getDeleteQueries()
     {
-        if (!isset($this->_queries['delete'])) $this->_updateDeleteQueries();
-        return $this->_queries['delete'];
+        if (!isset($this->queries['delete'])) {
+            $this->updateDeleteQueries();
+        }
+
+        return $this->queries['delete'];
     }
 
     public function getUpdateQueries()
     {
-        if (!isset($this->_queries['update'])) $this->_updateUpdateQueries();
-        return $this->_queries['update'];
+        if (!isset($this->queries['update'])) {
+            $this->updateUpdateQueries();
+        }
+
+        return $this->queries['update'];
     }
 
     public function getSelectQuery()
     {
-        if (!isset($this->_queries['select'])) $this->_updateSelectQuery();
-        return $this->_queries['select'];
+        if (!isset($this->queries['select'])) {
+            $this->updateSelectQuery();
+        }
+
+        return $this->queries['select'];
     }
 
     public function getWhereSelectQuery()
     {
-        if (!isset($this->_queries['whereSelect'])) $this->_updateSelectQuery();
-        return $this->_queries['whereSelect'];
+        if (!isset($this->queries['whereSelect'])) {
+            $this->updateSelectQuery();
+        }
+
+        return $this->queries['whereSelect'];
     }
 
     public function getSelectPlaceholderCache()
     {
-        if (!isset($this->_queries['select'])) $this->_updateSelectQuery();
-        return $this->_selectPlaceholderCache;
+        if (!isset($this->queries['select'])) {
+            $this->updateSelectQuery();
+        }
+
+        return $this->selectPlaceholderCache;
     }
 
-    private function _updateSelectQuery()
+    private function updateSelectQuery()
     {
         // Prepare select query
         $tableCount = 1;
@@ -110,18 +133,22 @@ class EntityType
 
         // Create query
         $selects = '';
-        $this->_selectPlaceholderCache = array();
+        $this->selectPlaceholderCache = array();
 
         $isFirstSelectedField = true;
         foreach ($this->tables as $table) {
             $tableID = $tableIDs[$table->table];
 
             foreach ($table->fields as $field) {
-                if ($isFirstSelectedField) $isFirstSelectedField = false;
-                else $selects .= ',';
+                if ($isFirstSelectedField) {
+                    $isFirstSelectedField = false;
+
+                } else {
+                    $selects .= ',';
+                }
                 $selects .= $tableID . '.' . $field->tableField;
 
-                $this->_selectPlaceholderCache['[' . $field->id . ']'] = $tableID . '.' . $field->tableField;
+                $this->selectPlaceholderCache['[' . $field->id . ']'] = $tableID . '.' . $field->tableField;
             }
         }
 
@@ -133,11 +160,11 @@ class EntityType
 
         $query = 'SELECT ' . $selects . ' FROM ' . $from . ' ';
 
-        $this->_queries['whereSelect'] = $query;
-        $this->_queries['select'] = $query . 'WHERE ' . $where;
+        $this->queries['whereSelect'] = $query;
+        $this->queries['select'] = $query . 'WHERE ' . $where;
     }
 
-    private function _updateInsertQueries()
+    private function updateInsertQueries()
     {
         $queries = array();
 
@@ -148,10 +175,14 @@ class EntityType
             $values = '';
 
             foreach ($table->fields as $field) {
-                if ($field->ignoreOnInsert) continue;
+                if ($field->ignoreOnInsert) {
+                    continue;
+                }
 
-                if ($firstField) $firstField = false;
-                else {
+                if ($firstField) {
+                    $firstField = false;
+
+                } else {
                     $fields .= ',';
                     $values .= ',';
                 }
@@ -165,10 +196,10 @@ class EntityType
             $queries[$table->id] = $query;
         }
 
-        $this->_queries['insert'] = $queries;
+        $this->queries['insert'] = $queries;
     }
 
-    private function _updateUpdateQueries()
+    private function updateUpdateQueries()
     {
         $queries = array();
 
@@ -177,23 +208,29 @@ class EntityType
             $firstField = true;
 
             foreach ($table->fields as $field) {
-                if ($field->isKey) continue;
+                if ($field->isKey) {
+                    continue;
+                }
 
-                if ($firstField) $firstField = false;
-                else $query .= ',';
+                if ($firstField) {
+                    $firstField = false;
+
+                } else {
+                    $query .= ',';
+                }
 
                 $query .= '`' . $field->tableField . '`=%' . $field->queryType . ':' . $field->id . '%';
             }
 
-            $query .= ' WHERE `' . $table->primaryField->tableField . '`=%' . $table->primaryField->queryType . ':' . $table->primaryField->id . '%';;
+            $query .= ' WHERE `' . $table->primaryField->tableField . '`=%' . $table->primaryField->queryType . ':' . $table->primaryField->id . '%';
 
             $queries[] = $query;
         }
 
-        $this->_queries['update'] = $queries;
+        $this->queries['update'] = $queries;
     }
 
-    private function _updateDeleteQueries()
+    private function updateDeleteQueries()
     {
         $queries = array();
 
@@ -201,6 +238,6 @@ class EntityType
             $queries[] = 'DELETE FROM ' . $table->table . ' WHERE `' . $table->primaryField->tableField . '` IN (%T%)';
         }
 
-        $this->_queries['delete'] = $queries;
+        $this->queries['delete'] = $queries;
     }
 }

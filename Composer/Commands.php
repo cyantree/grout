@@ -1,5 +1,6 @@
 <?php
 namespace Cyantree\Grout\Composer;
+
 use Composer\Script\Event;
 use Cyantree\Grout\Tools\StringTools;
 
@@ -21,8 +22,10 @@ class Commands
         $content = file_get_contents($file);
 
         $content = str_replace(
-              array('###ACCESS_KEY###', '###ROOT_PASS###'),
-              array(StringTools::random(32), StringTools::random(16)), $content);
+            array('###ACCESS_KEY###', '###ROOT_PASS###'),
+            array(StringTools::random(32), StringTools::random(16)),
+            $content
+        );
 
         file_put_contents($file, $content);
 

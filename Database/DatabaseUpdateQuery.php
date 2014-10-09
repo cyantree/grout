@@ -5,9 +5,9 @@ class DatabaseUpdateQuery
 {
     public $table;
 
-    private $_fields = array();
+    private $fields = array();
 
-    private $_where;
+    private $where;
 
     public function __construct($table = '')
     {
@@ -16,17 +16,17 @@ class DatabaseUpdateQuery
 
     public function set($field, $value, $type = '%t%')
     {
-        $this->_fields[] = array($field, $value, $type);
+        $this->fields[] = array($field, $value, $type);
     }
 
     public function where($field, $value, $type = '%t%')
     {
-        $this->_where = array($field, $value, $type);
+        $this->where = array($field, $value, $type);
     }
 
     public function getQuery(Database $databaseConnection)
     {
-        if (count($this->_fields) == 0) {
+        if (count($this->fields) == 0) {
             return '';
         }
 
@@ -34,7 +34,7 @@ class DatabaseUpdateQuery
 
         $first = true;
         $data = array();
-        foreach ($this->_fields as $field) {
+        foreach ($this->fields as $field) {
             if ($first) {
                 $first = false;
             } else {
@@ -44,8 +44,8 @@ class DatabaseUpdateQuery
             $data[] = $field[1];
         }
 
-        $q .= ' WHERE ' . $this->_where[0];
-        $data[] = $this->_where[1];
+        $q .= ' WHERE ' . $this->where[0];
+        $data[] = $this->where[1];
 
         return $databaseConnection->prepareQuery($q, $data);
     }

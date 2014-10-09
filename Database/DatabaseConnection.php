@@ -37,7 +37,9 @@ class DatabaseConnection
     public function onError($error)
     {
         $query = $error->data;
-        if (strlen($query) > 1000) $error->data = substr($query, 0, 1000) . ' [...] [TRUNCATED]';
+        if (strlen($query) > 1000) {
+            $error->data = substr($query, 0, 1000) . ' [...] [TRUNCATED]';
+        }
 
         throw new Exception('SQL error: ' . $error->message . ' @ ' . $query);
     }
@@ -45,15 +47,23 @@ class DatabaseConnection
     /** @return string */
     public function prepareQuery($query, $args = null, $isInternalCall = false)
     {
-        if (!is_array($args)) $args = array($args);
+        if (!is_array($args)) {
+            $args = array($args);
+        }
 
-        $query = StringTools::parse($query, array_merge($this->globalQueryArgs, $args), array($this, 'prepareQueryFilterCallback'));
+        $query = StringTools::parse(
+            $query,
+            array_merge($this->globalQueryArgs, $args),
+            array($this, 'prepareQueryFilterCallback')
+        );
 
         if ($isInternalCall) {
             Database::$countQueries++;
             $this->countQueries++;
 
-            if ($this->_backupLastQuery) $this->_lastQuery = $query;
+            if ($this->_backupLastQuery) {
+                $this->_lastQuery = $query;
+            }
 
             if ($this->debug && $this->events) {
                 $this->events->trigger('log', '[' . $this->id . '] Query: ' . $query);
@@ -86,7 +96,9 @@ class DatabaseConnection
     public function backupLastQuery($flag)
     {
         $this->_backupLastQuery = $flag;
-        if (!$flag) $this->_lastQuery = '';
+        if (!$flag) {
+            $this->_lastQuery = '';
+        }
     }
 
     protected function _destroy()

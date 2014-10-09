@@ -10,18 +10,18 @@ class SqliteConnection extends DatabaseConnection
     public $id = 'SQLite';
 
     /** @var SQLite3 */
-    private $_connection;
+    private $connection;
 
     public $conversionTarget = 'sqlite';
 
     public function connect($file)
     {
-        if ($this->_connection) {
+        if ($this->connection) {
             return true;
         }
-        $this->_connection = new SQLite3($file);
-        if (!$this->_connection) {
-            $this->_connection = null;
+        $this->connection = new SQLite3($file);
+        if (!$this->connection) {
+            $this->connection = null;
 
             return false;
         }
@@ -34,25 +34,25 @@ class SqliteConnection extends DatabaseConnection
     /** @return SQLite3 */
     public function getConnection()
     {
-        return $this->_connection;
+        return $this->connection;
     }
 
     /** @param $connection SQLite3 */
     public function useExistingConnection($connection)
     {
-        $this->_connection = $connection;
+        $this->connection = $connection;
 
         $this->_errorHandler = ErrorHandler::getHandler(array($this, 'onError'), null, false);
     }
 
     public function close()
     {
-        if (!$this->_connection) {
+        if (!$this->connection) {
             return;
         }
 
-        $this->_connection->close();
-        $this->_connection = null;
+        $this->connection->close();
+        $this->connection = null;
 
         $this->_errorHandler->destroy();
         $this->_errorHandler = null;
@@ -70,7 +70,7 @@ class SqliteConnection extends DatabaseConnection
         $query = $this->prepareQuery($query, $args, true);
 
         $this->_errorHandler->register($query);
-        $q = $this->_connection->query($query);
+        $q = $this->connection->query($query);
         $this->_errorHandler->unRegister();
 
         if (!$q) {
@@ -123,25 +123,23 @@ class SqliteConnection extends DatabaseConnection
         $query = $this->prepareQuery($query, $args, true);
 
         $this->_errorHandler->register($query);
-        $result = $this->_connection->exec($query);
+        $result = $this->connection->exec($query);
         $this->_errorHandler->unRegister();
 
         if (!$result) {
             return false;
         }
 
-        if ($this->_connection->lastInsertRowID()) {
-            return $this->_connection->lastInsertRowID();
+        if ($this->connection->lastInsertRowID()) {
+            return $this->connection->lastInsertRowID();
         }
 
-        return $this->_connection->changes();
+        return $this->connection->changes();
     }
 
     public function insert($table, $fields, $values, $nestedRows = false, $rowsPerInsert = 100, $returnQueries = false)
     {
-        if ($returnQueries) {
-            $queries = array();
-        }
+        $queries = array();
 
         $fieldSnippet = ArrayTools::implode(array_keys($fields), ',', '`', '`');
         $typeSnippet = '(' . implode(',', array_values($fields)) . ')';
@@ -152,10 +150,12 @@ class SqliteConnection extends DatabaseConnection
 
                 if ($returnQueries) {
                     $queries[] = $this->prepareQuery($q, $row);
+
                 } else {
                     $this->exec($q, $row);
                 }
             }
+
         } else {
             $fieldCount = count($fields);
             $rows = count($values) / $fieldCount;
@@ -172,6 +172,7 @@ class SqliteConnection extends DatabaseConnection
 
                 if ($returnQueries) {
                     $queries[] = $this->prepareQuery($q, $args);
+
                 } else {
                     $this->exec($q, $args);
                 }
@@ -186,8 +187,8 @@ class SqliteConnection extends DatabaseConnection
         return null;
     }
 
-    private static $_filterArraySearch = array('"', "\0");
-    private static $_filterArrayReplace = array('""', '');
+    private static $filterArraySearch = array('"', "\0");
+    private static $filterArrayReplace = array('""', '');
 
     public function prepareQueryFilterCallback($replaces)
     {
@@ -196,27 +197,23 @@ class SqliteConnection extends DatabaseConnection
             $val = $replace[1];
 
             if ($type == 's') {
-                $replaces[$key] = str_replace(self::$_filterArraySearch, self::$_filterArrayReplace, $val);
-            } else {
-                if ($type == 't') {
-                    $replaces[$key] = '"' . str_replace(self::$_filterArraySearch, self::$_filterArrayReplace, $val) . '"';
-                } else {
-                    if ($type == 'd') {
-                        $replaces[$key] = '"' . date('Y-m-d H:i:s', $val) . '"';
-                    } else {
-                        if ($type == 'b') {
-                            $replaces[$key] = intval($val);
-                        } else {
-                            if ($type == 'S' || $type == 'T') {
-                                $r = array();
-                                foreach ($val as $v) {
-                                    $r[] = '"' . str_replace(self::$_filterArraySearch, self::$_filterArrayReplace, $v) . '"';
-                                }
-                                $replaces[$key] = implode(',', $r);
-                            }
-                        }
-                    }
+                $replaces[$key] = str_replace(self::$filterArraySearch, self::$filterArrayReplace, $val);
+
+            } elseif ($type == 't') {
+                $replaces[$key] = '"' . str_replace(self::$filterArraySearch, self::$filterArrayReplace, $val) . '"';
+
+            } elseif ($type == 'd') {
+                $replaces[$key] = '"' . date('Y-m-d H:i:s', $val) . '"';
+
+            } elseif ($type == 'b') {
+                $replaces[$key] = intval($val);
+
+            } elseif ($type == 'S' || $type == 'T') {
+                $r = array();
+                foreach ($val as $v) {
+                    $r[] = '"' . str_replace(self::$filterArraySearch, self::$filterArrayReplace, $v) . '"';
                 }
+                $replaces[$key] = implode(',', $r);
             }
         }
 

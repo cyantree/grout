@@ -5,53 +5,53 @@ use SQLite3Result;
 
 class SqliteReader extends DatabaseReader
 {
-    private $_flags;
+    private $flags;
 
     /** @var SQLite3Result */
-    private $_data;
-    private $_currentSet;
+    private $data;
+    private $currentSet;
 
-    function __construct($data = null, $flags = null)
+    public function __construct($data = null, $flags = null)
     {
-        $this->_flags = $flags;
-        $this->_data = $data;
+        $this->flags = $flags;
+        $this->data = $data;
 
-        $this->_readNext();
+        $this->readNext();
     }
 
-    private function _readNext()
+    private function readNext()
     {
-        $this->_currentSet = null;
+        $this->currentSet = null;
 
-        if ($this->_flags & Database::TYPE_NUM) {
-            $this->_currentSet = $this->_data->fetchArray(SQLITE3_NUM);
+        if ($this->flags & Database::TYPE_NUM) {
+            $this->currentSet = $this->data->fetchArray(SQLITE3_NUM);
         } else {
-            if ($this->_flags & Database::TYPE_ASSOC) {
-                $this->_currentSet = $this->_data->fetchArray(SQLITE3_ASSOC);
+            if ($this->flags & Database::TYPE_ASSOC) {
+                $this->currentSet = $this->data->fetchArray(SQLITE3_ASSOC);
             } else {
-                if ($this->_flags & Database::TYPE_ASSOC && $this->_flags & Database::TYPE_NUM) {
-                    $this->_currentSet = $this->_data->fetchArray(SQLITE3_BOTH);
+                if ($this->flags & Database::TYPE_ASSOC && $this->flags & Database::TYPE_NUM) {
+                    $this->currentSet = $this->data->fetchArray(SQLITE3_BOTH);
                 }
             }
         }
 
-        if (!$this->_currentSet) {
-            $this->_data->finalize();
-            $this->_data = null;
+        if (!$this->currentSet) {
+            $this->data->finalize();
+            $this->data = null;
         }
     }
 
     public function hasResults()
     {
-        return $this->_data != null;
+        return $this->data != null;
     }
 
     public function read()
     {
-        $res = $this->_currentSet;
+        $res = $this->currentSet;
 
         if ($res) {
-            $this->_readNext();
+            $this->readNext();
         }
 
         return $res;
