@@ -3,52 +3,64 @@ namespace Cyantree\Grout\Tools;
 
 class ServerTools
 {
-    private static $_maxUploadSize;
-    private static $_memoryLimit;
+    private static $maxUploadSize;
+    private static $memoryLimit;
 
-    public static function getMemoryLimit(){
-        if(self::$_memoryLimit){
-            return self::$_memoryLimit;
+    public static function getMemoryLimit()
+    {
+        if (self::$memoryLimit) {
+            return self::$memoryLimit;
         }
 
-        self::$_memoryLimit = self::decodePHPConfigSize(ini_get('memory_limit'));
-        if(self::$_memoryLimit == -1){
-            self::$_memoryLimit = 999 * 1024 * 1024 * 1024;
+        self::$memoryLimit = self::decodePHPConfigSize(ini_get('memory_limit'));
+        if (self::$memoryLimit == -1) {
+            self::$memoryLimit = 999 * 1024 * 1024 * 1024;
         }
 
-        return self::$_memoryLimit;
+        return self::$memoryLimit;
     }
 
-    public static function decodePHPConfigSize($sizeString){
-        if(preg_match('!([0-9]+)\s*([A-Z])!', $sizeString, $args)){
+    public static function decodePHPConfigSize($sizeString)
+    {
+        if (preg_match('!([0-9]+)\s*([A-Z])!', $sizeString, $args)) {
             $val = $args[1];
 
             $type = $args[2];
-            if($type == 'K'){
+            if ($type == 'K') {
                 $val *= 1024;
-            }elseif($type == 'M'){
+
+            } elseif ($type == 'M') {
                 $val *= 1024 * 1024;
-            }elseif($type == 'G'){
+
+            } elseif ($type == 'G') {
                 $val *= 1024 * 1024 * 1024;
             }
-        }else{
+
+        } else {
             $val = intval($sizeString);
         }
 
         return $val;
     }
 
-    public static function getMaxUploadSize(){
-        if(self::$_maxUploadSize) return self::$_maxUploadSize;
+    public static function getMaxUploadSize()
+    {
+        if (self::$maxUploadSize) {
+            return self::$maxUploadSize;
+        }
 
         $uploadMaxFileSize = self::decodePHPConfigSize(ini_get('upload_max_filesize'));
 
         $postMaxSize = self::decodePHPConfigSize(ini_get('upload_max_filesize'));
 
-        if($uploadMaxFileSize < $postMaxSize) self::$_maxUploadSize = $uploadMaxFileSize;
-        else self::$_maxUploadSize = $postMaxSize;
+        if ($uploadMaxFileSize < $postMaxSize) {
+            self::$maxUploadSize = $uploadMaxFileSize;
 
-        return self::$_maxUploadSize;
+        } else {
+            self::$maxUploadSize = $postMaxSize;
+        }
+
+        return self::$maxUploadSize;
     }
 
 
@@ -56,30 +68,50 @@ class ServerTools
     {
         ini_alter('max_execution_time', $time);
 
-        return (int)ini_get('max_execution_time');
+        return (int) ini_get('max_execution_time');
     }
 
     public static function getContentTypeByExtension($e, $default = null)
     {
-        if ($e == 'gif') return 'image/gif';
-        if ($e == 'jpg' || $e == 'jpeg') return 'image/jpeg';
-        if ($e == 'png') return 'image/png';
-        if ($e == 'js') return 'text/javascript';
-        if ($e == 'css') return 'text/css';
-        if ($e == 'html' || $e == 'htm') return 'text/html';
-        if ($e == 'xml') return 'text/xml';
-        if ($e == 'txt' || $e == 'php' || $e == 'php4' || $e == 'php5') return 'text/plain';
-        if ($e == 'exe' || $e == 'dmg') return 'application/octet-stream';
+        if ($e == 'gif') {
+            return 'image/gif';
+        }
+        if ($e == 'jpg' || $e == 'jpeg') {
+            return 'image/jpeg';
+        }
+        if ($e == 'png') {
+            return 'image/png';
+        }
+        if ($e == 'js') {
+            return 'text/javascript';
+        }
+        if ($e == 'css') {
+            return 'text/css';
+        }
+        if ($e == 'html' || $e == 'htm') {
+            return 'text/html';
+        }
+        if ($e == 'xml') {
+            return 'text/xml';
+        }
+        if ($e == 'txt' || $e == 'php' || $e == 'php4' || $e == 'php5') {
+            return 'text/plain';
+        }
+        if ($e == 'exe' || $e == 'dmg') {
+            return 'application/octet-stream';
+        }
 
         return $default;
     }
 
     public static function setIncludePath($path)
     {
-        if (isset($_SERVER['WINDIR']) || isset($_SERVER['windir']) || isset($_ENV['windir']))
+        if (isset($_SERVER['WINDIR']) || isset($_SERVER['windir']) || isset($_ENV['windir'])) {
             ini_set('include_path', ini_get('include_path') . ';' . $path);
-        else
+
+        } else {
             ini_set('include_path', ini_get('include_path') . ':' . $path);
+        }
     }
 
     public static function decodeMagicQuotes($array)
@@ -112,14 +144,18 @@ class ServerTools
 
     public static function suppressErrors($suppress)
     {
-        if ($suppress) set_error_handler(array('\Cyantree\Grout\Tools\ServerTools', 'doNothing'));
-        else restore_error_handler();
+        if ($suppress) {
+            set_error_handler(array('\Cyantree\Grout\Tools\ServerTools', 'doNothing'));
+
+        } else {
+            restore_error_handler();
+        }
     }
 
     public static function parseCommandlineString($command)
     {
         $command = trim($command);
-        if($command == ''){
+        if ($command == '') {
             return array('');
         }
 
@@ -129,50 +165,54 @@ class ServerTools
         $currentArgument = '';
         $inQuoteMode = false;
 
-        do{
+        do {
             $char = mb_substr($command, $pos, 1);
 
-            if($char == '"'){
+            if ($char == '"') {
                 $nextChar = $pos < $chars - 1 ? mb_substr($command, $pos + 1, 1) : null;
 
-                if($inQuoteMode){
-                    if($nextChar == '"'){
+                if ($inQuoteMode) {
+                    if ($nextChar == '"') {
                         $currentArgument .= '"';
                         $pos++;
-                    }else{
+
+                    } else {
                         $inQuoteMode = false;
                     }
-                }else{
+
+                } else {
                     $inQuoteMode = true;
                 }
 
-            }elseif($char == '\\'){
+            } elseif ($char == '\\') {
                 $nextChar = $pos < $chars - 1 ? mb_substr($command, $pos + 1, 1) : null;
 
-                if($nextChar == '\\' || $nextChar == '"'){
+                if ($nextChar == '\\' || $nextChar == '"') {
                     $currentArgument .= $nextChar;
                     $pos++;
                 }
 
-            }elseif($char == ' '){
-                if($inQuoteMode){
+            } elseif ($char == ' ') {
+                if ($inQuoteMode) {
                     $currentArgument .= ' ';
-                }else{
+
+                } else {
                     $args[] = $currentArgument;
                     $currentArgument = '';
                 }
-            }else{
+
+            } else {
                 $currentArgument .= $char;
             }
 
             $pos++;
-        }while($pos < $chars);
+        } while ($pos < $chars);
 
-        if($currentArgument !== ''){
+        if ($currentArgument !== '') {
             $args[] = $currentArgument;
         }
 
-        if(!count($args)){
+        if (!count($args)) {
             return array('');
         }
 

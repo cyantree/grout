@@ -10,7 +10,7 @@ class ConfigChain
 
     public $prefix;
 
-    private $_classes = array();
+    private $classes = array();
 
     public function __construct($namespace = null, $prefix = null)
     {
@@ -24,7 +24,7 @@ class ConfigChain
             return;
         }
 
-        $this->_classes[] = $this->namespace . $this->prefix . $name . 'Config';
+        $this->classes[] = $this->namespace . $this->prefix . $name . 'Config';
     }
 
     public function checkMachineName()
@@ -50,6 +50,6 @@ class ConfigChain
 
     public function getChain()
     {
-        return $this->_classes;
+        return $this->classes;
     }
 }

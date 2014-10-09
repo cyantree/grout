@@ -45,7 +45,7 @@ abstract class DoctrineSet extends Set
     {
         $e = $this->_getEntityManager()->find($this->_getEntityClass(), $id);
 
-        if($e){
+        if ($e) {
             $this->setEntity($e);
         }
 
@@ -56,8 +56,8 @@ abstract class DoctrineSet extends Set
     {
         $a = array();
 
-        foreach($this->contents as $name => $content){
-            if($content->storeInSet){
+        foreach ($this->contents as $name => $content) {
+            if ($content->storeInSet) {
                 $a[$name] = $content->getData();
             }
         }
@@ -91,9 +91,8 @@ abstract class DoctrineSet extends Set
 
     protected function _collectData()
     {
-        foreach($this->contents as $name => $content)
-        {
-            if($content->storeInSet){
+        foreach ($this->contents as $name => $content) {
+            if ($content->storeInSet) {
                 $this->entity->{$name} = $content->getData();
             }
         }
@@ -116,9 +115,8 @@ abstract class DoctrineSet extends Set
     {
         $this->entity = $e;
 
-        foreach($this->contents as $name => $content)
-        {
-            if($content->storeInSet){
+        foreach ($this->contents as $name => $content) {
+            if ($content->storeInSet) {
                 $content->setData($e->{$name});
             }
         }
@@ -143,10 +141,10 @@ abstract class DoctrineSet extends Set
         $data = $this->_getListQueryData($options);
 
         // Create search queries
-        $searchQueries = &$data['searchQueries'];
-        if($search != ''){
-            foreach($this->contents as $content){
-                if($content->searchable){
+        $searchQueries = & $data['searchQueries'];
+        if ($search != '') {
+            foreach ($this->contents as $content) {
+                if ($content->searchable) {
                     $parameters['search'] = '%' . $search . '%';
                     $searchQueries[] = 'e.' . $content->name . ' LIKE :search';
                 }
@@ -154,33 +152,35 @@ abstract class DoctrineSet extends Set
         }
 
         // Create query parts
-        if($searchQueries){
+        if ($searchQueries) {
             $filterClause = '(' . implode(' OR ', $searchQueries) . ')';
-        }else{
+
+        } else {
             $filterClause = '1 = 1';
         }
 
         // Check for ordering
         $orderClause = '';
         if ($sortingField) {
-            foreach($this->contents as $content){
-                if($content->sortable && $content->name == $sortingField){
+            foreach ($this->contents as $content) {
+                if ($content->sortable && $content->name == $sortingField) {
                     $orderClause = 'e.' . $content->name . ' ' . $sortingDirection;
                     break;
                 }
             }
         }
 
-        if($orderClause === '') {
+        if ($orderClause === '') {
             if ($data['select']['defaultOrder']) {
                 $orderClause = $data['select']['defaultOrder'];
             } else {
                 $orderField = $this->config->get('order');
                 if ($orderField) {
-                    $orderClause = 'e.'.$orderField;
+                    $orderClause = 'e.' . $orderField;
+
                 } else {
                     $identifiers = $this->_getEntityManager()->getClassMetadata($this->_getEntityClass())->getIdentifierFieldNames();
-                    $orderClause = 'e.'.$identifiers[0].' DESC';
+                    $orderClause = 'e.' . $identifiers[0] . ' DESC';
                 }
             }
         }
@@ -256,32 +256,5 @@ abstract class DoctrineSet extends Set
         }
 
         return self::$capabilities;
-    }
-}
-
-class DoctrineSetListResult extends SetListResult
-{
-    /** @var DoctrineSet */
-    private $_set;
-
-    private $_entities;
-
-    public function __construct($set, $entities)
-    {
-        $this->_set = $set;
-        $this->_entities = $entities;
-        $this->count = count($entities);
-    }
-    public function getNext()
-    {
-        $entity = array_shift($this->_entities);
-
-        if ($entity === null) {
-            return null;
-        }
-
-        $this->_set->setEntity($entity);
-
-        return $this->_set;
     }
 }

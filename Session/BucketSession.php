@@ -36,7 +36,7 @@ class BucketSession
     {
         $this->ip = ArrayTools::get($_SERVER, 'REMOTE_ADDR');
         $this->userAgent = ArrayTools::get($_SERVER, 'HTTP_USER_AGENT');
-        $this->name = 'Session_'.substr(md5(__FILE__), 0, 16);
+        $this->name = 'Session_' . substr(md5(__FILE__), 0, 16);
     }
 
     public function load($id = null, $checkSession = true)
@@ -47,7 +47,7 @@ class BucketSession
             $id = $_COOKIE[$this->name];
         }
 
-        if($id){
+        if ($id) {
             $this->bucket = $this->bucketBase->load($id, $this->name);
         }
 
@@ -56,20 +56,22 @@ class BucketSession
         if (!$this->isNew) {
             if ($checkSession && !$this->checkSession()) {
                 $this->reset();
+
             } else {
                 $this->data = $this->bucket->data['data'];
                 $this->id = $this->bucket->id;
             }
+
         } else {
             $this->data = null;
 
-            $data = $this->_getBucketData();
+            $data = $this->getBucketData();
             $this->bucket = $this->bucketBase->create($data, $this->expirationTime, $this->name);
             $this->id = $this->bucket->id;
         }
     }
 
-    private function _getBucketData()
+    private function getBucketData()
     {
         $d = array();
 
@@ -90,7 +92,7 @@ class BucketSession
 
     public function save()
     {
-        $this->bucket->data = $this->_getBucketData();
+        $this->bucket->data = $this->getBucketData();
         $this->bucket->expires = $this->expirationTime;
         $this->bucket->save();
 
@@ -110,7 +112,7 @@ class BucketSession
     {
         $this->data = null;
 
-        if($this->bucket && !$keepBucket){
+        if ($this->bucket && !$keepBucket) {
             $this->bucket->delete();
         }
 
@@ -128,19 +130,19 @@ class BucketSession
     {
         $f = new ArrayFilter($this->bucket->data);
 
-        if($f->get('name') != $this->name){
+        if ($f->get('name') != $this->name) {
             return false;
         }
 
-        if(!$f->get('lastAction') || time() - $f->get('lastAction') > $this->expirationTime){
+        if (!$f->get('lastAction') || time() - $f->get('lastAction') > $this->expirationTime) {
             return false;
         }
 
-        if($this->checkIp && $f->get('ip') != $this->ip){
+        if ($this->checkIp && $f->get('ip') != $this->ip) {
             return false;
         }
 
-        if($this->checkUserAgent && $f->get('userAgent') != $this->userAgent){
+        if ($this->checkUserAgent && $f->get('userAgent') != $this->userAgent) {
             return false;
         }
 

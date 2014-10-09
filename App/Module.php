@@ -161,7 +161,7 @@ class Module
     public function getRouteUrl($id, $arguments = null, $absoluteURL = true, $parameters = null, $escapeArguments = true)
     {
         if (!isset($this->routes[$id])) {
-            trigger_error('The route "' . $id . '" does not exist in module "'.$this->id.'".', E_USER_WARNING);
+            trigger_error('The route "' . $id . '" does not exist in module "' . $this->id . '".', E_USER_WARNING);
         }
         /** @var $route Route */
         $route = $this->routes[$id];
@@ -190,7 +190,7 @@ class Module
 //        $namespace = NamespaceTools::getNamespaceOfInstance($this);
 
         foreach ($chain as $element) {
-            if(class_exists($element)){
+            if (class_exists($element)) {
                 return new $element;
             }
 //            $file = AutoLoader::translateClassName($element, $namespace, $this->path);
@@ -199,7 +199,7 @@ class Module
 //            }
         }
 
-        throw new \Exception("No configuration could be imported.");
+        throw new \Exception('No configuration could be imported.');
     }
 
     public function importPlugin($type, $config = null, $id = null)
@@ -216,6 +216,7 @@ class Module
         $pos = strrpos($type, '\\');
         if ($pos === false) {
             $class = $type;
+
         } else {
             $class = substr($type, strrpos($type, '\\') + 1);
         }
@@ -239,11 +240,11 @@ class Module
         $p->type = $type;
         $p->config = $config;
         $p->path = $path;
-        $p->namespace = NamespaceTools::getNamespaceOfInstance($p).'\\';
+        $p->namespace = NamespaceTools::getNamespaceOfInstance($p) . '\\';
         $p->module = $this;
         $p->app = $this->app;
 
-        $p->id = $id;;
+        $p->id = $id;
 
         $this->pluginIds[$p->id] = $p;
         $this->plugins[] = $p;

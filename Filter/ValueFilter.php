@@ -10,7 +10,8 @@ class ValueFilter
         $this->value = $value;
     }
 
-    public static function filter($value){
+    public static function filter($value)
+    {
         return new ValueFilter($value);
     }
 }

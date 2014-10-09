@@ -38,11 +38,11 @@ class Page
 
     public function setResult($content, $contentType = null, $responseCode = null)
     {
-        if(!is_string($content)){
+        if (!is_string($content)) {
             $content = strval($content);
         }
 
-        if($responseCode){
+        if ($responseCode) {
             $this->task->response->code = $responseCode;
         }
 

@@ -3,20 +3,24 @@ namespace Cyantree\Grout\Tools;
 
 class ArrayTools
 {
-    public static function sortAssociativeArray($array, $order){
+    public static function sortAssociativeArray($array, $order)
+    {
         $r = array();
-        foreach($order as $o){
+        foreach ($order as $o) {
             $r[$o] = $array[$o];
         }
 
         return $r;
     }
+
     public static function get($array, $key, $defaultValue = null)
     {
         if (!is_array($array)) {
             return $defaultValue;
         }
-        if (array_key_exists($key, $array)) return $array[$key];
+        if (array_key_exists($key, $array)) {
+            return $array[$key];
+        }
 
         return $defaultValue;
     }
@@ -34,6 +38,7 @@ class ArrayTools
 
         if ($isAssociative) {
             return $array[$keys[$key]];
+
         } else {
             return $array[$key];
         }
@@ -48,11 +53,17 @@ class ArrayTools
     {
         // file, int, float, bool, string, line, raw
 
-        if ($array === null || !is_array($array)) return array();
+        if ($array === null || !is_array($array)) {
+            return array();
+        }
 
         if ($type == 'file') {
-            if (!isset($array['tmp_name']) || !is_array($array['tmp_name'])) return array();
-            else $array = self::unpack($array);
+            if (!isset($array['tmp_name']) || !is_array($array['tmp_name'])) {
+                return array();
+
+            } else {
+                $array = self::unpack($array);
+            }
         }
 
         $r = array();
@@ -60,7 +71,9 @@ class ArrayTools
         $excludeEmptyVars = self::get($args, 'excludeEmpty') == 1;
 
         foreach ($array as $item) {
-            if ($excludeEmptyVars && ($item === null || $item === '')) continue;
+            if ($excludeEmptyVars && ($item === null || $item === '')) {
+                continue;
+            }
 
             $r[] = VarTools::prepare($item, $type, $args);
         }
@@ -77,14 +90,16 @@ class ArrayTools
 
     public static function remove($array, $key)
     {
-        if (array_key_exists($key, $array)) unset($array[$key]);
+        if (array_key_exists($key, $array)) {
+            unset($array[$key]);
+        }
 
         return $array;
     }
 
     public static function unpack($array)
     {
-        if(!$array){
+        if (!$array) {
             return array();
         }
 
@@ -105,10 +120,11 @@ class ArrayTools
 
         $result = array();
 
-        foreach($elementKeys as $elementKey){
+        foreach ($elementKeys as $elementKey) {
             $e = array();
-            foreach ($keys as $key)
+            foreach ($keys as $key) {
                 $e[$key] = $array[$key][$elementKey];
+            }
 
             $result[$elementKey] = $e;
         }
@@ -120,17 +136,26 @@ class ArrayTools
     {
         $res = array();
 
-        if (!is_array($a)) return array($a);
-        else if (count($a) == 0) return $res;
+        if (!is_array($a)) {
+            return array($a);
+
+        } elseif (count($a) == 0) {
+            return $res;
+        }
 
         $k = array_keys($a);
         if (is_array($a[$k[0]])) {
             foreach ($a as $ai) {
                 $b = self::flatten($ai);
-                foreach ($b as $bi) $res[] = $bi;
+                foreach ($b as $bi) {
+                    $res[] = $bi;
+                }
             }
+
         } else {
-            foreach ($a as $ai) $res[] = $ai;
+            foreach ($a as $ai) {
+                $res[] = $ai;
+            }
         }
 
         return $res;
@@ -144,24 +169,33 @@ class ArrayTools
 
             $elementKey = is_object($element) ? $element->{$key} : $element[$key];
             if ($groupByKey) {
-                if (array_key_exists($elementKey, $new)) $new[$elementKey][] = $element;
-                else $new[$elementKey] = array($element);
-            } else $new[$elementKey] = $element;
+                if (array_key_exists($elementKey, $new)) {
+                    $new[$elementKey][] = $element;
+
+                } else {
+                    $new[$elementKey] = array($element);
+                }
+
+            } else {
+                $new[$elementKey] = $element;
+            }
         }
 
         return $new;
     }
 
-    public static function mapByKeyValue($array, $keyProperty, $valueProperty, $groupValues = false){
+    public static function mapByKeyValue($array, $keyProperty, $valueProperty, $groupValues = false)
+    {
         $new = array();
 
-        foreach($array as $element){
+        foreach ($array as $element) {
             $key = $element[$keyProperty];
             $value = $element[$valueProperty];
 
             if ($groupValues === true) {
                 if (!isset($new[$key])) {
                     $new[$key] = array($value);
+
                 } else {
                     $new[$key][] = $value;
                 }
@@ -197,12 +231,14 @@ class ArrayTools
             foreach ($includeKeys as $key => $foo) {
                 if ($sourceIsObject) {
                     $val = $source->{$key};
+
                 } else {
                     $val = $source[$key];
                 }
 
                 if ($targetIsObject) {
                     $target->{$key} = $val;
+
                 } else {
                     $target[$key] = $val;
                 }
@@ -214,6 +250,7 @@ class ArrayTools
                 foreach ($source as $key => $value) {
                     $keys[$key] = $value;
                 }
+
             } else {
                 $keys = &$source;
             }
@@ -229,6 +266,7 @@ class ArrayTools
                     if (isset($excludeKeys[$key]) && !$included) {
                         continue;
                     }
+
                 } else {
                     if ($includeKeys !== null && !$included) {
                         continue;
@@ -237,6 +275,7 @@ class ArrayTools
 
                 if ($targetIsObject) {
                     $target->{$key} = $val;
+
                 } else {
                     $target[$key] = $val;
                 }
@@ -251,10 +290,14 @@ class ArrayTools
         // Copies selection of properties from elements to new array
 
         $result = array();
-        if (!is_array($keys)) $keys = array($keys);
+        if (!is_array($keys)) {
+            $keys = array($keys);
+        }
 
         if ($groupByKey) {
-            foreach ($keys as $property) $result[$property] = array();
+            foreach ($keys as $property) {
+                $result[$property] = array();
+            }
         }
 
         $isObject = is_object(current($elements));
@@ -263,15 +306,24 @@ class ArrayTools
         if ($isObject) {
             foreach ($keys as $property) {
                 foreach ($elements as $element) {
-                    if ($groupByKey) $result[$property][] = $element->{$property};
-                    else $result[] = $element->{$property};
+                    if ($groupByKey) {
+                        $result[$property][] = $element->{$property};
+
+                    } else {
+                        $result[] = $element->{$property};
+                    }
                 }
             }
+
         } else {
             foreach ($keys as $property) {
                 foreach ($elements as $element) {
-                    if ($groupByKey) $result[$property][] = $element[$property];
-                    else $result[] = $element[$property];
+                    if ($groupByKey) {
+                        $result[$property][] = $element[$property];
+
+                    } else {
+                        $result[] = $element[$property];
+                    }
                 }
             }
         }
@@ -281,7 +333,9 @@ class ArrayTools
 
     public static function convertToKeyArray($array, $value = true)
     {
-        if (!count($array)) return array();
+        if (!count($array)) {
+            return array();
+        }
 
         // Remove duplicates
         $array = array_flip(array_flip($array));
@@ -291,7 +345,9 @@ class ArrayTools
 
     public static function implode($array, $glue, $padElementsLeft = '', $padElementsRight = '')
     {
-        if (!count($array)) return '';
+        if (!count($array)) {
+            return '';
+        }
 
         $s = '';
         $isFirst = true;
@@ -299,7 +355,10 @@ class ArrayTools
             if ($isFirst) {
                 $isFirst = false;
                 $s .= $padElementsLeft . $e . $padElementsRight;
-            } else $s .= $glue . $padElementsLeft . $e . $padElementsRight;
+
+            } else {
+                $s .= $glue . $padElementsLeft . $e . $padElementsRight;
+            }
         }
 
         return $s;

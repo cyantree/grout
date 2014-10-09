@@ -49,22 +49,22 @@ class App
     /** @var DataStorage */
     public $cacheStorage;
 
-    private $_routes = array();
+    private $routes = array();
 
-    private $_initiated = false;
+    private $initiated = false;
 
     /** @var Task */
     public $currentTask;
-    private $_otherActiveTasks = array();
-    private $_taskCount = 0;
+    private $otherActiveTasks = array();
+    private $taskCount = 0;
 
     /** @var App */
     public static $current;
-    private static $_otherActiveApps = array();
+    private static $otherActiveApps = array();
 
-    private $_emergencyShutdownInProgress;
+    private $emergencyShutdownInProgress;
 
-    function __construct($id = null, $timeConstructed = null)
+    public function __construct($id = null, $timeConstructed = null)
     {
         $this->id = $id ? $id : mt_rand(0, 9999);
 
@@ -73,8 +73,8 @@ class App
         $this->configs = new ConfigContainer($this);
         $this->configs->setDefaultConfig('GroutApp', new GroutAppConfig());
 
-        if(self::$current){
-            self::$_otherActiveApps[] = self::$current;
+        if (self::$current) {
+            self::$otherActiveApps[] = self::$current;
         }
 
         self::$current = $this;
@@ -105,14 +105,19 @@ class App
 
         if ($uri[0] === 'data') {
             $uri = $this->dataPath . $uri[1];
+
         } elseif ($uri[0] === 'path') {
             $uri = $this->path . $uri[1];
+
         } elseif ($uri[0] === 'publicPath') {
             $uri = $this->publicPath . $uri[1];
+
         } elseif ($uri[0] === 'url') {
             $uri = $this->url . $uri[1];
+
         } elseif ($uri[0] === 'publicUrl') {
             $uri = $this->publicUrl . $uri[1];
+
         } else {
             $uri = implode('://', $uri);
         }
@@ -125,7 +130,7 @@ class App
         $this->dataStorage = new DataStorage($this->dataPath . 'data/');
         $this->cacheStorage = new DataStorage($this->dataPath . 'cache/');
 
-        $this->_initiated = true;
+        $this->initiated = true;
     }
 
     /**
@@ -138,7 +143,7 @@ class App
 
         // Create task
         $task = new Task();
-        $task->id = ++$this->_taskCount;
+        $task->id = ++$this->taskCount;
         $task->timeConstructed = microtime(true);
         $task->request = $request;
         $task->response = new Response();
@@ -146,8 +151,9 @@ class App
         $task->url = $this->url . $task->request->url;
 
         if ($this->currentTask) {
-            $this->_otherActiveTasks[] = $task;
+            $this->otherActiveTasks[] = $task;
         }
+
         $this->currentTask = $task;
         $this->events->trigger('currentTaskChanged', $task);
 
@@ -179,18 +185,18 @@ class App
                     $route->registeredInApp = true;
 //                    $route->init();
 
-                    if (!isset($this->_routes[$route->priority])) {
-                        $this->_routes[$route->priority] = array();
+                    if (!isset($this->routes[$route->priority])) {
+                        $this->routes[$route->priority] = array();
                         $routePrioritiesChanged = true;
                     }
-                    $this->_routes[$route->priority][] = $route;
+                    $this->routes[$route->priority][] = $route;
                 }
             }
         }
 
         // Route priorities changed, resort list
         if ($routePrioritiesChanged) {
-            krsort($this->_routes);
+            krsort($this->routes);
         }
         // >>
 
@@ -205,7 +211,7 @@ class App
         $foundRoute = null;
         $routeVars = array();
 
-        foreach ($this->_routes as $routePriorities) {
+        foreach ($this->routes as $routePriorities) {
             foreach ($routePriorities as $route) {
                 /** @var $route Route */
                 if (!$route->enabled || !$route->module->routesEnabled) {
@@ -227,8 +233,8 @@ class App
                     }
                 }
 
-                if (($route->module && $route->module->routeRetrieved($task, $route)) ||
-                      ($route->plugin && $route->plugin->routeRetrieved($task, $route))
+                if (($route->module && $route->module->routeRetrieved($task, $route))
+                    || ($route->plugin && $route->plugin->routeRetrieved($task, $route))
                 ) {
                     $foundRoute = $route;
                     $routeVars = $res['vars'];
@@ -246,17 +252,19 @@ class App
         // Prepare route
         if ($foundRoute) {
             $task->setRoute($foundRoute, $routeVars);
+
         } else {
             trigger_error('No matching route found for URL "' . $task->request->url . '"', E_USER_ERROR);
         }
 
         $this->events->trigger('log', 'Prepare parsing');
 
-        if(strpos($task->route->page, '@')){
+        if (strpos($task->route->page, '@')) {
             $type = explode('@', $task->route->page, 2);
             $class = $type[0];
             $action = $type[1];
-        }else{
+
+        } else {
             $class = $task->route->page;
             $action = 'parseTask';
         }
@@ -264,8 +272,10 @@ class App
         $classData = AppTools::decodeUri($class, $this, $task->route->module, $task->route->plugin);
         if ($classData[1]) {
             $class = NamespaceTools::getNamespaceOfInstance($classData[1]) . '\\' . $classData[2];
+
         } elseif ($classData[0]) {
             $class = NamespaceTools::getNamespaceOfInstance($classData[0]) . '\\' . $classData[2];
+
         } else {
             trigger_error('No page class found for "' . $task->request->url . '" with "' . $task->route->page . '"');
             $class = null;
@@ -307,9 +317,10 @@ class App
             $module->destroyTask($task);
         }
 
-        if (count($this->_otherActiveTasks)) {
-            $this->currentTask = array_pop($this->_otherActiveTasks);
+        if (count($this->otherActiveTasks)) {
+            $this->currentTask = array_pop($this->otherActiveTasks);
             $this->events->trigger('currentTaskChanged', $this->currentTask);
+
         } else {
             $this->currentTask = null;
         }
@@ -327,9 +338,10 @@ class App
             $module->destroy();
         }
 
-        if(count(self::$_otherActiveApps)){
-            self::$current = array_pop(self::$_otherActiveApps);
-        }else{
+        if (count(self::$otherActiveApps)) {
+            self::$current = array_pop(self::$otherActiveApps);
+
+        } else {
             self::$current = null;
         }
     }
@@ -375,7 +387,7 @@ class App
             $id = str_replace('\\', '', $type);
 
             if ($this->getModuleById($id)) {
-                $id .=  '_' . count($this->modules);
+                $id .= '_' . count($this->modules);
             }
         }
 
@@ -386,6 +398,7 @@ class App
         $pos = strrpos($type, '\\');
         if ($pos === false) {
             $class = $type;
+
         } else {
             $class = substr($type, strrpos($type, '\\') + 1);
         }
@@ -429,7 +442,7 @@ class App
 
         $this->moduleIds[$m->id] = $m;
 
-        if ($this->_initiated) {
+        if ($this->initiated) {
             $m->init();
 
             /* TODO: War aus nicht mehr bekanntem Grund auskommentiert, weil irgendetwas doppelt aufgerufen wurde */
@@ -475,6 +488,7 @@ class App
         if ($absoluteURL) {
             return $this->publicUrl . $path;
         }
+
         return $path;
     }
 
@@ -487,20 +501,21 @@ class App
         if ($absoluteURL) {
             return $this->url . $path;
         }
+
         return $path;
     }
 
     public function emergencyShutdown($reason)
     {
-        if ($this->_emergencyShutdownInProgress) {
+        if ($this->emergencyShutdownInProgress) {
             return;
         }
 
-        $this->_emergencyShutdownInProgress = true;
+        $this->emergencyShutdownInProgress = true;
 
         $this->events->trigger('emergencyShutdown');
 
-        if($this->currentTask){
+        if ($this->currentTask) {
             /** @var $response Response */
             $this->currentTask->page->parseError(ResponseCode::CODE_500, $reason);
         }
@@ -508,10 +523,11 @@ class App
 
         $this->destroy();
 
-        if($this->onEmergencyShutdown){
+        if ($this->onEmergencyShutdown) {
             call_user_func($this->onEmergencyShutdown, $this);
-        }else{
-            if($this->currentTask){
+
+        } else {
+            if ($this->currentTask) {
                 $this->currentTask->response->postHeaders();
                 echo $this->currentTask->response->content;
 
@@ -536,11 +552,12 @@ class App
     {
         $task->setRoute($route);
 
-        if(strpos($task->route->page, '@')){
+        if (strpos($task->route->page, '@')) {
             $type = explode('@', $task->route->page, 2);
             $class = $type[0];
             $action = $type[1];
-        }else{
+
+        } else {
             $class = $task->route->page;
             $action = 'parseTask';
         }
@@ -548,8 +565,10 @@ class App
         $classData = AppTools::decodeUri($class, $this, $task->route->module, $task->route->plugin);
         if ($classData[1]) {
             $class = NamespaceTools::getNamespaceOfInstance($classData[1]) . '\\' . $classData[2];
+
         } elseif ($classData[0]) {
             $class = NamespaceTools::getNamespaceOfInstance($classData[0]) . '\\' . $classData[2];
+
         } else {
             trigger_error('No page class found for "' . $task->request->url . '" with "' . $task->route->page . '"');
             $class = null;

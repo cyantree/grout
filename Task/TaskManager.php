@@ -36,7 +36,7 @@ class TaskManager
 
     public function processQuery($stopAt = null, $useLock = true)
     {
-        if(!$stopAt){
+        if (!$stopAt) {
             $stopAt = $this->timestampStopAt;
         }
 
@@ -81,7 +81,7 @@ class TaskManager
 
                     $task->onError();
 
-                } else if (!preg_match('!^error_[0-9]+_[a-zA-Z0-9]+\.tsk$!', $basename)) {
+                } elseif (!preg_match('!^error_[0-9]+_[a-zA-Z0-9]+\.tsk$!', $basename)) {
 
                     $newTaskFile = $this->directory . 'active_' . str_pad($task->priority, 3, '0', STR_PAD_LEFT) . '_' . $task->id . '.tsk';
                     rename($taskFile, $newTaskFile);

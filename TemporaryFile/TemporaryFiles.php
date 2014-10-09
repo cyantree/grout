@@ -34,7 +34,7 @@ class TemporaryFiles
     public function getPathById($id, $validateId = true)
     {
         if ($validateId) {
-            if (!$this->_isValidId($id)) {
+            if (!$this->isValidId($id)) {
                 return null;
             }
         }
@@ -60,7 +60,7 @@ class TemporaryFiles
         }
     }
 
-    private function _isValidId($id)
+    private function isValidId($id)
     {
         return preg_match($this->idRegEx, $id);
     }
@@ -178,8 +178,12 @@ class TemporaryFiles
             }
         }
 
-        if ($leaveFile) copy($file, $f->path);
-        else rename($file, $f->path);
+        if ($leaveFile) {
+            copy($file, $f->path);
+
+        } else {
+            rename($file, $f->path);
+        }
 
         $f->save();
 

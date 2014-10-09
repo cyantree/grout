@@ -15,7 +15,7 @@ class Route
 
     public $methods;
 
-    private $_matchData;
+    private $matchData;
 
 //    public $callback;
 
@@ -34,7 +34,7 @@ class Route
 
     public $page;
 
-    function __construct($url, $data = null, $priority = 0)
+    public function __construct($url, $data = null, $priority = 0)
     {
         $this->matchUrl = $this->permaUrl = $url;
         $this->priority = $priority;
@@ -43,7 +43,7 @@ class Route
 
     public function init()
     {
-        if($this->page){
+        if ($this->page) {
             $this->setMatchUrl($this->matchUrl);
             $this->setPermaUrl($this->permaUrl);
 
@@ -101,12 +101,13 @@ class Route
         $data = AppTools::decodeUri($url, $this->module->app, $this->module, $this->plugin);
 
         $url = '';
-        if($data[1]){
+        if ($data[1]) {
             $url .= $data[1]->urlPrefix;
-        }elseif($data[0]){
+
+        } elseif ($data[0]) {
             $url .= $data[0]->urlPrefix;
         }
-        $this->permaUrl = $url.$data[2];
+        $this->permaUrl = $url . $data[2];
     }
 
     public function setMatchUrl($url)
@@ -120,22 +121,23 @@ class Route
         $data = AppTools::decodeUri($url, $this->module->app, $this->module, $this->plugin);
 
         $url = '';
-        if($data[1]){
+        if ($data[1]) {
             $url .= $data[1]->urlPrefix;
-        }elseif($data[0]){
+
+        } elseif ($data[0]) {
             $url .= $data[0]->urlPrefix;
         }
-        $this->matchUrl = $url.$data[2];
-        $this->_matchData = null;
+        $this->matchUrl = $url . $data[2];
+        $this->matchData = null;
     }
 
     public function getMatchData()
     {
-        if(!$this->_matchData){
-            $this->_matchData = AppTools::decodePageUrlString($this->matchUrl);
+        if (!$this->matchData) {
+            $this->matchData = AppTools::decodePageUrlString($this->matchUrl);
         }
 
-        return $this->_matchData;
+        return $this->matchData;
     }
 
     public function matches($url, $method = null)
@@ -158,7 +160,8 @@ class Route
             }
 
             return array('matches' => false, 'vars' => null);
-        } else if ($data['expression'] == $url) {
+
+        } elseif ($data['expression'] == $url) {
             return array('matches' => true, 'vars' => array());
         }
 
@@ -174,7 +177,9 @@ class Route
             $url .= StringTools::getQueryString($parameters);
         }
 
-        if ($absoluteURL) $url = $this->module->app->url . $url;
+        if ($absoluteURL) {
+            $url = $this->module->app->url . $url;
+        }
 
         return $url;
     }

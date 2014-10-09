@@ -16,7 +16,7 @@ class AutoLoader
     /**
      * @var array Stores namespaces
      */
-    private static $_namespaces;
+    private static $namespaces;
 
     /**
      * Initializes the auto loader and registers the Grout namespace.
@@ -35,24 +35,26 @@ class AutoLoader
      */
     public static function registerNamespace($namespace, $directory, $extension = '.php', $prioritize = false)
     {
-        if (self::$_namespaces === null) {
-            self::$_namespaces = array();
+        if (self::$namespaces === null) {
+            self::$namespaces = array();
         }
 
         $directory = str_replace('\\', '/', realpath($directory)) . '/';
 
-        if($prioritize){
-            array_unshift(self::$_namespaces, array($namespace, $directory, strlen($namespace), $extension));
-        }else{
-            self::$_namespaces[] = array($namespace, $directory, strlen($namespace), $extension);
+        if ($prioritize) {
+            array_unshift(self::$namespaces, array($namespace, $directory, strlen($namespace), $extension));
+
+        } else {
+            self::$namespaces[] = array($namespace, $directory, strlen($namespace), $extension);
         }
     }
 
-    public static function translateClassName($className, $namespace, $directory, $extension = '.php'){
-        $namespace = rtrim($namespace, '\\').'\\';
-        $directory = rtrim($directory, '/').'/';
+    public static function translateClassName($className, $namespace, $directory, $extension = '.php')
+    {
+        $namespace = rtrim($namespace, '\\') . '\\';
+        $directory = rtrim($directory, '/') . '/';
 
-        return $directory. str_replace('\\', '/', substr($className, strlen($namespace))) . $extension;
+        return $directory . str_replace('\\', '/', substr($className, strlen($namespace))) . $extension;
     }
 
     /** Will be called by PHP to invoke the auto loader.
@@ -67,8 +69,8 @@ class AutoLoader
             return true;
         }
 
-        if (self::$_namespaces !== null) {
-            foreach (self::$_namespaces as $data) {
+        if (self::$namespaces !== null) {
+            foreach (self::$namespaces as $data) {
                 $ns = $data[0];
 
                 $nsl = $data[2];

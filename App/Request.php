@@ -31,17 +31,17 @@ class Request
     /** @var ArrayFilter */
     public $config;
 
-    function __construct($url = null, ArrayFilter $get = null, ArrayFilter $post = null, ArrayFilter $config = null)
+    public function __construct($url = null, ArrayFilter $get = null, ArrayFilter $post = null, ArrayFilter $config = null)
     {
-        if($get === null){
+        if ($get === null) {
             $get = new ArrayFilter();
         }
 
-        if($post === null){
+        if ($post === null) {
             $post = new ArrayFilter();
         }
 
-        if($config === null){
+        if ($config === null) {
             $config = new ArrayFilter();
         }
 

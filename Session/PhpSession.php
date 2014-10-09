@@ -30,42 +30,55 @@ class PhpSession
 
     public function load($id = null, $checkSession = true)
     {
-        if ($id)
+        if ($id) {
             $this->id = $id;
-        else if ($this->useCookie && isset($_COOKIE[$this->name]) && preg_match('/^[0-9a-zA-Z]{32}$/', $_COOKIE[$this->name]))
+
+        } elseif ($this->useCookie && isset($_COOKIE[$this->name]) && preg_match('/^[0-9a-zA-Z]{32}$/', $_COOKIE[$this->name])) {
             $this->id = $_COOKIE[$this->name];
-        else
+
+        } else {
             $this->id = StringTools::random(32);
+        }
 
         session_id($this->id);
         session_start();
 
         $this->isNew = !isset($_SESSION['_data']);
 
-        if ($this->useCookie)
+        if ($this->useCookie) {
             setcookie($this->name, $this->id, time() + $this->expirationTime * 4, $this->cookiePath, $this->cookieDomain, $this->cookieSecure, $this->cookieHttpOnly);
+        }
 
         if (!$this->isNew) {
-            if ($checkSession && !$this->checkSession()) $this->reset();
-            else
+            if ($checkSession && !$this->checkSession()) {
+                $this->reset();
+
+            } else {
                 $this->data = unserialize($_SESSION['_data']);
-        } else
+            }
+
+        } else {
             $this->data = null;
+        }
     }
 
     public function save($close = true)
     {
-        if ($this->checkIp)
+        if ($this->checkIp) {
             $_SESSION['_ip'] = $_SERVER['REMOTE_ADDR'];
+        }
 
-        if ($this->checkBrowser)
+        if ($this->checkBrowser) {
             $_SESSION['_browser'] = ArrayTools::get($_SERVER, 'HTTP_USER_AGENT');
+        }
 
         $_SESSION['_lastAction'] = time();
         $_SESSION['_data'] = serialize($this->data);
         $_SESSION['_name'] = $this->name;
 
-        if ($close) session_write_close();
+        if ($close) {
+            session_write_close();
+        }
     }
 
     public function reset()

@@ -38,7 +38,7 @@ class Task
     /** @var ArrayFilter */
     public $data;
 
-    function __construct()
+    public function __construct()
     {
         $this->data = new ArrayFilter();
     }
@@ -46,7 +46,7 @@ class Task
 
     public function setRoute($route, $routeVars = null)
     {
-        if(!$this->vars){
+        if (!$this->vars) {
             $this->vars = new ArrayFilter();
         }
 
@@ -55,11 +55,12 @@ class Task
         $this->module = $route->module;
 
         if (is_array($route->data->data)) {
-            if($routeVars === null){
+            if ($routeVars === null) {
                 $routeVars = array();
             }
             $this->vars->setData(array_merge($routeVars, $route->data->data));
-        }else{
+
+        } else {
             $this->vars->setData($routeVars);
         }
     }

@@ -52,12 +52,12 @@ class AdvancedForm
     public $bucketBase;
 
     /** @var \Cyantree\Grout\Bucket\Bucket */
-    private $_bucket;
+    private $bucket;
 
     /** @var StatusContainer */
     public $status;
 
-    private $_internalID;
+    private $internalID;
 
     public function getDataIn()
     {
@@ -68,6 +68,7 @@ class AdvancedForm
     {
         if ($this->flags & self::FLAG_CONTEXT_NO_IP) {
             return $this->id;
+
         } else {
             return $this->id . $_SERVER['REMOTE_ADDR'];
         }
@@ -87,12 +88,12 @@ class AdvancedForm
         if (!$this->id) {
             $this->id = get_class($this);
         }
-        $this->_internalID = substr(md5($this->id), 0, 8);
+        $this->internalID = substr(md5($this->id), 0, 8);
 
         $this->dataIn = $this->getDataIn();
 
         // Check for form id
-        $requestedID = $this->dataIn->get($this->_internalID . '_BucketID');
+        $requestedID = $this->dataIn->get($this->internalID . '_BucketID');
 
         $isNew = !$requestedID;
 
@@ -112,15 +113,16 @@ class AdvancedForm
 
         // Form id existing, try to load bucket
         if (!$isNew) {
-            $this->_bucket = $this->bucketBase->load($requestedID, $context);
+            $this->bucket = $this->bucketBase->load($requestedID, $context);
 
             // No valid bucket found
-            if (!$this->_bucket) {
+            if (!$this->bucket) {
                 $isNew = true;
                 $this->_processSecurityError(self::ERROR_DELETED);
+
             } else {
                 /** @var AdvancedFormData $formData */
-                $formData = $this->_bucket->data;
+                $formData = $this->bucket->data;
                 $this->formData = $formData;
 
                 $this->data = $this->formData->data;
@@ -129,8 +131,9 @@ class AdvancedForm
                 if ($this->formData->id != $this->dataIn->get('CT_Form_ID')) {
                     $isNew = true;
                     $this->_processSecurityError(self::ERROR_DELETED);
-                    $this->_bucket = null;
-                } else if ($this->formData->resetOnNextAccess) {
+                    $this->bucket = null;
+
+                } elseif ($this->formData->resetOnNextAccess) {
                     $this->formData->reset();
                     $this->formData->data = $this->data = $this->_createDataObject();
                 }
@@ -147,7 +150,7 @@ class AdvancedForm
             $uID = StringTools::random(32);
 
             $this->formData = new AdvancedFormData($uID, $this->data);
-            $this->_bucket = $this->bucketBase->create('', 86400, $context);
+            $this->bucket = $this->bucketBase->create('', 86400, $context);
         }
 
         $this->isSubmit = $this->_isSubmit();
@@ -187,6 +190,7 @@ class AdvancedForm
                 $this->formData->currentStep = $this->formData->nextStep;
                 $this->_endProcessing();
                 return;
+
             } else {
                 $this->action = 'next';
             }
@@ -199,15 +203,18 @@ class AdvancedForm
         // Calculate next step
         if ($this->action == 'next') {
             $this->formData->nextStep = $this->_getNextStep($step);
-        } else if ($this->action == 'prev') {
+
+        } elseif ($this->action == 'prev') {
             $this->formData->nextStep = $this->_getPrevStep($step);
+
         } else {
             $this->formData->nextStep = $step;
         }
 
         if ($this->formData->nextStep < 1) {
             $this->formData->nextStep = 1;
-        } else if ($this->formData->nextStep > $this->steps) {
+
+        } elseif ($this->formData->nextStep > $this->steps) {
             $this->formData->nextStep = $this->steps;
         }
 
@@ -265,7 +272,8 @@ class AdvancedForm
                 $this->action = 'next';
                 return true;
             }
-        } else if (is_array($this->submitButton)) {
+
+        } elseif (is_array($this->submitButton)) {
             foreach ($this->submitButton as $id => $action) {
                 if ($this->dataIn->has($id)) {
                     $this->mode = $id;
@@ -288,7 +296,8 @@ class AdvancedForm
             $this->mode = $button;
             if (is_array($this->submitButton)) {
                 $this->action = ArrayTools::get($this->submitButton, $button);
-            } else if ($button == $this->submitButton) {
+
+            } elseif ($button == $this->submitButton) {
                 $this->action = 'next';
             }
 
@@ -359,17 +368,18 @@ class AdvancedForm
     {
         if ($id == self::ERROR_DELETED) {
             $this->status->addError('GroutFormSecurity', self::$MESSAGE_ERROR_DELETED);
-        } else if ($id == self::ERROR_EARLY) {
+
+        } elseif ($id == self::ERROR_EARLY) {
             $this->status->addError('GroutFormSecurity', self::$MESSAGE_ERROR_EARLY);
         }
     }
 
     protected function _endProcessing()
     {
-        if ($this->_bucket) {
+        if ($this->bucket) {
             $this->formData->lastAction = microtime(true);
-            $this->_bucket->data = $this->formData;
-            $this->_bucket->save();
+            $this->bucket->data = $this->formData;
+            $this->bucket->save();
         }
 
         $this->_deInit();
@@ -377,20 +387,20 @@ class AdvancedForm
 
     public function show()
     {
-        $bucketIDName = $this->_internalID . '_BucketID';
+        $bucketIDName = $this->internalID . '_BucketID';
         if (!$this->formData) {
             return '';
         }
         if ($this->flags & self::FLAG_JAVASCRIPT) {
             $js = '<script type="text/javascript">document.write("<"+"input type=\"hidden\" name\="CT_Form_ID\" value=\"' . $this->formData->id . '" />"+' .
-                  '"<"+"input type=\"hidden\" name=\"' . $bucketIDName . '\" value=\"' . $this->_bucket->id . '\" />"+' .
+                  '"<"+"input type=\"hidden\" name=\"' . $bucketIDName . '\" value=\"' . $this->bucket->id . '\" />"+' .
                   '"<"+"input type=\"hidden\" name=\"CT_Form_Step\" value=\"' . $this->formData->currentStep . '" />");</script>';
 
             return $js;
         }
 
         return '<input type="hidden" name="CT_Form_ID" value="' . $this->formData->id . '" />' .
-        '<input type="hidden" name="' . $bucketIDName . '" value="' . $this->_bucket->id . '" />' .
+        '<input type="hidden" name="' . $bucketIDName . '" value="' . $this->bucket->id . '" />' .
         '<input type="hidden" name="CT_Form_Step" value="' . $this->formData->currentStep . '" />';
     }
 

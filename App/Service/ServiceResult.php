@@ -24,7 +24,8 @@ class ServiceResult
 
         if ($this->data == null) {
             $this->data = array();
-        } else if (!is_array($this->data)) {
+
+        } elseif (!is_array($this->data)) {
             throw new Exception('Cannot add error when data was set before.');
         }
 

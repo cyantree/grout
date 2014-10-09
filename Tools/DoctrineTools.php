@@ -31,21 +31,29 @@ class DoctrineTools
         foreach ($parts as $part) {
             $isPara = !$isPara;
 
-            if (!$isPara)
+            if (!$isPara) {
                 $result .= $part;
-            else {
-                if ($part === '') $result .= '%';
-                else {
+
+            } else {
+                if ($part === '') {
+                    $result .= '%';
+
+                } else {
                     $part = explode(':', $part, 2);
                     $type = $part[0];
                     if (count($part) > 1) {
                         $index = $part[1];
+
                     } else {
                         $index = $internalCounter++;
                     }
 
-                    if ($argsIsObject) $val = $args->{$index};
-                    else $val = $args[$index];
+                    if ($argsIsObject) {
+                        $val = $args->{$index};
+
+                    } else {
+                        $val = $args[$index];
+                    }
 
                     $replaces[] = array($type, $val);
                     $texts[] = $result;
@@ -56,7 +64,9 @@ class DoctrineTools
         $lastText = $result;
 
         foreach ($replaces as $key => $replace) {
-            if (!is_array($replace)) continue;
+            if (!is_array($replace)) {
+                continue;
+            }
 
             $type = $replace[0];
             $val = $replace[1];
@@ -66,37 +76,43 @@ class DoctrineTools
 
             if ($type == 'i') {
                 $param['type'] = 'integer';
-            } // Float
-            else if ($type == 'f') {
+
+            } elseif ($type == 'f') {
+                // Float
                 $param['type'] = 'float';
-            } else if ($type == 'f') {
-                $param['type'] = 'float';
-            } // Boolean
-            else if ($type == 'b') {
+
+            } elseif ($type == 'b') {
+                // Boolean
                 $param['type'] = 'int';
                 $param['value'] = intval($val) == 1;
-            } // Raw
-            else if ($type == 'r') {
+
+            } elseif ($type == 'r') {
+                // Raw
                 $replacement = $val;
                 $param = null;
-            } else if ($type == 'd') {
+
+            } elseif ($type == 'd') {
                 $param['type'] = 'datetime';
                 if (!is_object($val)) {
                     $v = new \DateTime();
                     $v->setTimestamp($val);
                     $val = $v;
                 }
-            } // Integer array
-            else if ($type == 'i[]') {
+
+            } elseif ($type == 'i[]') {
+                // Integer array
                 $param['type'] = Connection::PARAM_INT_ARRAY;
-            } // Integer array
-            else if ($type == 'f[]') {
+
+            } elseif ($type == 'f[]') {
+                // Float array
                 $param['type'] = Connection::PARAM_STR_ARRAY;
-            } // String array
-            else if ($type == 's[]') {
+
+            } elseif ($type == 's[]') {
+                // String array
                 $param['type'] = Connection::PARAM_STR_ARRAY;
-            } // Raw array
-            else if ($type == 'r[]') {
+
+            } elseif ($type == 'r[]') {
+                // Raw array
                 $replacement = implode(',', $val);
                 $param = null;
             }

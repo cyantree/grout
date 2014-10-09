@@ -37,7 +37,9 @@ class Mail
             $this->recipients = array($this->recipients);
         }
 
-        if (!$this->from) $this->from = self::$defaultFrom;
+        if (!$this->from) {
+            $this->from = self::$defaultFrom;
+        }
 
         // Encode sender
         $from = is_array($this->from) ? MailTools::encodeString(current($this->from)) . ' <' . key($this->from) . '>' : $this->from;
@@ -49,7 +51,10 @@ class Mail
             if (is_string($recipientMail)) {
                 $recipientMail = str_replace(array(chr(13), chr(10)), array('', ''), $recipientMail);
                 $recipients[] = MailTools::encodeString($recipientName) . ' <' . $recipientMail . '>';
-            } else $recipients[] = $recipientName;
+
+            } else {
+                $recipients[] = $recipientName;
+            }
         }
 
         // Encode recipients Cc
@@ -59,7 +64,10 @@ class Mail
                 if (is_string($recipientMail)) {
                     $recipientMail = str_replace(array(chr(13), chr(10)), array('', ''), $recipientMail);
                     $recipientsTemp[] = MailTools::encodeString($recipientName) . ' <' . $recipientMail . '>';
-                } else $recipientsTemp[] = $recipientName;
+
+                } else {
+                    $recipientsTemp[] = $recipientName;
+                }
             }
             $headers .= $lineFeed . 'CC: ' . implode(",\n ", $recipientsTemp);
         }
@@ -71,7 +79,10 @@ class Mail
                 if (is_string($recipientMail)) {
                     $recipientMail = str_replace(array(chr(13), chr(10)), array('', ''), $recipientMail);
                     $recipientsTemp[] = MailTools::encodeString($recipientName) . ' <' . $recipientMail . '>';
-                } else $recipientsTemp[] = $recipientName;
+
+                } else {
+                    $recipientsTemp[] = $recipientName;
+                }
             }
 
             $headers .= $lineFeed . 'BCC: ' . implode(",\n ", $recipientsTemp);
@@ -80,7 +91,7 @@ class Mail
         // Encode subject
         $subject = MailTools::encodeString($this->subject);
 
-        $headers .= $lineFeed . "MIME-Version: 1.0";
+        $headers .= $lineFeed . 'MIME-Version: 1.0';
 
         // Create body
         if ($this->htmlText !== null && $this->htmlText !== '') {
@@ -107,9 +118,10 @@ class Mail
             $body = quoted_printable_encode(str_replace(array("\r\n", "\n"), array("\n", "\r\n"), $this->text));
         }
 
-        if($this->returnPath){
-            $additionalParameters = '-f'.$this->returnPath;
-        }else{
+        if ($this->returnPath) {
+            $additionalParameters = '-f' . $this->returnPath;
+
+        } else {
             $additionalParameters = null;
         }
 

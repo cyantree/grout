@@ -29,9 +29,11 @@ class Quick
 
         if ($context == 'html') {
             $text = StringTools::escapeHtml($text);
-        } else if ($context == 'js') {
+
+        } elseif ($context == 'js') {
             $text = StringTools::escapeJs($text);
-        } else if ($context == 'url') {
+
+        } elseif ($context == 'url') {
             $text = urlencode($text);
         }
 

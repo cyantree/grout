@@ -11,8 +11,8 @@ class DoctrineBatchReader
     public $offset = 0;
     public $countTotal = 0;
 
-    private $_index = 0;
-    private $_count = 0;
+    private $index = 0;
+    private $count = 0;
 
     public $results;
 
@@ -21,7 +21,7 @@ class DoctrineBatchReader
     /** @var Query */
     public $query;
 
-    private function _getNextBatch()
+    private function getNextBatch()
     {
         if ($this->clearEntitiesOnBatch) {
             $em = $this->query->getEntityManager();
@@ -31,7 +31,7 @@ class DoctrineBatchReader
             }
         }
 
-        if (!$this->_count || $this->_count == $this->resultsPerBatch) {
+        if (!$this->count || $this->count == $this->resultsPerBatch) {
             if ($this->countTotal && $this->offset + $this->resultsPerBatch > $this->countTotal) {
                 $maxResults = $this->countTotal - $this->offset;
 
@@ -46,8 +46,8 @@ class DoctrineBatchReader
         }
 
         $this->offset += $this->resultsPerBatch;
-        $this->_index = 0;
-        $this->_count = count($this->results);
+        $this->index = 0;
+        $this->count = count($this->results);
     }
 
     public function close()
@@ -66,16 +66,16 @@ class DoctrineBatchReader
 
     public function getNext()
     {
-        if ($this->results === null || $this->_index == $this->_count) {
-            $this->_getNextBatch();
+        if ($this->results === null || $this->index == $this->count) {
+            $this->getNextBatch();
         }
 
-        if ($this->_count == 0) {
+        if ($this->count == 0) {
             return null;
         }
 
-        $result = $this->results[$this->_index];
-        $this->_index++;
+        $result = $this->results[$this->index];
+        $this->index++;
 
         return $result;
     }

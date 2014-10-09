@@ -22,17 +22,17 @@ class AppTools
         if ($c == 1) {
             return array($module, $plugin, $uri[0]);
 
-        } else if ($c == 2) {
+        } elseif ($c == 2) {
             if ($uri[0] !== '') {
                 $module = $app->getModuleById($uri[0]);
 
-            } elseif($uri[0] === 'App') {
+            } elseif ($uri[0] === 'App') {
                 $module = null;
             }
 
             return array($module, null, $uri[1]);
 
-        } else if ($c == 3) {
+        } elseif ($c == 3) {
             $moduleId = $uri[0];
             $pluginId = $uri[1];
 
@@ -101,9 +101,9 @@ class AppTools
             } else {
                 $type = explode(',', $item, 2);
 
-                if($escapeArguments){
+                if ($escapeArguments) {
                     $res .= urlencode($arguments[$type[0]]);
-                }else{
+                } else {
                     $res .= $arguments[$type[0]];
                 }
             }
@@ -122,7 +122,7 @@ class AppTools
 
         if (count($string) == 1) {
             $string = $string[0];
-            if($string != '' && substr($string, -1) !== '/'){
+            if ($string != '' && substr($string, -1) !== '/') {
                 $string .= '/';
             }
 

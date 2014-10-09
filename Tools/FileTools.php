@@ -114,7 +114,7 @@ class FileTools
                 if ($isDir) {
                     $directories[] = $path;
 
-                } else if (is_file($directory . $path)) {
+                } elseif (is_file($directory . $path)) {
                     unlink($directory . $path);
                 }
             }
@@ -132,7 +132,7 @@ class FileTools
     public static function deleteDirectory($directory)
     {
         $directory = str_replace('\\', '/', $directory);
-        if(substr($directory, strlen($directory) - 1) != '/'){
+        if (substr($directory, strlen($directory) - 1) != '/') {
             $directory .= '/';
         }
 
@@ -146,7 +146,9 @@ class FileTools
         while ($directory = array_pop($directories)) {
             $contents = scandir($directory);
             foreach ($contents as $content) {
-                if ($content == '.' || $content == '..') continue;
+                if ($content == '.' || $content == '..') {
+                    continue;
+                }
 
                 if (is_file($directory . $content)) {
                     unlink($directory . $content);
@@ -186,17 +188,23 @@ class FileTools
             return;
         }
 
-        if (!is_dir($target)) mkdir($target, 0777, true);
+        if (!is_dir($target)) {
+            mkdir($target, 0777, true);
+        }
 
         while (($directory = array_pop($directories)) !== null) {
             $contents = scandir($source . $directory);
 
             foreach ($contents as $content) {
-                if ($content == '.' || $content == '..') continue;
+                if ($content == '.' || $content == '..') {
+                    continue;
+                }
 
                 $path = $directory . $content;
                 $isDir = is_dir($source . $path);
-                if ($isDir) $path .= '/';
+                if ($isDir) {
+                    $path .= '/';
+                }
 
                 $ignorePath = false;
 
@@ -218,18 +226,25 @@ class FileTools
                     }
                 }
 
-                if ($ignorePath) continue;
+                if ($ignorePath) {
+                    continue;
+                }
 
                 if ($isDir) {
                     $directories[] = $path;
 
                     if (!is_dir($target . $path)) {
                         mkdir($target . $path);
-                        if ($keepTimestamps) touch($target . $path, filemtime($source . $path));
+                        if ($keepTimestamps) {
+                            touch($target . $path, filemtime($source . $path));
+                        }
                     }
-                } else if (is_file($source . $path)) {
+
+                } elseif (is_file($source . $path)) {
                     copy($source . $path, $target . $path);
-                    if ($keepTimestamps) touch($target . $path, filemtime($source . $path));
+                    if ($keepTimestamps) {
+                        touch($target . $path, filemtime($source . $path));
+                    }
                 }
             }
         }
@@ -239,8 +254,12 @@ class FileTools
     {
         $content = file_get_contents($file);
 
-        if ($eReg) $content = preg_replace($searches, $replaces, $content);
-        else $content = str_replace($searches, $replaces, $content);
+        if ($eReg) {
+            $content = preg_replace($searches, $replaces, $content);
+
+        } else {
+            $content = str_replace($searches, $replaces, $content);
+        }
 
         file_put_contents($file, $content);
     }
@@ -258,7 +277,10 @@ class FileTools
             $exists = file_exists($file);
         } while ($exists);
 
-        if ($onlyReturnRandomizedPart) return $random;
+        if ($onlyReturnRandomizedPart) {
+            return $random;
+        }
+
         return $file;
     }
 
@@ -273,6 +295,8 @@ class FileTools
     public static function deleteFile($file)
     {
         $file = str_replace('\\', '/', $file);
-        if (is_writable($file)) unlink($file);
+        if (is_writable($file)) {
+            unlink($file);
+        }
     }
 }

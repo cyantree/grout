@@ -20,16 +20,16 @@ class GroutFactory
     /** @var \Cyantree\Grout\Event\Events */
     public $events;
 
-    private static $_instances = array();
+    private static $instances = array();
 
     /** @var ArrayFilter */
-    private $_tools;
+    private $tools;
 
     /** @var \ReflectionClass */
-    private $_reflection;
-    private $_toolClasses = array();
+    private $reflection;
+    private $toolClasses = array();
 
-    private $_class;
+    private $class;
 
     public static function getFactory($app, $factoryClass, $factoryContext = null, $activeModuleTypeOrInstance = null)
     {
@@ -63,7 +63,7 @@ class GroutFactory
 
         $factoryId = $factoryClass . '_' . $factoryContext . '_' . $app->id;
 
-        if (!isset(self::$_instances[$factoryId])) {
+        if (!isset(self::$instances[$factoryId])) {
             /** @var GroutFactory $f */
             $f = new $factoryClass();
             $f->app = $app;
@@ -73,18 +73,18 @@ class GroutFactory
             $f->context = $factoryContext;
             $f->_onInit();
 
-            self::$_instances[$factoryId] = $f;
+            self::$instances[$factoryId] = $f;
         }
 
-        return self::$_instances[$factoryId];
+        return self::$instances[$factoryId];
     }
 
     public function __construct()
     {
         $this->events = new Events();
-        $this->_tools = new ArrayFilter();
-        $this->_reflection = new \ReflectionClass($this);
-        $this->_class = get_class($this);
+        $this->tools = new ArrayFilter();
+        $this->reflection = new \ReflectionClass($this);
+        $this->class = get_class($this);
     }
 
     protected function _onInit()
@@ -101,12 +101,12 @@ class GroutFactory
 
     public function getTool($name, $executeFactoryMethod = true)
     {
-        $tool = $this->_tools->get($name);
-        if($tool){
+        $tool = $this->tools->get($name);
+        if ($tool) {
             return $tool;
         }
 
-        if ($executeFactoryMethod && $this->_reflection->hasMethod($name)) {
+        if ($executeFactoryMethod && $this->reflection->hasMethod($name)) {
             return $this->{$tool}();
         }
 
@@ -115,25 +115,25 @@ class GroutFactory
             $tool = $event->data;
 
         } else {
-            $declaredClass = ArrayTools::get($this->_toolClasses, $name);
+            $declaredClass = ArrayTools::get($this->toolClasses, $name);
 
             if ($declaredClass === null) {
-                if ($this->_reflection->hasMethod($name)) {
-                    $this->_toolClasses[$name] = $declaredClass = $this->_reflection->getMethod($name)->getDeclaringClass()->getName();
+                if ($this->reflection->hasMethod($name)) {
+                    $this->toolClasses[$name] = $declaredClass = $this->reflection->getMethod($name)->getDeclaringClass()->getName();
 
                 } else {
-                    $this->_toolClasses[$name] = $declaredClass = false;
+                    $this->toolClasses[$name] = $declaredClass = false;
                 }
             }
 
-            if ($declaredClass && $this->_class != $declaredClass) {
+            if ($declaredClass && $this->class != $declaredClass) {
                 $tool = $this->_getParentFactory()->$name();
             }
         }
 
 
-        if($tool){
-            $this->_tools->set($name, $tool);
+        if ($tool) {
+            $this->tools->set($name, $tool);
         }
 
         return $tool;
@@ -141,16 +141,16 @@ class GroutFactory
 
     public function hasTool($name)
     {
-        return $this->_tools->has($name);
+        return $this->tools->has($name);
     }
 
     public function deleteTool($name)
     {
-        $this->_tools->delete($name);
+        $this->tools->delete($name);
     }
 
     public function setTool($name, $tool)
     {
-        $this->_tools->set($name, $tool);
+        $this->tools->set($name, $tool);
     }
 }

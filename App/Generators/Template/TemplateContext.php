@@ -31,9 +31,10 @@ class TemplateContext
 
     public function parse($file, $in = null)
     {
-        if(!$in || is_array($in)){
+        if (!$in || is_array($in)) {
             $this->in = new ArrayFilter($in);
-        }else{
+
+        } else {
             $this->in = $in;
         }
 

@@ -20,11 +20,11 @@ class TemplateGenerator
     public $defaultPlugin;
 
     /** @var TemplateContext */
-    private $_templateContext;
+    private $templateContext;
 
     public $baseTemplate = null;
 
-    private function _decodeName($name)
+    private function decodeName($name)
     {
         $data = AppTools::decodeUri($name, $this->app, $this->defaultModule ? $this->defaultModule : $this->app->currentTask->module,
             $this->defaultPlugin ? $this->defaultPlugin : $this->app->currentTask->plugin);
@@ -43,18 +43,18 @@ class TemplateGenerator
         $context->generator = $this;
         $context->app = $this->app;
 
-        $this->_templateContext = $context;
+        $this->templateContext = $context;
     }
 
     public function load($name, $in = null, $baseTemplate = null)
     {
-        $file = $this->_decodeName($name);
+        $file = $this->decodeName($name);
 
-        if (!$this->_templateContext) {
+        if (!$this->templateContext) {
             $this->setTemplateContext(new TemplateContext());
         }
 
-        $c = clone $this->_templateContext;
+        $c = clone $this->templateContext;
 
         $pos = strrpos($name, '/');
         if ($pos !== false) {

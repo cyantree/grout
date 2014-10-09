@@ -103,49 +103,51 @@ class Bootstrap
             if ($scriptName[0] != '/') {
                 $scriptName = '/' . $scriptName;
             }
-            $this->app->publicUrl = $this->app->url.substr($scriptName, 0, strlen($scriptName) - strlen(basename($scriptName)));
-            $this->app->url .= $scriptName.'/';
+            $this->app->publicUrl = $this->app->url . substr($scriptName, 0, strlen($scriptName) - strlen(basename($scriptName)));
+            $this->app->url .= $scriptName . '/';
         }
     }
 
     protected function _setBasePaths()
     {
         // Set server base paths
-        $this->app->path = str_replace('\\', '/', realpath($this->applicationPath)).'/';
-        $this->app->publicPath = str_replace('\\', '/', dirname($_SERVER['SCRIPT_FILENAME'])).'/';
+        $this->app->path = str_replace('\\', '/', realpath($this->applicationPath)) . '/';
+        $this->app->publicPath = str_replace('\\', '/', dirname($_SERVER['SCRIPT_FILENAME'])) . '/';
     }
 
     protected function _retrieveUrl()
     {
-        if($this->usesModRewrite){
+        if ($this->usesModRewrite) {
             $self = $this->_server->needs('PHP_SELF');
 
 //            if(($pathInfo = $this->_server->get('PATH_INFO')) || ($pathInfo = $this->_server->get('ORIG_PATH_INFO'))){
 //                $self = substr($self, 0, strlen($self) - strlen($pathInfo));
 //            }
 
-            if(($pos = strrpos($self, '/')) !== false){
+            if (($pos = strrpos($self, '/')) !== false) {
                 $self = substr($self, 0, $pos);
-            }else{
+
+            } else {
                 $self = substr($self, 0, strrpos($self, '\\'));
             }
             $url = substr($this->_server->needs('REQUEST_URI'), strlen($self));
-            if($url === false){
+            if ($url === false) {
                 $url = '';
 
-            }elseif($url !== ''){
+            } elseif ($url !== '') {
                 $posQueryString = strpos($url, '?');
-                if($posQueryString !== false){
+                if ($posQueryString !== false) {
                     $url = substr($url, 0, $posQueryString);
                 }
             }
             $url = substr($url, 1);
 
-        }else{
-            if($this->_server->has('PATH_INFO')){
+        } else {
+            if ($this->_server->has('PATH_INFO')) {
                 $url = substr($this->_server->get('PATH_INFO'), 1);
-            }else{
-                $url =  substr($this->_server->get('ORIG_PATH_INFO'), 1);
+
+            } else {
+                $url = substr($this->_server->get('ORIG_PATH_INFO'), 1);
             }
         }
 

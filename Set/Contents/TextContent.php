@@ -6,7 +6,7 @@ use Cyantree\Grout\Set\Set;
 use Cyantree\Grout\Tools\StringTools;
 
 // Fake calls to enable gettext extraction
-if(0){
+if (0) {
     _('Das Feld „%name%“ darf nicht leer sein.');
     _('Das Feld „%name%“ hat kein gültiges Format.');
     _('Im Feld „%name%“ wurde keine gültige E-Mail-Adresse angegeben.');
@@ -15,7 +15,8 @@ if(0){
     _('Das Feld „%name%“ darf nicht länger als %length% Zeichen sein.');
 }
 
-class TextContent extends Content{
+class TextContent extends Content
+{
     public $multiline = false;
 
     public $type;
@@ -38,60 +39,64 @@ class TextContent extends Content{
         'maxLength' => 'Das Feld „%name%“ darf nicht länger als %length% Zeichen sein.'
     );
 
-    public function getData() {
+    public function getData()
+    {
         return $this->_data === null ? '' : $this->_data;
     }
 
-    public function check() {
+    public function check()
+    {
         $l = mb_strlen($this->_data);
 
-        if($this->required && !$l){
+        if ($this->required && !$l) {
             $this->postError('invalid', self::$errorCodes['invalid']);
             return;
         }
 
-        if($this->pattern !== null && !preg_match($this->pattern, $this->_data)){
+        if ($this->pattern !== null && !preg_match($this->pattern, $this->_data)) {
             $this->postError('invalidPattern', self::$errorCodes['invalidPattern']);
             return;
         }
 
-        if($this->type == self::TYPE_EMAIL && !StringTools::isEmailAddress($this->_data)){
+        if ($this->type == self::TYPE_EMAIL && !StringTools::isEmailAddress($this->_data)) {
             $this->postError('invalidEmail', self::$errorCodes['invalidEmail']);
             return;
 
-        }else if($this->type == self::TYPE_URL && !StringTools::isUrl($this->_data)){
+        } elseif ($this->type == self::TYPE_URL && !StringTools::isUrl($this->_data)) {
             $this->postError('invalidUrl', self::$errorCodes['invalidUrl']);
             return;
         }
 
-        if($this->minLength || $this->maxLength){
+        if ($this->minLength || $this->maxLength) {
             $code = $length = null;
 
-            if($this->minLength && $l < $this->minLength){
+            if ($this->minLength && $l < $this->minLength) {
                 $code = 'minLength';
                 $length = $this->minLength;
-            }elseif($this->maxLength && $l > $this->maxLength){
+            } elseif ($this->maxLength && $l > $this->maxLength) {
                 $code = 'maxLength';
                 $length = $this->maxLength;
             }
 
-            if($code){
+            if ($code) {
                 $this->postError($code, self::$errorCodes[$code], array('%length%' => $length));
                 return;
             }
         }
     }
 
-    public function save() {
+    public function save()
+    {
     }
 
-    public function render($mode) {
+    public function render($mode)
+    {
         if ($mode == Set::MODE_EXPORT) {
             return $this->_data;
         }
 
-        if($mode == Set::MODE_SHOW || $mode == Set::MODE_DELETE || $mode == Set::MODE_LIST || !$this->editable){
-            return '<p>'.StringTools::escapeHtml($this->_data).'</p>';
+        if ($mode == Set::MODE_SHOW || $mode == Set::MODE_DELETE || $mode == Set::MODE_LIST || !$this->editable) {
+            return '<p>' . StringTools::escapeHtml($this->_data) . '</p>';
         }
 
 
@@ -104,14 +109,14 @@ class TextContent extends Content{
             }
         }
 
-        if($this->password){
-            return '<input type="password" name="'.$this->name.'" value=""' . $additionalAttributes . ' />';
+        if ($this->password) {
+            return '<input type="password" name="' . $this->name . '" value=""' . $additionalAttributes . ' />';
         }
 
-        if($this->multiline){
-            return '<textarea name="'.$this->name.'"' . $additionalAttributes . '>'.StringTools::escapeHtml($this->_data).'</textarea>';
+        if ($this->multiline) {
+            return '<textarea name="' . $this->name . '"' . $additionalAttributes . '>' . StringTools::escapeHtml($this->_data) . '</textarea>';
         }
 
-        return '<input type="text" name="'.$this->name.'" value="'.StringTools::escapeHtml($this->_data).'"' . $additionalAttributes . ' />';
+        return '<input type="text" name="' . $this->name . '" value="' . StringTools::escapeHtml($this->_data) . '"' . $additionalAttributes . ' />';
     }
 }

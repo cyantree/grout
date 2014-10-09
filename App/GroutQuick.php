@@ -32,12 +32,12 @@ class GroutQuick extends Quick
     public function r($uri, $arguments = null, $parameters = null)
     {
         $data = AppTools::decodeUri($uri, $this->_app, $this->_app->currentTask->module, $this->_app->currentTask->plugin);
-        if($data[0]){
+        if ($data[0]) {
             /** @var Module $m */
             $m = $data[0];
             return $m->getRouteUrl($data[2], $arguments, true, $parameters);
 
-        }elseif($data[1]){
+        } elseif ($data[1]) {
             /** @var Plugin $p */
             $p = $data[1];
             return $p->getRouteUrl($data[2], $arguments, true, $parameters);
@@ -47,15 +47,17 @@ class GroutQuick extends Quick
 
     public function a($uri, $parameters = null)
     {
-        if($this->publicAssetUrl !== null && strpos($uri, ':') === false){
+        if ($this->publicAssetUrl !== null && strpos($uri, ':') === false) {
             return $this->publicAssetUrl . $uri;
-        }else{
+
+        } else {
             $data = AppTools::decodeUri($uri, $this->_app, $this->_app->currentTask->module, $this->_app->currentTask->plugin);
-            if($data[0]){
+            if ($data[0]) {
                 /** @var Module $m */
                 $m = $data[0];
                 return $m->getPublicUrl($data[2], true, $parameters);
-            }elseif($data[1]){
+
+            } elseif ($data[1]) {
                 /** @var Plugin $p */
                 $p = $data[1];
                 return $p->getPublicUrl($data[2], true, $parameters);

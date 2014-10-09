@@ -16,7 +16,9 @@ class VarTools
         $len = strlen($type);
         $isArray = substr($type, $len - 2, 2) == '[]';
 
-        if ($isArray) return ArrayTools::prepare($data, substr($type, 0, $len - 2), $args);
+        if ($isArray) {
+            return ArrayTools::prepare($data, substr($type, 0, $len - 2), $args);
+        }
 
         /*
          * int, float: args = min,max
@@ -25,12 +27,21 @@ class VarTools
          */
 
 //		if($data === null) return null;
-        if (is_resource($data) || is_object($data)) return null;
+        if (is_resource($data) || is_object($data)) {
+            return null;
+        }
 
         if ($type == 'file') {
-            if (!is_array($data)) return null;
-            if (!isset($data['tmp_name']) || is_array($data['tmp_name']) || $data['error'] == 4) return null;
-        } else if (is_array($data)) return null;
+            if (!is_array($data)) {
+                return null;
+            }
+            if (!isset($data['tmp_name']) || is_array($data['tmp_name']) || $data['error'] == 4) {
+                return null;
+            }
+
+        } elseif (is_array($data)) {
+            return null;
+        }
 
         if ($type == 'file') {
             $u = new FileUpload();
@@ -50,31 +61,56 @@ class VarTools
 
             $length = $min = $max = 0;
 
-            if ($typeIsString)
+            if ($typeIsString) {
                 $length = ArrayTools::get($args, 'length');
-            else if ($typeIsNumber) {
+
+            } elseif ($typeIsNumber) {
                 $min = ArrayTools::get($args, 'min');
                 $max = ArrayTools::get($args, 'max');
             }
 
-            if ($type == 'sql') $data = mysql_real_escape_string($data);
-            else if ($type == 'sqlite') $data = str_replace('"', '""', $data);
-            else if ($type == 'int') $data = intval($data);
-            else if ($type == 'float') $data = floatval($data);
-            else if ($type == 'bool') $data = $data == '1' || $data == 'true';
-            else {
+            if ($type == 'sql') {
+                $data = mysql_real_escape_string($data);
+
+            } elseif ($type == 'sqlite') {
+                $data = str_replace('"', '""', $data);
+
+            } elseif ($type == 'int') {
+                $data = intval(
+                    $data
+                );
+
+            } elseif ($type == 'float') {
+                $data = floatval(
+                    $data
+                );
+
+            } elseif ($type == 'bool') {
+                $data = $data == '1' || $data == 'true';
+
+            } else {
                 $data = trim($data);
                 $data = preg_replace('/[\x00-\x08]/', '', $data);
 
-                if ($type == 'line') $data = str_replace(array("\r", "\n", "\t"), array('', '', ''), $data);
+                if ($type == 'line') {
+                    $data = str_replace(array("\r", "\n", "\t"), array('', '', ''), $data);
+                }
             }
 
 
-            if ($typeIsNumber && ($min !== null || $max !== null)) $data = NumberTools::limit($data, $min, $max);
+            if ($typeIsNumber && ($min !== null || $max !== null)) {
+                $data = NumberTools::limit($data, $min, $max);
+            }
             if ($typeIsString) {
-                if ($length && mb_strlen($data) > $length) $data = mb_substr($data, 0, $length);
-                if ($padLeft !== null) $data = $padLeft . $data;
-                if ($padRight !== null) $data .= $padRight;
+                if ($length && mb_strlen($data) > $length) {
+                    $data = mb_substr($data, 0, $length);
+                }
+                if ($padLeft !== null) {
+                    $data = $padLeft . $data;
+                }
+                if ($padRight !== null) {
+                    $data .= $padRight;
+                }
             }
 
             return $data;

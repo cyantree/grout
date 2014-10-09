@@ -23,7 +23,7 @@ class ConsoleBootstrap
 
         $r = new Request();
 
-        if(count($argv) > 1){
+        if (count($argv) > 1) {
             $r->url = $argv[1];
 
             if (substr($r->url, -1, 1) != '/') {
@@ -32,16 +32,18 @@ class ConsoleBootstrap
         }
 
         $get = array();
-        if(count($argv) > 2){
+        if (count($argv) > 2) {
             $args = array_splice($argv, 2);
-            foreach($args as $arg){
-                if(substr($arg, 0, 2) == '--'){
+            foreach ($args as $arg) {
+                if (substr($arg, 0, 2) == '--') {
                     $get[substr($arg, 2)] = true;
-                }elseif(substr($arg, 0, 1) == '-'){
+
+                } elseif (substr($arg, 0, 1) == '-') {
                     $s = explode('=', $arg, 2);
 
                     $get[substr($s[0], 1)] = $s[1];
-                }else{
+
+                } else {
                     $get[] = $arg;
                 }
             }
@@ -54,7 +56,7 @@ class ConsoleBootstrap
     protected function _setBasePaths()
     {
         // Set server base paths
-        $this->app->path = str_replace('\\', '/', realpath($this->applicationPath)).'/';
-        $this->app->publicPath = str_replace('\\', '/', dirname($_SERVER['SCRIPT_FILENAME'])).'/';
+        $this->app->path = str_replace('\\', '/', realpath($this->applicationPath)) . '/';
+        $this->app->publicPath = str_replace('\\', '/', dirname($_SERVER['SCRIPT_FILENAME'])) . '/';
     }
 }

@@ -14,7 +14,6 @@ class InternalContent extends Content
         $this->config->set('visible', false);
     }
 
-
     public function setData($data)
     {
         $this->content = $data;
@@ -24,5 +23,4 @@ class InternalContent extends Content
     {
         return $this->content;
     }
-
 }

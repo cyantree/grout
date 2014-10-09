@@ -9,7 +9,9 @@ class FileBucket extends Bucket
 
     public function save()
     {
-        if ($this->id === null) $this->id = $this->_createBucketId();
+        if ($this->id === null) {
+            $this->id = $this->_createBucketId();
+        }
         $this->expires = Bucket::mapExpirationDate($this->expires);
         $file = $this->directory . $this->id . '.bck';
 
@@ -22,11 +24,12 @@ class FileBucket extends Bucket
 
     public function delete()
     {
-        if (file_exists($this->directory . $this->id . '.bck'))
+        if (file_exists($this->directory . $this->id . '.bck')) {
             unlink($this->directory . $this->id . '.bck');
+        }
     }
 
-    private function _mergeSettings($base)
+    private function mergeSettings($base)
     {
         $this->directory = $base->directory;
     }
@@ -39,8 +42,9 @@ class FileBucket extends Bucket
 
         while (($item = readdir($dir)) !== false) {
             if ($item != '.' && $item != '..' && preg_match('@\.bck$@', $item)) {
-                if (filemtime($this->directory . $item) < $t)
+                if (filemtime($this->directory . $item) < $t) {
                     unlink($this->directory . $item);
+                }
             }
         }
     }
@@ -59,15 +63,22 @@ class FileBucket extends Bucket
     {
         if ($returnNewBucket) {
             $b = new FileBucket();
-            $b->_mergeSettings($this);
-        } else $b = $this;
+            $b->mergeSettings($this);
+
+        } else {
+            $b = $this;
+        }
 
         $b->data = $data;
         $b->expires = Bucket::mapExpirationDate($expires);
         $b->context = $context;
 
-        if ($id) $b->id = $id;
-        else $b->id = $this->_createBucketId();
+        if ($id) {
+            $b->id = $id;
+
+        } else {
+            $b->id = $this->_createBucketId();
+        }
 
         $b->save();
 
@@ -76,11 +87,15 @@ class FileBucket extends Bucket
 
     public function load($id, $context = null, $returnNewBucket = true)
     {
-        if (!Bucket::isValidId($id)) return false;
+        if (!Bucket::isValidId($id)) {
+            return false;
+        }
 
         $file = $this->directory . $id . '.bck';
 
-        if (!file_exists($file)) return false;
+        if (!file_exists($file)) {
+            return false;
+        }
 
         $mod = filemtime($file);
 
@@ -90,12 +105,17 @@ class FileBucket extends Bucket
         }
 
         $data = unserialize(file_get_contents($file));
-        if ($context !== false && $data[0] != $context) return false;
+        if ($context !== false && $data[0] != $context) {
+            return false;
+        }
 
         if ($returnNewBucket) {
             $b = new FileBucket();
-            $b->_mergeSettings($this);
-        } else $b = $this;
+            $b->mergeSettings($this);
+
+        } else {
+            $b = $this;
+        }
 
         $b->directory = $this->directory;
         $b->id = $id;

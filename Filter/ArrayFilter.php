@@ -7,7 +7,8 @@ class ArrayFilter
 
     public $storeAsObject = false;
 
-    public static function filter($value, $storeAsObject = false){
+    public static function filter($value, $storeAsObject = false)
+    {
         return new ArrayFilter($value, $storeAsObject);
     }
 
@@ -81,7 +82,7 @@ class ArrayFilter
 
     public function getData()
     {
-        if($this->data === null){
+        if ($this->data === null) {
             if ($this->storeAsObject) {
                 return new \stdClass();
 
@@ -131,9 +132,10 @@ class ArrayFilter
         return $defaultValue;
     }
 
-    public function needs($key){
-        if($this->data === null){
-            trigger_error('Key '.$key.' not found in data');
+    public function needs($key)
+    {
+        if ($this->data === null) {
+            trigger_error('Key ' . $key . ' not found in data');
             return null;
         }
 
@@ -144,7 +146,7 @@ class ArrayFilter
             return $this->data[$key];
 
         } else {
-            trigger_error('Key '.$key.' not found in data');
+            trigger_error('Key ' . $key . ' not found in data');
             return null;
         }
     }
@@ -168,7 +170,7 @@ class ArrayFilter
 
     public function delete($key)
     {
-        if($this->data === null){
+        if ($this->data === null) {
             return;
         }
 
@@ -176,7 +178,7 @@ class ArrayFilter
             $key = array($key);
         }
 
-        foreach($key as $k){
+        foreach ($key as $k) {
             if ($this->storeAsObject && property_exists($this->data, $k)) {
                 unset($this->data->$k);
 

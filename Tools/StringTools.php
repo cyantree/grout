@@ -3,7 +3,7 @@ namespace Cyantree\Grout\Tools;
 
 class StringTools
 {
-    private static $_randomChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    private static $randomChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
     public static function formatFilesize($filesize, $decimals = 1, $decimalPoint = '.')
     {
@@ -14,11 +14,16 @@ class StringTools
         }
 
         $factor = pow(10, $decimals);
-        if ($filesize < 1024 * 1024)
+        if ($filesize < 1024 * 1024) {
             $size = (round($filesize / 1024 * $factor) / $factor) . ' KB';
-        else $size = (round($filesize / 1024 / 1024 / $factor) * $factor) . ' MB';
 
-        if ($decimalPoint != '.') return str_replace('.', $decimalPoint, $size);
+        } else {
+            $size = (round($filesize / 1024 / 1024 / $factor) * $factor) . ' MB';
+        }
+
+        if ($decimalPoint != '.') {
+            return str_replace('.', $decimalPoint, $size);
+        }
 
         return $size;
     }
@@ -58,11 +63,18 @@ class StringTools
         foreach ($text as $textI) {
             $textI = trim($textI);
             if ($textI != '') {
-                if ($escapeParagraphs) $textI = self::escapeHtml($textI);
+                if ($escapeParagraphs) {
+                    $textI = self::escapeHtml($textI);
+                }
                 $c .= '<' . $paragraphTag . '>' . $textI . '</' . $paragraphTag . '>' . chr(10);
-            } else if ($allowEmptyParagraphs) {
-                if ($paragraphTag == 'p') $c .= '<p>&nbsp;</p>' . chr(10);
-                else $c .= '<' . $paragraphTag . '></' . $paragraphTag . '>' . chr(10);
+
+            } elseif ($allowEmptyParagraphs) {
+                if ($paragraphTag == 'p') {
+                    $c .= '<p>&nbsp;</p>' . chr(10);
+
+                } else {
+                    $c .= '<' . $paragraphTag . '></' . $paragraphTag . '>' . chr(10);
+                }
             }
         }
 
@@ -71,15 +83,17 @@ class StringTools
 
     public static function random($length, $chars = null)
     {
-        if ($chars == null)
-            $chars = & self::$_randomChars;
+        if ($chars == null) {
+            $chars = & self::$randomChars;
+        }
 
         $r = '';
 
         $sc = mb_strlen($chars) - 1;
 
-        while ($length--)
+        while ($length--) {
             $r .= mb_substr($chars, mt_rand(0, $sc), 1);
+        }
 
         return $r;
     }
@@ -89,7 +103,9 @@ class StringTools
         $parts = explode($separator, $string);
 
         $string = '';
-        foreach ($parts as $part) $string .= ucfirst($part);
+        foreach ($parts as $part) {
+            $string .= ucfirst($part);
+        }
 
         return $string;
     }
@@ -138,9 +154,10 @@ class StringTools
                         // no need for Addition, bitwise OR is sufficient
                         // 63: more UTF8-bytes; 0011 1111
                         $new_val = $new_val | (ord($utf{$str_pos + $str_off}) & 63);
-                    } // no UTF8, but ord() > 127
-                    // nevertheless convert first char to NCE
-                    else {
+
+                    } else {
+                        // no UTF8, but ord() > 127
+                        // nevertheless convert first char to NCE
                         $new_val = $old_val;
                     }
                 }
@@ -276,7 +293,9 @@ class StringTools
      */
     public static function getQueryString($args, $questionMarkWhenNeeded = true)
     {
-        if ($args == null || !count($args)) return '';
+        if ($args == null || !count($args)) {
+            return '';
+        }
 
         $query = http_build_query($args, '', '&');
 
@@ -307,8 +326,12 @@ class StringTools
     public static function parse($string, $args, $filterCallback = null)
     {
         $argsIsObject = is_object($args);
-        if (!$argsIsObject && !is_array($args)) $args = array($args);
-        if ($args === null || (!$argsIsObject && !count($args))) return $string;
+        if (!$argsIsObject && !is_array($args)) {
+            $args = array($args);
+        }
+        if ($args === null || (!$argsIsObject && !count($args))) {
+            return $string;
+        }
 
         $internalCounter = 0;
         $result = '';
@@ -320,20 +343,31 @@ class StringTools
         foreach ($parts as $part) {
             $isPara = !$isPara;
 
-            if (!$isPara)
+            if (!$isPara) {
                 $result .= $part;
-            else {
-                if ($part === '') $result .= '%';
-                else {
+
+            } else {
+                if ($part === '') {
+                    $result .= '%';
+
+                } else {
                     $type = $part[0];
                     if (strlen($part) > 1) {
                         $index = mb_substr($part, 1);
-                        if (substr($index, 0, 1) == ':') $index = substr($index, 1);
-                    } else
-                        $index = $internalCounter++;
+                        if (substr($index, 0, 1) == ':') {
+                            $index = substr($index, 1);
+                        }
 
-                    if ($argsIsObject) $val = $args->{$index};
-                    else $val = $args[$index];
+                    } else {
+                        $index = $internalCounter++;
+                    }
+
+                    if ($argsIsObject) {
+                        $val = $args->{$index};
+
+                    } else {
+                        $val = $args[$index];
+                    }
 
                     $replaces[] = array($type, $val);
                     $texts[] = $result;
@@ -343,36 +377,44 @@ class StringTools
         }
         $lastText = $result;
 
-        if ($replaces && $filterCallback != null) $replaces = call_user_func($filterCallback, $replaces);
+        if ($replaces && $filterCallback != null) {
+            $replaces = call_user_func($filterCallback, $replaces);
+        }
 
         foreach ($replaces as $key => $replace) {
-            if (!is_array($replace)) continue;
+            if (!is_array($replace)) {
+                continue;
+            }
 
             $type = $replace[0];
             $val = $replace[1];
 
-            if ($type == 'i')
+            if ($type == 'i') {
                 $val = intval($val);
 
-            // Float
-            else if ($type == 'f')
+            } elseif ($type == 'f') {
+                // Float
                 $val = floatval($val);
 
-            // Boolean
-            else if ($type == 'b')
+            } elseif ($type == 'b') {
+                // Boolean
                 $val = intval($val);
 
-            // Integer array
-            else if ($type == 'I')
+            } elseif ($type == 'I') {
+                // Integer array
                 $val = implode(',', ArrayTools::prepare($val, 'int', array('excludeEmpty' => true)));
 
-            // Integer array
-            else if ($type == 'F')
-                $val = implode(',', ArrayTools::prepare($val, 'float', array('excludeEmpty' => true)));
+            } elseif ($type == 'F') {
+                // Integer array
+                $val = implode(
+                    ',',
+                    ArrayTools::prepare($val, 'float', array('excludeEmpty' => true))
+                );
 
-            // Raw string array
-            else if ($type == 'R')
+            } elseif ($type == 'R') {
+                // Raw string array
                 $val = implode(',', $val);
+            }
 
             $replaces[$key] = $val;
         }
@@ -400,13 +442,21 @@ class StringTools
     {
         $isURL = filter_var($url, FILTER_VALIDATE_URL) !== false;
 
-        if (!$isURL) return false;
-        else if ($allowedProtocols === null) return true;
+        if (!$isURL) {
+            return false;
+
+        } elseif ($allowedProtocols === null) {
+            return true;
+        }
 
         $protocol = strtolower(substr($url, 0, strpos($url, '://')));
 
-        if (is_string($allowedProtocols)) return $protocol == $allowedProtocols;
-        else return in_array($protocol, $allowedProtocols);
+        if (is_string($allowedProtocols)) {
+            return $protocol == $allowedProtocols;
+
+        } else {
+            return in_array($protocol, $allowedProtocols);
+        }
     }
 
     public static function isJunkMailAddress($mail)
@@ -453,22 +503,39 @@ class StringTools
                 $chars[$char] = true;
             }
 
-            if (preg_match('@[a-z]@', $char)) $charClass_az_used = true;
-            if (preg_match('@[A-Z]@', $char)) $charClass_AZ_used = true;
-            if (preg_match('@[0-9]@', $char)) $charClass_09_used = true;
+            if (preg_match('@[a-z]@', $char)) {
+                $charClass_az_used = true;
+            }
+            if (preg_match('@[A-Z]@', $char)) {
+                $charClass_AZ_used = true;
+            }
+            if (preg_match('@[0-9]@', $char)) {
+                $charClass_09_used = true;
+            }
             if (preg_match('@[' . $specialChars . '.]@', $char)) {
                 $charClass_special_used = true;
                 $differentCharsUsed++;
+
             } else {
                 $charClass_extra_used = true;
             }
         }
 
-        if ($charClass_az_used) $strength += 1;
-        if ($charClass_AZ_used) $strength += 1;
-        if ($charClass_09_used) $strength += 1;
-        if ($charClass_special_used) $strength += 2;
-        if ($charClass_extra_used) $strength += 2;
+        if ($charClass_az_used) {
+            $strength += 1;
+        }
+        if ($charClass_AZ_used) {
+            $strength += 1;
+        }
+        if ($charClass_09_used) {
+            $strength += 1;
+        }
+        if ($charClass_special_used) {
+            $strength += 2;
+        }
+        if ($charClass_extra_used) {
+            $strength += 2;
+        }
         $strength += $differentCharsUsed / 4;
 
         $strength += $count / 8;

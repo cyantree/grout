@@ -56,7 +56,8 @@ class Bucket
         return preg_match('/^[a-zA-Z0-9._-]{1,32}$/', $id);
     }
 
-    public static function createId(){
+    public static function createId()
+    {
         return StringTools::random(32);
     }
 }

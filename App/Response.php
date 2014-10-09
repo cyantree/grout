@@ -13,15 +13,15 @@ class Response
     public $contentLength;
 
     public $headers = array();
-    private $_headersSent = false;
+    private $headersSent = false;
 
     public function postHeaders()
     {
-        if ($this->_headersSent) {
+        if ($this->headersSent) {
             return;
         }
 
-        $this->_headersSent = true;
+        $this->headersSent = true;
 
         header('HTTP/1.1 ' . $this->code);
         header('Content-Type: ' . $this->contentType);
@@ -29,17 +29,19 @@ class Response
             header('Content-Length: ' . $this->contentLength);
         }
 
-        foreach ($this->headers as $header => $value) header($header . ': ' . $value);
+        foreach ($this->headers as $header => $value) {
+            header($header . ': ' . $value);
+        }
     }
 
     public function postContent($content, $contentType = null, $overwriteExistingContent = false)
     {
-        if ($this->content && !$overwriteExistingContent){
+        if ($this->content && !$overwriteExistingContent) {
             return false;
         }
 
         $this->content = $content;
-        if ($contentType !== null){
+        if ($contentType !== null) {
             $this->contentType = $contentType;
         }
         $this->contentLength = strlen($this->content);
@@ -51,6 +53,7 @@ class Response
     {
         if ($contentType !== null) {
             $this->contentType = $contentType;
+
         } else {
             $this->contentType = self::getContentTypeByFilename($file);
         }
@@ -67,8 +70,9 @@ class Response
 
     public function postFile($file, $contentType = null)
     {
-        if (!is_file($file))
+        if (!is_file($file)) {
             return false;
+        }
 
         if (!$contentType) {
             $contentType = self::getContentTypeByFilename($file);
@@ -90,6 +94,7 @@ class Response
         if ($filename === null && isset($this->headers['Content-Disposition'])) {
             unset($this->headers['Content-Disposition']);
             $this->contentType = ContentType::TYPE_PLAIN_UTF8;
+
         } else {
             $this->headers['Content-Disposition'] = 'attachment; filename="' . $filename . '"';
             $this->contentType = ContentType::TYPE_BINARY;
@@ -100,14 +105,32 @@ class Response
     {
         $fileType = strtolower(substr($file, strrpos($file, '.') + 1));
 
-        if ($fileType == 'gif') return ContentType::TYPE_GIF;
-        else if ($fileType == 'jpg' || $fileType == 'jpeg') return ContentType::TYPE_JPEG;
-        else if ($fileType == 'png') return ContentType::TYPE_PNG;
-        else if ($fileType == 'js') return ContentType::TYPE_JAVASCRIPT;
-        else if ($fileType == 'css') return ContentType::TYPE_CSS;
-        else if ($fileType == 'html' || $fileType == 'htm') return ContentType::TYPE_HTML;
-        else if ($fileType == 'xml') return ContentType::TYPE_XML;
-        else if ($fileType == 'txt') return ContentType::TYPE_PLAIN;
-        else return $defaultContentType;
+        if ($fileType == 'gif') {
+            return ContentType::TYPE_GIF;
+
+        } elseif ($fileType == 'jpg' || $fileType == 'jpeg') {
+            return ContentType::TYPE_JPEG;
+
+        } elseif ($fileType == 'png') {
+            return ContentType::TYPE_PNG;
+
+        } elseif ($fileType == 'js') {
+            return ContentType::TYPE_JAVASCRIPT;
+
+        } elseif ($fileType == 'css') {
+            return ContentType::TYPE_CSS;
+
+        } elseif ($fileType == 'html' || $fileType == 'htm') {
+            return ContentType::TYPE_HTML;
+
+        } elseif ($fileType == 'xml') {
+            return ContentType::TYPE_XML;
+
+        } elseif ($fileType == 'txt') {
+            return ContentType::TYPE_PLAIN;
+
+        } else {
+            return $defaultContentType;
+        }
     }
 }

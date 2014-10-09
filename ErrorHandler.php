@@ -5,47 +5,55 @@ use Cyantree\Grout\Types\ErrorHandlerError;
 
 class ErrorHandler
 {
-    private $_callback;
+    private $callback;
     public $data;
-    private $_registered;
+    private $registered;
 
-    private static $_pool = array();
-    private static $_poolLength = 0;
+    private static $pool = array();
+    private static $poolLength = 0;
 
     /** @return ErrorHandler */
     public static function getHandler($callback, $data = null, $register = true)
     {
-        if (self::$_poolLength) {
-            $h = array_pop(self::$_pool);
-            self::$_poolLength--;
+        if (self::$poolLength) {
+            $h = array_pop(self::$pool);
+            self::$poolLength--;
         } else {
             $h = new ErrorHandler();
         }
 
-        $h->_callback = $callback;
+        $h->callback = $callback;
         $h->data = $data;
 
-        if ($register) $h->register();
+        if ($register) {
+            $h->register();
+        }
 
         return $h;
     }
 
     public function register($newData = null)
     {
-        if ($this->_registered) return;
+        if ($this->registered) {
+            return;
+        }
 
-        if ($newData !== null) $this->data = $newData;
+        if ($newData !== null) {
+            $this->data = $newData;
+        }
 
         set_error_handler(array($this, 'onError'), E_ALL);
-        $this->_registered = true;
+        $this->registered = true;
     }
 
     public function unRegister()
     {
-        if (!$this->_registered) return;
+        if (!$this->registered) {
+            return;
+        }
 
         restore_error_handler();
-        $this->_registered = false;
+        $this->registered = false;
     }
 
     public function onError($code, $message, $file, $line, $context)
@@ -58,15 +66,15 @@ class ErrorHandler
         $e->context = $context;
         $e->data = $this->data;
 
-        call_user_func($this->_callback, $e);
+        call_user_func($this->callback, $e);
     }
 
     public function destroy()
     {
         $this->unregister();
 
-        $this->_callback = $this->data = null;
-        self::$_pool[] = $this;
-        self::$_poolLength++;
+        $this->callback = $this->data = null;
+        self::$pool[] = $this;
+        self::$poolLength++;
     }
 }

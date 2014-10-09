@@ -15,7 +15,7 @@ class DoctrineBucket extends Bucket
 
     public $table = 'cwf_buckets';
 
-    private $_schema;
+    private $schema;
 
     public function __construct($connection)
     {
@@ -46,13 +46,13 @@ class DoctrineBucket extends Bucket
 
     public function getTableSchema()
     {
-        if ($this->_schema) {
-            return $this->_schema;
+        if ($this->schema) {
+            return $this->schema;
         }
 
-        $this->_schema = new Schema();
+        $this->schema = new Schema();
 
-        $table = $this->_schema->createTable($this->table);
+        $table = $this->schema->createTable($this->table);
         $table->addOption('collate', 'utf8_general_ci');
         $table->addColumn('id', 'string', array('length' => 32));
         $table->addColumn('expiresOn', 'datetime');
@@ -60,7 +60,7 @@ class DoctrineBucket extends Bucket
         $table->addColumn('context', 'string', array('length' => 64));
         $table->setPrimaryKey(array('id'));
 
-        return $this->_schema;
+        return $this->schema;
     }
 
     public function save()
@@ -80,6 +80,7 @@ class DoctrineBucket extends Bucket
 
         if ($createNew) {
             $st = DoctrineTools::prepareQuery($this->connection, 'INSERT INTO ' . $this->table . ' (id, expiresOn, data, context) VALUES (%t%, %d%, %t%, %t%)', array($this->id, $expires, $data, $this->context));
+
         } else {
             $st = DoctrineTools::prepareQuery($this->connection, 'UPDATE ' . $this->table . ' SET data = %t%, expiresOn = %d%, context = %t% WHERE id = %t%', array($data, $expires, $this->context, $this->id));
         }
@@ -99,12 +100,13 @@ class DoctrineBucket extends Bucket
             $st = DoctrineTools::prepareQuery($this->connection, 'SELECT COUNT(*) c FROM ' . $this->table . ' WHERE id = %t%', array($id));
             $st->execute();
             $exists = $st->fetchColumn() > 0;
+
         } while ($exists);
 
         return $id;
     }
 
-    private function _mergeSettings($base)
+    private function mergeSettings($base)
     {
         $this->connection = $base->connection;
         $this->table = $base->table;
@@ -119,16 +121,23 @@ class DoctrineBucket extends Bucket
     {
         if ($returnNewBucket) {
             $b = new DoctrineBucket($this->connection);
-            $b->_mergeSettings($this);
-        } else $b = $this;
+            $b->mergeSettings($this);
+
+        } else {
+            $b = $this;
+        }
 
         $b->data = $data;
         $b->context = $context;
 
         $b->expires = Bucket::mapExpirationDate($expires);
 
-        if ($id) $b->id = $id;
-        else $b->id = $this->_createBucketId();
+        if ($id) {
+            $b->id = $id;
+
+        } else {
+            $b->id = $this->_createBucketId();
+        }
 
         $data = base64_encode(serialize($b->data));
 
@@ -142,14 +151,18 @@ class DoctrineBucket extends Bucket
 
     public function load($id, $context = null, $returnNewBucket = true)
     {
-        if (!Bucket::isValidId($id)) return false;
+        if (!Bucket::isValidId($id)) {
+            return false;
+        }
 
         $data = DoctrineTools::prepareQuery($this->connection, 'SELECT expiresOn, data, context FROM ' . $this->table . ' WHERE id = %t%', array($id), Database::FILTER_ROW);
         $data->execute();
 
         $data = $data->fetch();
 
-        if (!$data) return false;
+        if (!$data) {
+            return false;
+        }
 
         // >> Lower columns to circumvent database inconsistencies
         $d = $data;
@@ -166,12 +179,17 @@ class DoctrineBucket extends Bucket
             return false;
         }
 
-        if ($context !== false && $data['context'] != $context) return false;
+        if ($context !== false && $data['context'] != $context) {
+            return false;
+        }
 
         if ($returnNewBucket) {
             $b = new DoctrineBucket($this->connection);
-            $b->_mergeSettings($this);
-        } else $b = $this;
+            $b->mergeSettings($this);
+
+        } else {
+            $b = $this;
+        }
 
         $b->connection = $this->connection;
         $b->table = $this->table;

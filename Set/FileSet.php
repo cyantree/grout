@@ -13,15 +13,14 @@ abstract class FileSet extends Set
     /** @var SetTypeCapabilities */
     public static $capabilities;
 
-    private $_saveData;
-    private $_id;
+    private $saveData;
+    private $id;
 
     protected function _collectData()
     {
-        foreach($this->contents as $name => $content)
-        {
-            if($content->storeInSet){
-                $this->_saveData[$name] = $content->getData();
+        foreach ($this->contents as $name => $content) {
+            if ($content->storeInSet) {
+                $this->saveData[$name] = $content->getData();
             }
         }
     }
@@ -50,12 +49,11 @@ abstract class FileSet extends Set
         }
         $file = $this->_getPath($id);
 
-        $this->_saveData = unserialize(file_get_contents($file));
+        $this->saveData = unserialize(file_get_contents($file));
 
-        foreach($this->contents as $name => $content)
-        {
-            if($content->storeInSet){
-                $content->setData($this->_saveData[$name]);
+        foreach ($this->contents as $name => $content) {
+            if ($content->storeInSet) {
+                $content->setData($this->saveData[$name]);
             }
         }
 
@@ -68,13 +66,13 @@ abstract class FileSet extends Set
 
     public function getId()
     {
-        return $this->_id;
+        return $this->id;
     }
 
 
     public function setId($id)
     {
-        $this->_id = $id;
+        $this->id = $id;
     }
 
 
@@ -104,7 +102,7 @@ abstract class FileSet extends Set
             mkdir(dirname($path), 0777, true);
         }
 
-        file_put_contents($path, serialize($this->_saveData));
+        file_put_contents($path, serialize($this->saveData));
     }
 
     public function listSets($options)
@@ -137,7 +135,7 @@ abstract class FileSet extends Set
             $i = 0;
 
             $files = array();
-            while(($file = readdir($dir)) !== false) {
+            while (($file = readdir($dir)) !== false) {
                 if ($file === '.' || $file === '..') {
                     continue;
                 }

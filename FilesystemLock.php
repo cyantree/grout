@@ -5,12 +5,12 @@ class FilesystemLock
 {
     public $directory;
 
-    function __construct($directory = null)
+    public function __construct($directory = null)
     {
         $this->directory = $directory;
     }
 
-    private function _lock($lifetime)
+    private function doLock($lifetime)
     {
         $exists = is_dir($this->directory);
         $valid = $exists && (filemtime($this->directory) + $lifetime) > time();
@@ -42,12 +42,12 @@ class FilesystemLock
     public function lock($lifetime, $waitDuration = 0, $waitInterval = .2)
     {
         if (!$waitDuration) {
-            return $this->_lock($lifetime);
+            return $this->doLock($lifetime);
         }
 
         $waitStarted = microtime(true);
 
-        while (!$this->_lock($lifetime)) {
+        while (!$this->doLock($lifetime)) {
             if (microtime(true) - $waitStarted > $waitDuration) {
                 return false;
             }

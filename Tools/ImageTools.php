@@ -209,7 +209,9 @@ class ImageTools
                     break 1;
                 }
             }
-            if ($cropLeft >= 0) break;
+            if ($cropLeft >= 0) {
+                break;
+            }
         }
 
         $xOffset = $xOffset - $cropLeft - 1;
@@ -217,10 +219,12 @@ class ImageTools
 
         $temp = imagettftext($image, $size, 0, 0, 0, $cropCol, $ttfFont, $text);
 
-        if (ArrayTools::get($additionalConfigs, 'slim'))
+        if (ArrayTools::get($additionalConfigs, 'slim')) {
             $offset = $temp;
-        else
+
+        } else {
             $offset = imagettftext($image, $size, 0, 0, 0, $cropCol, $ttfFont, 'BTj&#' . ord(utf8_decode('`')) . ';');
+        }
 
         $width = $temp[2] - $temp[0];
         $height = abs($offset[5] - $offset[1]);
@@ -272,16 +276,19 @@ class ImageTools
             return $result;
         }
 
-        if (!$filename) $filename = $file;
+        if (!$filename) {
+            $filename = $file;
+        }
 
         // Get extension
         $extension = explode('.', $filename);
         $count = count($extension);
-        if($count == 1){
+        if ($count == 1) {
             $result->errors[] = ImageToolsCheckFileResult::ERROR_INVALID;
 
             return $result;
-        }else{
+
+        } else {
             $extension = strtolower($extension[$count - 1]);
         }
 
@@ -291,13 +298,18 @@ class ImageTools
         if ($extension == 'jpg' || $extension == 'jpeg') {
             $image = @imagecreatefromjpeg($file);
             $type = 'jpg';
-        } else if ($extension == 'gif') {
+
+        } elseif ($extension == 'gif') {
             $image = @imagecreatefromgif($file);
             $type = 'gif';
-        } else if ($extension == 'png') {
+
+        } elseif ($extension == 'png') {
             $image = @imagecreatefrompng($file);
             $type = 'png';
-        } else $image = null;
+
+        } else {
+            $image = null;
+        }
 
         if (!$image) {
             $result->errors[] = ImageToolsCheckFileResult::ERROR_INVALID;
@@ -330,7 +342,8 @@ class ImageTools
         if ($minWidth !== null && $width < $minWidth) {
             $result->errors[] = ImageToolsCheckFileResult::ERROR_MIN_WIDTH;
             $triggerErrorMinSize = true;
-        } else if ($maxWidth !== null && $width > $maxWidth) {
+
+        } elseif ($maxWidth !== null && $width > $maxWidth) {
             $result->errors[] = ImageToolsCheckFileResult::ERROR_MAX_WIDTH;
             $triggerErrorMaxSize = true;
         }
@@ -338,7 +351,8 @@ class ImageTools
         if ($minHeight !== null && $height < $minHeight) {
             $result->errors[] = ImageToolsCheckFileResult::ERROR_MIN_HEIGHT;
             $triggerErrorMinSize = true;
-        } else if ($maxHeight !== null && $height > $maxHeight) {
+
+        } elseif ($maxHeight !== null && $height > $maxHeight) {
             $result->errors[] = ImageToolsCheckFileResult::ERROR_MAX_HEIGHT;
             $triggerErrorMaxSize = true;
         }
@@ -346,7 +360,8 @@ class ImageTools
         if ($minAspectRatio !== null && $imageAspectRatio < $minAspectRatio) {
             $result->errors[] = ImageToolsCheckFileResult::ERROR_MIN_ASPECT_RATIO;
             $triggerErrorAspectRatio = true;
-        } else if ($maxAspectRatio !== null && $imageAspectRatio > $maxAspectRatio) {
+
+        } elseif ($maxAspectRatio !== null && $imageAspectRatio > $maxAspectRatio) {
             $result->errors[] = ImageToolsCheckFileResult::ERROR_MAX_ASPECT_RATIO;
             $triggerErrorAspectRatio = true;
         }
@@ -364,8 +379,10 @@ class ImageTools
             $result->errors[] = ImageToolsCheckFileResult::ERROR_ASPECT_RATIO;
         }
 
-        if (count($result->errors)) imagedestroy($image);
-        else {
+        if (count($result->errors)) {
+            imagedestroy($image);
+
+        } else {
             $result->success = true;
             $result->path = $file;
             $result->image = $image;

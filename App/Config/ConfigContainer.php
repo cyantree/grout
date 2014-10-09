@@ -8,15 +8,15 @@ class ConfigContainer
     /** @var App */
     public $app;
 
-    private $_configs = array();
-    private $_appConfigs = array();
-    private $_defaultConfigs = array();
+    private $configs = array();
+    private $appConfigs = array();
+    private $defaultConfigs = array();
 
     public function __construct(App $app)
     {
         $this->app = $app;
 
-        $this->_appConfigs = array(
+        $this->appConfigs = array(
             array(), array(), array(), array(), array(), array(), array(), array(), array(), array()
         );
     }
@@ -29,25 +29,25 @@ class ConfigContainer
     {
         $config->app = $this->app;
 
-        $this->_appConfigs[$priority][] = $config;
+        $this->appConfigs[$priority][] = $config;
     }
 
     public function setDefaultConfig($id, $config, $context = null)
     {
-        $this->_defaultConfigs[$id] = array('config' => $config, 'context' => $context);
+        $this->defaultConfigs[$id] = array('config' => $config, 'context' => $context);
     }
 
     public function getConfig($id)
     {
-        if (isset($this->_configs[$id])) {
-            return $this->_configs[$id];
+        if (isset($this->configs[$id])) {
+            return $this->configs[$id];
         }
 
         $method = 'configure' . $id;
 
-        $config = $this->_defaultConfigs[$id];
+        $config = $this->defaultConfigs[$id];
 
-        foreach ($this->_appConfigs as $priority) {
+        foreach ($this->appConfigs as $priority) {
             foreach ($priority as $configFile) {
                 if (method_exists($configFile, $method)) {
                     $configFile->{$method}($config['config'], $config['context']);
@@ -55,7 +55,7 @@ class ConfigContainer
             }
         }
 
-        $this->_configs[$id] = $config['config'];
+        $this->configs[$id] = $config['config'];
 
         return $config['config'];
     }

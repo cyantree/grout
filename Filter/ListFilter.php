@@ -3,7 +3,8 @@ namespace Cyantree\Grout\Filter;
 
 class ListFilter extends ValueFilter
 {
-    public static function filter($value){
+    public static function filter($value)
+    {
         return new ListFilter($value);
     }
 

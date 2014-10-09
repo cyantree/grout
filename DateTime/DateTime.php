@@ -32,38 +32,70 @@ class DateTime extends \DateTime
 
     public function __construct($time = 'now', \DateTimeZone $timezone = null, $language = null)
     {
-        if (!$language) $this->language = new DateTimeLanguageEn();
-        else {
+        if (!$language) {
+            $this->language = new DateTimeLanguageEn();
+
+        } else {
             $this->language = $language;
         }
 
-        if ($timezone === null) $timezone = new \DateTimeZone(date_default_timezone_get());
+        if ($timezone === null) {
+            $timezone = new \DateTimeZone(date_default_timezone_get());
+        }
 
         parent::__construct($time, $timezone);
     }
 
     public function format($format, $timestamp = null)
     {
-        if ($timestamp !== null) $this->setTimestamp($timestamp);
+        if ($timestamp !== null) {
+            $this->setTimestamp($timestamp);
+        }
 
         $string = parent::format($format);
 
-        if (!$this->language || get_class($this->language) == 'Cyantree\Grout\DateTime\Languages\DateTimeLanguageEn') return $string;
+        if (!$this->language || get_class($this->language) == 'Cyantree\Grout\DateTime\Languages\DateTimeLanguageEn') {
+            return $string;
+        }
 
         $replaceMonthsLong = strpos($format, 'F') !== false;
         $replaceMonthsShort = strpos($format, 'M') !== false;
         $replaceDaysLong = strpos($format, 'l') !== false;
         $replaceDaysShort = strpos($format, 'D') !== false;
 
-        if ($replaceMonthsLong) $string = str_replace(self::$monthsLong, self::$placeholderMonthsLong, $string);
-        if ($replaceMonthsShort) $string = str_replace(self::$monthsShort, self::$placeholderMonthsShort, $string);
-        if ($replaceDaysLong) $string = str_replace(self::$daysLong, self::$placeholderDaysLong, $string);
-        if ($replaceDaysShort) $string = str_replace(self::$daysShort, self::$placeholderDaysShort, $string);
+        if ($replaceMonthsLong) {
+            $string = str_replace(self::$monthsLong, self::$placeholderMonthsLong, $string);
+        }
+        if ($replaceMonthsShort) {
+            $string = str_replace(self::$monthsShort, self::$placeholderMonthsShort, $string);
+        }
+        if ($replaceDaysLong) {
+            $string = str_replace(self::$daysLong, self::$placeholderDaysLong, $string);
+        }
+        if ($replaceDaysShort) {
+            $string = str_replace(self::$daysShort, self::$placeholderDaysShort, $string);
+        }
 
-        if ($replaceMonthsLong) $string = str_replace(self::$placeholderMonthsLong, $this->language->monthsLong, $string);
-        if ($replaceMonthsShort) $string = str_replace(self::$placeholderMonthsShort, $this->language->monthsShort, $string);
-        if ($replaceDaysLong) $string = str_replace(self::$placeholderDaysLong, $this->language->daysLong, $string);
-        if ($replaceDaysShort) $string = str_replace(self::$placeholderDaysShort, $this->language->daysShort, $string);
+        if ($replaceMonthsLong) {
+            $string = str_replace(
+                self::$placeholderMonthsLong,
+                $this->language->monthsLong,
+                $string
+            );
+        }
+        if ($replaceMonthsShort) {
+            $string = str_replace(
+                self::$placeholderMonthsShort,
+                $this->language->monthsShort,
+                $string
+            );
+        }
+        if ($replaceDaysLong) {
+            $string = str_replace(self::$placeholderDaysLong, $this->language->daysLong, $string);
+        }
+        if ($replaceDaysShort) {
+            $string = str_replace(self::$placeholderDaysShort, $this->language->daysShort, $string);
+        }
 
         return $string;
     }
@@ -71,7 +103,9 @@ class DateTime extends \DateTime
     public function setByString($string)
     {
         $timestamp = strtotime($string);
-        if ($timestamp === false) return false;
+        if ($timestamp === false) {
+            return false;
+        }
 
         $this->setTimestamp($timestamp - $this->getOffset());
 

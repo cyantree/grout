@@ -27,10 +27,12 @@ class DatabaseBucket extends Bucket
 
         $expires = DateTime::$utc->toSqlString($this->expires);
 
-        if ($createNew)
+        if ($createNew) {
             $this->database->exec('INSERT INTO ' . $this->table . ' (id, expires, data, context) VALUES (%t%, %t%, %t%, %t%)', array($this->id, $expires, $data, $this->context));
-        else
+
+        } else {
             $this->database->exec('UPDATE ' . $this->table . ' SET data = %t%, expires = %t%, context = %t% WHERE id = %t%', array($data, $expires, $this->context, $this->id));
+        }
     }
 
     public function delete()
@@ -48,40 +50,49 @@ class DatabaseBucket extends Bucket
         return $id;
     }
 
-    private function _mergeSettings($base)
+    private function mergeSettings($base)
     {
         $this->database = $base->database;
         $this->table = $base->table;
     }
 
-    private function _checkDatabase()
+    private function checkDatabase()
     {
-        if (!$this->database) $this->database = Database::getDefault();
+        if (!$this->database) {
+            $this->database = Database::getDefault();
+        }
     }
 
     public function cleanUp()
     {
-        $this->_checkDatabase();
+        $this->checkDatabase();
 
         $this->database->exec('DELETE FROM ' . $this->table . ' WHERE expires < %t%', array(DateTime::$utc->toSqlString(time())));
     }
 
     public function create($data = '', $expires = null, $context = null, $id = null, $returnNewBucket = true)
     {
-        $this->_checkDatabase();
+        $this->checkDatabase();
 
         if ($returnNewBucket) {
             $b = new DatabaseBucket();
-            $b->_mergeSettings($this);
-        } else $b = $this;
+            $b->mergeSettings($this);
+
+        } else {
+            $b = $this;
+        }
 
         $b->data = $data;
         $b->context = $context;
 
         $b->expires = Bucket::mapExpirationDate($expires);
 
-        if ($id) $b->id = $id;
-        else $b->id = $this->_createBucketId();
+        if ($id) {
+            $b->id = $id;
+
+        } else {
+            $b->id = $this->_createBucketId();
+        }
 
         $data = base64_encode(serialize($b->data));
 
@@ -93,12 +104,16 @@ class DatabaseBucket extends Bucket
 
     public function load($id, $context = null, $returnNewBucket = true)
     {
-        if (!Bucket::isValidId($id)) return false;
+        if (!Bucket::isValidId($id)) {
+            return false;
+        }
 
-        $this->_checkDatabase();
+        $this->checkDatabase();
 
         $data = $this->database->query('SELECT expires, data, context FROM ' . $this->table . ' WHERE id = %t% LIMIT 0, 1', array($id), Database::FILTER_ROW);
-        if (!$data) return false;
+        if (!$data) {
+            return false;
+        }
 
         $expires = DateTime::$utc->setBySqlString($data['expires'])->getTimestamp();
 
@@ -107,12 +122,17 @@ class DatabaseBucket extends Bucket
             return false;
         }
 
-        if ($context !== false && $data['context'] != $context) return false;
+        if ($context !== false && $data['context'] != $context) {
+            return false;
+        }
 
         if ($returnNewBucket) {
             $b = new DatabaseBucket();
-            $b->_mergeSettings($this);
-        } else $b = $this;
+            $b->mergeSettings($this);
+
+        } else {
+            $b = $this;
+        }
 
         $b->database = $this->database;
         $b->table = $this->table;

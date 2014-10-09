@@ -56,6 +56,7 @@ class Ui
 
         if ($isCheckboxOrRadioButton) {
             return new UiElement(null, null, array('element' => $element ? $element : $elementContent, 'label' => $el));
+
         } else {
             return new UiElement(null, null, array('label' => $el, 'element' => $element ? $element : $elementContent));
         }
@@ -203,6 +204,7 @@ class Ui
                 $newOptions[] = self::selectOption($k, $v, $value);
             }
             $options = $newOptions;
+
         } else {
             /** @var $o UiElement */
             foreach ($options as $o) {
@@ -275,7 +277,7 @@ class Ui
                 if ($parameters['type'] == 'password') {
                     $el->type = 'PasswordInput';
 
-                } else if ($parameters['type'] == 'file') {
+                } elseif ($parameters['type'] == 'file') {
                     $el->type = 'FileInput';
                 }
             }
@@ -364,27 +366,28 @@ class Ui
 
     public function statusInfo($textOrTexts, $parameters = null)
     {
-        return $this->_addStatus($textOrTexts, 'info');
+        return $this->addStatus($textOrTexts, 'info');
     }
 
     public function statusSuccess($textOrTexts, $parameters = null)
     {
-        return $this->_addStatus($textOrTexts, 'success');
+        return $this->addStatus($textOrTexts, 'success');
     }
 
     public function statusError($textOrTexts, $parameters = null)
     {
-        return $this->_addStatus($textOrTexts, 'error');
+        return $this->addStatus($textOrTexts, 'error');
     }
 
     /** @param StatusContainer|UiElement|string $status */
-    public function status($status, $parameters = null){
+    public function status($status, $parameters = null)
+    {
         $isStatusContainer = $status instanceof StatusContainer;
 
-        $noStatus = $status === '' ||
-              ($isStatusContainer && !$status->hasSuccessMessages && !$status->hasErrorMessages && !$status->hasInfoMessages);
+        $noStatus = $status === ''
+            || ($isStatusContainer && !$status->hasSuccessMessages && !$status->hasErrorMessages && !$status->hasInfoMessages);
 
-        if($noStatus && !ArrayTools::get($parameters, 'showIfEmpty')){
+        if ($noStatus && !ArrayTools::get($parameters, 'showIfEmpty')) {
             return '';
         }
 
@@ -416,10 +419,10 @@ class Ui
             $c = '';
 
             $messages = array();
-            foreach($status->infoMessages as $code => $message){
-                if (
-                      ($excludeStatusCodes === null || !isset($excludeStatusCodes[$code])) &&
-                      ($includeStatusCodes === null || isset($includeStatusCodes[$code]))) {
+            foreach ($status->infoMessages as $code => $message) {
+                if (($excludeStatusCodes === null || !isset($excludeStatusCodes[$code]))
+                    && ($includeStatusCodes === null || isset($includeStatusCodes[$code]))
+                ) {
                     $messages[] = $message;
                 }
             }
@@ -429,10 +432,10 @@ class Ui
             }
 
             $messages = array();
-            foreach($status->successMessages as $code => $message){
-                if (
-                      ($excludeStatusCodes === null || !isset($excludeStatusCodes[$code])) &&
-                      ($includeStatusCodes === null || isset($includeStatusCodes[$code]))) {
+            foreach ($status->successMessages as $code => $message) {
+                if (($excludeStatusCodes === null || !isset($excludeStatusCodes[$code]))
+                    && ($includeStatusCodes === null || isset($includeStatusCodes[$code]))
+                ) {
                     $messages[] = $message;
                 }
             }
@@ -441,10 +444,10 @@ class Ui
             }
 
             $messages = array();
-            foreach($status->errors as $code => $message){
-                if (
-                      ($excludeStatusCodes === null || !isset($excludeStatusCodes[$code])) &&
-                      ($includeStatusCodes === null || isset($includeStatusCodes[$code]))) {
+            foreach ($status->errors as $code => $message) {
+                if (($excludeStatusCodes === null || !isset($excludeStatusCodes[$code]))
+                    && ($includeStatusCodes === null || isset($includeStatusCodes[$code]))
+                ) {
                     $messages[] = $message;
                 }
             }
@@ -551,12 +554,13 @@ class Ui
 
         if (!$fullAttribute) {
             return ' error';
+
         } else {
             return ' class="error"';
         }
     }
 
-    private function _addStatus($text, $class)
+    private function addStatus($text, $class)
     {
         if (!$text) {
             return null;
@@ -565,12 +569,14 @@ class Ui
         $el = new UiElement('div', array('class' => 'status ' . $class));
         if (is_string($text)) {
             $el->contents = array(new UiElement('p', null, $text));
-        } else if (is_array($text)) {
+
+        } elseif (is_array($text)) {
             $el->contents = array();
             foreach ($text as $t) {
                 array_push($el->contents, new UiElement('p', null, $t));
             }
-        }else{
+
+        } else {
             $el->contents = array(new UiElement('p', null, strval($text)));
         }
 
@@ -650,6 +656,7 @@ class Ui
         foreach ($pages as $page) {
             if ($page == '.') {
                 $s .= '<span class="pageGap">...</span>';
+
             } else {
                 if ($page == $currentPage) {
                     $s .= '<a class="currentPage' . $additionalLinkClasses . '" href="' . str_replace($pagePlaceholder, $page, $link) . '">';

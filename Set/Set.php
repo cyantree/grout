@@ -163,8 +163,8 @@ abstract class Set
         $d = new ArrayFilter($rawData);
         $files = new ArrayFilter($rawFiles);
 
-        foreach($this->contents as $content){
-            if($content->editable){
+        foreach ($this->contents as $content) {
+            if ($content->editable) {
                 $content->populate($d, $files);
             }
         }
@@ -174,8 +174,8 @@ abstract class Set
     {
         $this->status->reset();
 
-        foreach($this->contents as $content){
-            if($content->editable){
+        foreach ($this->contents as $content) {
+            if ($content->editable) {
                 $content->check();
             }
         }
@@ -183,8 +183,8 @@ abstract class Set
 
     public function save()
     {
-        foreach($this->contents as $content){
-            if($content->editable){
+        foreach ($this->contents as $content) {
+            if ($content->editable) {
                 $content->save();
             }
         }
@@ -194,7 +194,7 @@ abstract class Set
         $this->_doSave();
 
         foreach ($this->contents as $content) {
-            if($content->editable){
+            if ($content->editable) {
                 $content->onSaved();
             }
         }
@@ -280,7 +280,7 @@ abstract class Set
 
     public function render($nameOrContent)
     {
-        if(is_object($nameOrContent)){
+        if (is_object($nameOrContent)) {
             return $nameOrContent->render($this->mode, $nameOrContent->name);
         }
 

@@ -7,7 +7,7 @@ class DataStorage
 {
     public $directory;
 
-    function __construct($directory)
+    public function __construct($directory)
     {
         $this->directory = $directory;
     }

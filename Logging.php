@@ -3,52 +3,52 @@ namespace Cyantree\Grout;
 
 class Logging
 {
-    private $_tracks = array();
+    private $tracks = array();
     public $file = 'log.txt';
 
     public $maxFilesize = 1000000;
 
-    private $_measurements = array();
-    private $_measurementCounter = 0;
-    private $_startTime;
-    private $_id;
+    private $measurements = array();
+    private $measurementCounter = 0;
+    private $startTime;
+    private $id;
 
     public function startMeasurement($id = null)
     {
         if ($id === null) {
-            $id = $this->_measurementCounter++;
+            $id = $this->measurementCounter++;
         }
-        $this->_measurements[$id] = microtime(true);
+        $this->measurements[$id] = microtime(true);
 
         return $id;
     }
 
     public function stopMeasurement($id, $log)
     {
-        self::log($log, microtime(true) - $this->_measurements[$id]);
-        unset($this->_measurements[$id]);
+        self::log($log, microtime(true) - $this->measurements[$id]);
+        unset($this->measurements[$id]);
     }
 
     public function start($id = '_START_', $startTime = null)
     {
-        $this->_id = mt_rand(1000, 9999);
+        $this->id = mt_rand(1000, 9999);
 
-        $this->_startTime = $startTime ? $startTime : microtime(true);
+        $this->startTime = $startTime ? $startTime : microtime(true);
         self::log($id);
     }
 
     public function log($text, $duration = null, $time = null)
     {
-        array_push($this->_tracks, $time ? $time : microtime(true), $text, $duration);
+        array_push($this->tracks, $time ? $time : microtime(true), $text, $duration);
     }
 
     public function stop($text = '_STOP_')
     {
         self::log($text);
 
-        $start = $this->_startTime;
+        $start = $this->startTime;
 
-        $count = (count($this->_tracks) / 3) >> 0;
+        $count = (count($this->tracks) / 3) >> 0;
 
         $i = 0;
 
@@ -59,16 +59,19 @@ class Logging
             $f = fopen($this->file, 'a');
         }
 
-        fwrite($f, $this->_id . ': ' . date('Y-m-d H:i:s', $this->_startTime) . ' - ' . $this->_tracks[1] . chr(10));
+        fwrite($f, $this->id . ': ' . date('Y-m-d H:i:s', $this->startTime) . ' - ' . $this->tracks[1] . chr(10));
 
         while ($i++ < $count - 1) {
-            $duration = $this->_tracks[3 * $i + 2];
+            $duration = $this->tracks[3 * $i + 2];
             if (!$duration) {
-                $duration = $this->_tracks[3 * $i] - $this->_tracks[3 * ($i - 1)];
+                $duration = $this->tracks[3 * $i] - $this->tracks[3 * ($i - 1)];
                 $durationFlag = 'm';
-            } else $durationFlag = 'c';
 
-            fwrite($f, $this->_id . ': ' . self::_formatTime($duration) . $durationFlag . ': ' . self::_formatTime($this->_tracks[3 * $i] - $start) . ': ' . $this->_tracks[3 * $i + 1] . chr(10));
+            } else {
+                $durationFlag = 'c';
+            }
+
+            fwrite($f, $this->id . ': ' . self::formatTime($duration) . $durationFlag . ': ' . self::formatTime($this->tracks[3 * $i] - $start) . ': ' . $this->tracks[3 * $i + 1] . chr(10));
         }
 
         fwrite($f, chr(10));
@@ -76,7 +79,7 @@ class Logging
         fclose($f);
     }
 
-    private function _formatTime($time)
+    private function formatTime($time)
     {
         return str_pad(((($time * 10000) >> 0) / 10000), 7, '0');
     }

@@ -32,23 +32,24 @@ class ServiceDriver
 
     protected function _executeCommand($command, $data = null, $id = null)
     {
-        try{
-            if(!preg_match('!^[a-zA-Z0-9_/]+$!', $command)){
+        try {
+            if (!preg_match('!^[a-zA-Z0-9_/]+$!', $command)) {
                 return ServiceResult::createWithError('error', 'Invalid command', $id);
-            }else{
+
+            } else {
                 $command = str_replace('/', '\\', $command);
                 $found = false;
 
                 $className = null;
-                foreach($this->commandNamespaces as $commandNamespace){
-                    $className = $commandNamespace.$command.'Command';
-                    if(class_exists($className)){
+                foreach ($this->commandNamespaces as $commandNamespace) {
+                    $className = $commandNamespace . $command . 'Command';
+                    if (class_exists($className)) {
                         $found = true;
                         break;
                     }
                 }
 
-                if($found){
+                if ($found) {
                     /** @var ServiceCommand $c */
                     $c = new $className();
                     $c->task = $this->_task;
@@ -58,17 +59,19 @@ class ServiceDriver
                     $c->execute();
 
                     return $c->result;
-                }else{
+
+                } else {
                     return ServiceResult::createWithError('error', 'Invalid command', $id);
                 }
             }
-        }catch(PhpWarningException $e){
+
+        } catch (PhpWarningException $e) {
             $this->_task->app->events->trigger('logException', $e);
             return ServiceResult::createWithError('error', 'An unknown error has occurred', $id);
-        }catch(PhpErrorException $e){
+
+        } catch (PhpErrorException $e) {
             $this->_task->app->events->trigger('logException', $e);
             return ServiceResult::createWithError('error', 'An unknown error has occurred', $id);
         }
-
     }
 }

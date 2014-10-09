@@ -3,28 +3,29 @@ namespace Cyantree\Grout\Event;
 
 class Events
 {
-    private $_events = array();
+    private $events = array();
 
     public function join($event, $callback, $callbackData = null, $prepend = false)
     {
-        if (!isset($this->_events[$event])) {
-            $this->_events[$event] = array();
+        if (!isset($this->events[$event])) {
+            $this->events[$event] = array();
         }
 
         if ($prepend) {
-            array_unshift($this->_events[$event], array($callback, $callbackData));
+            array_unshift($this->events[$event], array($callback, $callbackData));
+
         } else {
-            $this->_events[$event][] = array($callback, $callbackData);
+            $this->events[$event][] = array($callback, $callbackData);
         }
     }
 
     public function leave($event, $callback)
     {
-        if (!isset($this->_events[$event])) {
+        if (!isset($this->events[$event])) {
             return;
         }
 
-        $callbacks = & $this->_events[$event];
+        $callbacks = & $this->events[$event];
 
         $id = 0;
         $count = count($callbacks);
@@ -44,13 +45,17 @@ class Events
         $e->data = $data;
         $e->context = $context;
 
-        if (!isset($this->_events[$type])) return $e;
+        if (!isset($this->events[$type])) {
+            return $e;
+        }
 
-        $callbacks = $this->_events[$type];
+        $callbacks = $this->events[$type];
 
         foreach ($callbacks as $callback) {
             call_user_func($callback[0], $e, $callback[1]);
-            if ($e->stopPropagation) break;
+            if ($e->stopPropagation) {
+                break;
+            }
         }
 
         return $e;

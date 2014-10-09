@@ -9,7 +9,7 @@ class GroutAppTestCase extends PHPUnit_Framework_TestCase
     /** @var App */
     public $app;
 
-    function __construct()
+    public function __construct()
     {
         global $app;
 

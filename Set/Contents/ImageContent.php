@@ -122,6 +122,7 @@ class ImageContent extends Content
 
                 if ($this->minWidth && ($sizeX < $this->minWidth || $sizeY < $this->minHeight)) {
                     $this->postError('tooSmall', self::$errorCodes['tooSmall'], array('%width%' => $this->minWidth, '%height%' => $this->minHeight));
+
                 } elseif ($this->maxWidth && ($sizeX > $this->maxWidth || $sizeY > $this->maxHeight)) {
                     $this->postError('tooLarge', self::$errorCodes['tooLarge'], array('%width%' => $this->maxWidth, '%height%' => $this->maxHeight));
                 }
@@ -147,18 +148,23 @@ class ImageContent extends Content
             if ($this->saveFilename) {
                 $this->_data = $saveFilename = $this->saveFilename;
 
-            } else if (!$this->saveFilename) {
+            } elseif (!$this->saveFilename) {
                 $this->_data = FileTools::createUniqueFilename($this->saveDirectory, '.' . $this->saveFormat, 32, true);
 
-                if ($this->valueContainsExtension)
+                if ($this->valueContainsExtension) {
                     $saveFilename = $this->_data = $this->_data . '.' . $this->saveFormat;
-                else
+
+                } else {
                     $saveFilename = $this->_data . '.' . $this->saveFormat;
+                }
             }
 
             if ($this->resizeToWidth) {
                 $image = ImageTools::resizeImage($this->_image, $this->resizeToWidth, $this->resizeToHeight, false, $this->resizeImageToolsScaleMode, $this->resizeImageToolsBackground);
-            } else $image = $this->_image;
+
+            } else {
+                $image = $this->_image;
+            }
 
             if ($oldSaveFilename && $oldSaveFilename != $saveFilename) {
                 unlink($this->saveDirectory . $oldSaveFilename);
@@ -166,13 +172,16 @@ class ImageContent extends Content
 
             if ($this->saveFormat == 'jpg') {
                 imagejpeg($image, $this->saveDirectory . $saveFilename, $this->saveQuality);
-            } else if ($this->saveFormat == 'png') {
+
+            } elseif ($this->saveFormat == 'png') {
                 imagepng($image, $this->saveDirectory . $saveFilename);
             }
 
             $this->onImageProcessed($this->_image);
 
-            if ($image != $this->_image) imagedestroy($this->_image);
+            if ($image != $this->_image) {
+                imagedestroy($this->_image);
+            }
             imagedestroy($image);
 
             $this->uploadedFile->delete();
@@ -190,6 +199,8 @@ class ImageContent extends Content
 
     public function onDelete()
     {
-        if ($this->_data) unlink($this->saveDirectory . $this->_data . ($this->valueContainsExtension ? '' : '.' . $this->saveFormat));
+        if ($this->_data) {
+            unlink($this->saveDirectory . $this->_data . ($this->valueContainsExtension ? '' : '.' . $this->saveFormat));
+        }
     }
 }

@@ -3,8 +3,8 @@ namespace Cyantree\Grout\Csv;
 
 class CsvReader
 {
-    private $_file;
-    private $_keys;
+    private $file;
+    private $keys;
 
     public $delimiter = ';';
     public $enclosure = '"';
@@ -15,18 +15,18 @@ class CsvReader
 
     public function open($file)
     {
-        $this->_file = fopen($file, 'r');
+        $this->file = fopen($file, 'r');
     }
 
     public function close()
     {
-        fclose($this->_file);
-        $this->_file = $this->_keys = null;
+        fclose($this->file);
+        $this->file = $this->keys = null;
     }
 
     public function getRow()
     {
-        $data = fgetcsv($this->_file, null, $this->delimiter, $this->enclosure);
+        $data = fgetcsv($this->file, null, $this->delimiter, $this->enclosure);
 
         if ($data === null || $data === false) {
             return null;
@@ -39,8 +39,8 @@ class CsvReader
         }
 
         if ($this->containsKeys) {
-            if ($this->_keys === null) {
-                $this->_keys = $data;
+            if ($this->keys === null) {
+                $this->keys = $data;
 
                 $data = $this->getRow();
 
@@ -49,7 +49,7 @@ class CsvReader
                 }
             }
 
-            return array_combine($this->_keys, $data);
+            return array_combine($this->keys, $data);
 
         } else {
             return $data;
@@ -60,7 +60,7 @@ class CsvReader
     {
         $rows = array();
 
-        while($row = $this->getRow()) {
+        while ($row = $this->getRow()) {
             $rows[] = $row;
         }
 

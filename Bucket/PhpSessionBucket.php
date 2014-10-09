@@ -30,7 +30,7 @@ class PhpSessionBucket extends Bucket
         unset($_SESSION[$this->containerName][$this->id]);
     }
 
-    private function _mergeSettings($base)
+    private function mergeSettings($base)
     {
         $this->containerName = $base->containerName;
     }
@@ -63,7 +63,7 @@ class PhpSessionBucket extends Bucket
         }
     }
 
-    private function _checkContainer()
+    private function checkContainer()
     {
         if (!isset($_SESSION[$this->containerName])) {
             $_SESSION[$this->containerName] = array();
@@ -72,11 +72,12 @@ class PhpSessionBucket extends Bucket
 
     public function create($data = '', $expires = null, $context = null, $id = null, $returnNewBucket = true)
     {
-        $this->_checkContainer();
+        $this->checkContainer();
 
         if ($returnNewBucket) {
             $b = new PhpSessionBucket();
-            $b->_mergeSettings($this);
+            $b->mergeSettings($this);
+
         } else {
             $b = $this;
         }
@@ -87,6 +88,7 @@ class PhpSessionBucket extends Bucket
 
         if ($id) {
             $b->id = $id;
+
         } else {
             $b->id = $this->_createBucketId();
         }
@@ -114,7 +116,7 @@ class PhpSessionBucket extends Bucket
         }
 
         if (!$returnNewBucket) {
-            $this->_mergeSettings($b);
+            $this->mergeSettings($b);
             $this->id = $b->id;
             $this->data = $b->data;
             $this->expires = $b->expires;

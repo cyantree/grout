@@ -33,7 +33,7 @@ abstract class EntitySet extends Set
     {
         $e = Entity::loadById($this->entityClass, $id);
 
-        if($e){
+        if ($e) {
             $this->setData($e);
         }
 
@@ -44,9 +44,8 @@ abstract class EntitySet extends Set
     {
         $this->entity = $data;
 
-        foreach($this->contents as $name => $content)
-        {
-            if($content->storeInSet){
+        foreach ($this->contents as $name => $content) {
+            if ($content->storeInSet) {
                 $content->setData($data->{$name});
             }
         }
@@ -56,9 +55,8 @@ abstract class EntitySet extends Set
 
     protected function _collectData()
     {
-        foreach($this->contents as $name => $content)
-        {
-            if($content->storeInSet){
+        foreach ($this->contents as $name => $content) {
+            if ($content->storeInSet) {
                 $this->entity->{$name} = $content->getData();
             }
         }

@@ -19,19 +19,19 @@ class JsonDriver extends ServiceDriver
 
         $data = $task->request->post->get('commands');
 
-        if(!is_string($data)){
+        if (!is_string($data)) {
             $this->postResults(array(ServiceResult::createWithError('error', 'No data', '::GLOBAL::')));
             return;
         }
 
-        if(strlen($data) > $this->maxPackageSize){
+        if (strlen($data) > $this->maxPackageSize) {
             $this->postResults(array(ServiceResult::createWithError('error', 'Data too large', '::GLOBAL::')));
             return;
         }
 
         $data = json_decode($data, true);
 
-        if(json_last_error() != JSON_ERROR_NONE || !is_array($data)){
+        if (json_last_error() != JSON_ERROR_NONE || !is_array($data)) {
             $this->postResults(array(ServiceResult::createWithError('error', 'Invalid data', '::GLOBAL::')));
             return;
         }
@@ -39,7 +39,7 @@ class JsonDriver extends ServiceDriver
         $results = array();
 
         $f = new ArrayFilter();
-        foreach($data as $command){
+        foreach ($data as $command) {
             if (!is_array($command)) {
                 $this->postResults(array(ServiceResult::createWithError('error', 'Invalid data', '::GLOBAL::')));
                 return;

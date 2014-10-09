@@ -20,8 +20,10 @@ class UiElement
     {
         $this->tag = $tag;
         $this->attributes = $attributes;
-        if ($contents && !is_array($contents)) $this->contents = array($contents);
-        else {
+        if ($contents && !is_array($contents)) {
+            $this->contents = array($contents);
+
+        } else {
             $this->contents = $contents;
         }
         $this->quickClose = $quickClose;
@@ -31,8 +33,12 @@ class UiElement
 
     public function addClass($class)
     {
-        if (isset($this->attributes['class'])) $this->attributes['class'] .= ' ' . $class;
-        else $this->attributes['class'] = $class;
+        if (isset($this->attributes['class'])) {
+            $this->attributes['class'] .= ' ' . $class;
+
+        } else {
+            $this->attributes['class'] = $class;
+        }
     }
 
     public function showOpen()
@@ -41,8 +47,9 @@ class UiElement
 
         if ($this->attributes) {
             foreach ($this->attributes as $atbName => $atbValue) {
-                if ($atbValue !== null)
+                if ($atbValue !== null) {
                     $cnt .= ' ' . $atbName . '="' . StringTools::escapeHtml($atbValue) . '"';
+                }
             }
 
         }
@@ -69,29 +76,40 @@ class UiElement
 
             if ($this->attributes) {
                 foreach ($this->attributes as $atbName => $atbValue) {
-                    if ($atbValue !== null)
+                    if ($atbValue !== null) {
                         $cnt .= ' ' . $atbName . '="' . StringTools::escapeHtml($atbValue) . '"';
+                    }
                 }
             }
         }
 
         if ($this->contents !== null) {
-            if ($this->tag)
+            if ($this->tag) {
                 $cnt .= '>';
-            if (is_string($this->contents)) $cnt .= $this->escapeContent ? StringTools::escapeHtml($this->contents) : $this->contents;
-            else if (is_array($this->contents)) {
+            }
+            if (is_string($this->contents)) {
+                $cnt .= $this->escapeContent ? StringTools::escapeHtml($this->contents) : $this->contents;
+
+            } elseif (is_array($this->contents)) {
                 $c = '';
-                foreach ($this->contents as $content)
+                foreach ($this->contents as $content) {
                     $c .= $content;
+                }
 
                 $cnt .= $this->escapeContent ? StringTools::escapeHtml($c) : $c;
             }
 
-            if ($this->tag)
+            if ($this->tag) {
                 $cnt .= '</' . $this->tag . '>';
-        } else if ($this->tag) {
-            if ($this->quickClose) $cnt .= ' />';
-            else $cnt .= '></' . $this->tag . '>';
+            }
+
+        } elseif ($this->tag) {
+            if ($this->quickClose) {
+                $cnt .= ' />';
+
+            } else {
+                $cnt .= '></' . $this->tag . '>';
+            }
         }
 
         return $cnt;

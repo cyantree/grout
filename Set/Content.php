@@ -106,8 +106,8 @@ class Content
     {
         $this->set->status->addError($this->name);
 
-        if($message){
-            if($messageReplaces === null){
+        if ($message) {
+            if ($messageReplaces === null) {
                 $messageReplaces = array();
             }
             $messageReplaces['%name%'] = $this->config->get('label');
@@ -117,11 +117,11 @@ class Content
 
         $m = new SetMessage();
         $m->content = $this;
-        $m->code = $this->name.'.'.$code;
+        $m->code = $this->name . '.' . $code;
         $m->message = $message;
         $m->values = $messageReplaces;
 
-        $this->set->status->addError($this->name.'.'.$code, $m);
+        $this->set->status->addError($this->name . '.' . $code, $m);
 //        $this->set->status->postError($this->name.'.'.$code, $message);
     }
 
@@ -129,8 +129,8 @@ class Content
     {
         $this->set->status->addInfo($this->name);
 
-        if($message){
-            if($messageReplaces === null){
+        if ($message) {
+            if ($messageReplaces === null) {
                 $messageReplaces = array();
             }
             $messageReplaces['%name%'] = $this->config->get('label');
@@ -140,11 +140,11 @@ class Content
 
         $m = new SetMessage();
         $m->content = $this;
-        $m->code = $this->name.'.'.$code;
+        $m->code = $this->name . '.' . $code;
         $m->message = $message;
         $m->values = $messageReplaces;
 
-        $this->set->status->addInfo($this->name.'.'.$code, $m);
+        $this->set->status->addInfo($this->name . '.' . $code, $m);
 //        $this->set->status->postInfo($this->name.'.'.$code, $message);
     }
 
@@ -152,8 +152,8 @@ class Content
     {
         $this->set->status->addSuccess($this->name);
 
-        if($message){
-            if($messageReplaces === null){
+        if ($message) {
+            if ($messageReplaces === null) {
                 $messageReplaces = array();
             }
             $messageReplaces['%name%'] = $this->config->get('label');
@@ -163,24 +163,11 @@ class Content
 
         $m = new SetMessage();
         $m->content = $this;
-        $m->code = $this->name.'.'.$code;
+        $m->code = $this->name . '.' . $code;
         $m->message = $message;
         $m->values = $messageReplaces;
 
-        $this->set->status->addSuccess($this->name.'.'.$code, $m);
+        $this->set->status->addSuccess($this->name . '.' . $code, $m);
 //        $this->set->status->postSuccess($this->name.'.'.$code, $message);
-    }
-}
-
-class SetMessage
-{
-    public $content;
-    public $code;
-    public $message;
-    public $values;
-
-    public function __toString()
-    {
-        return $this->values ? str_replace(array_keys($this->values), array_values($this->values), $this->message) : $this->message;
     }
 }
