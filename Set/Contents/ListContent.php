@@ -20,7 +20,7 @@ class ListContent extends Content
 
     public function check()
     {
-        if (!isset($this->options[$this->_data])) {
+        if (!isset($this->options[$this->data])) {
             $this->postError('invalid', self::$errorCodes['invalid']);
         }
     }
@@ -32,17 +32,17 @@ class ListContent extends Content
     public function render($mode)
     {
         if ($mode == Set::MODE_EXPORT) {
-            return $this->options[$this->_data];
+            return $this->options[$this->data];
         }
 
         if ($mode == Set::MODE_SHOW || $mode == Set::MODE_DELETE || $mode == Set::MODE_LIST || !$this->editable) {
-            return '<p>' . StringTools::escapeHtml($this->options[$this->_data]) . '</p>';
+            return '<p>' . StringTools::escapeHtml($this->options[$this->data]) . '</p>';
 
         } elseif ($mode == Set::MODE_EDIT || $mode == Set::MODE_ADD) {
 
             $c = '<select name="' . $this->name . '">';
 
-            $data = strval($this->_data);
+            $data = strval($this->data);
             foreach ($this->options as $key => $value) {
                 $selected = strval($key) === $data ? ' selected="selected"' : '';
                 $c .= '<option value="' . StringTools::escapeHtml($key) . '"' . $selected . '>'
@@ -53,6 +53,6 @@ class ListContent extends Content
             return $c;
         }
 
-        return $this->options[$this->_data];
+        return $this->options[$this->data];
     }
 }

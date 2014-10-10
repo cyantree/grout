@@ -10,7 +10,7 @@ class DateTimeContent extends Content
     public $format = 'Y-m-d H:i:s';
 
     /** @var \DateTime */
-    protected $_data;
+    protected $data;
 
     public function populate($data, $files)
     {
@@ -19,7 +19,7 @@ class DateTimeContent extends Content
 
     public function render($mode)
     {
-        $date = $this->_data ? $this->_data->format($this->format) : '';
+        $date = $this->data ? $this->data->format($this->format) : '';
 
         if ($mode == Set::MODE_EXPORT) {
             return $date;

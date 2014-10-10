@@ -28,7 +28,7 @@ class Content
     /** @var Content  */
     public $previousContent = null;
 
-    protected $_data;
+    protected $data;
 
     public function __construct()
     {
@@ -37,12 +37,12 @@ class Content
 
     public function setData($data)
     {
-        $this->_data = $data;
+        $this->data = $data;
     }
 
     public function getData()
     {
-        return $this->_data;
+        return $this->data;
     }
 
     public function onLoaded()
@@ -68,7 +68,7 @@ class Content
      */
     public function populate($data, $files)
     {
-        $this->_data = $data->get($this->name);
+        $this->data = $data->get($this->name);
     }
 
     public function check()

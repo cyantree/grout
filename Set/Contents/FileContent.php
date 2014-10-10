@@ -47,7 +47,7 @@ class FileContent extends Content
         $url = $this->_getFileUrl();
 
         if ($mode == Set::MODE_EXPORT) {
-            return $url ? $url : $this->_data;
+            return $url ? $url : $this->data;
         }
 
         if ($this->editable && ($mode == Set::MODE_ADD || $mode == Set::MODE_EDIT)) {
@@ -57,7 +57,7 @@ class FileContent extends Content
             $c = '';
         }
 
-        if ($this->_data) {
+        if ($this->data) {
             if ($c != '') {
                 $c .= '<br /><br />';
             }
@@ -67,7 +67,7 @@ class FileContent extends Content
                     . StringTools::escapeHtml($url) . '</a>';
 
             } else {
-                $c .= StringTools::escapeHtml($this->_data);
+                $c .= StringTools::escapeHtml($this->data);
             }
         }
 
@@ -76,7 +76,7 @@ class FileContent extends Content
 
     protected function _getFileUrl()
     {
-        return $this->saveDirectoryUrl . $this->_data;
+        return $this->saveDirectoryUrl . $this->data;
     }
 
     public function populate($data, $files)
@@ -86,7 +86,7 @@ class FileContent extends Content
 
     public function check()
     {
-        if (!$this->_data && !$this->uploadedFile && $this->required) {
+        if (!$this->data && !$this->uploadedFile && $this->required) {
             $this->postError('notSelected', self::$errorCodes['notSelected']);
             return;
         }
@@ -102,12 +102,12 @@ class FileContent extends Content
 
     public function save()
     {
-        if ($this->_data) {
-            unlink($this->saveDirectory . $this->_data);
+        if ($this->data) {
+            unlink($this->saveDirectory . $this->data);
         }
 
         if ($this->saveFilename) {
-            $this->_data = $this->saveFilename;
+            $this->data = $this->saveFilename;
         } else {
             if ($this->keepExtension) {
                 $extension = explode('.', $this->uploadedFile->name);
@@ -116,16 +116,16 @@ class FileContent extends Content
                 $extension = '.dat';
             }
 
-            $this->_data = FileTools::createUniqueFilename($this->saveDirectory, $extension, 32, true) . $extension;
+            $this->data = FileTools::createUniqueFilename($this->saveDirectory, $extension, 32, true) . $extension;
         }
 
-        $this->uploadedFile->move($this->saveDirectory . $this->_data);
+        $this->uploadedFile->move($this->saveDirectory . $this->data);
     }
 
     public function onDelete()
     {
-        if ($this->_data) {
-            unlink($this->saveDirectory . $this->_data);
+        if ($this->data) {
+            unlink($this->saveDirectory . $this->data);
         }
     }
 }

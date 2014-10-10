@@ -41,28 +41,28 @@ class TextContent extends Content
 
     public function getData()
     {
-        return $this->_data === null ? '' : $this->_data;
+        return $this->data === null ? '' : $this->data;
     }
 
     public function check()
     {
-        $l = mb_strlen($this->_data);
+        $l = mb_strlen($this->data);
 
         if ($this->required && !$l) {
             $this->postError('invalid', self::$errorCodes['invalid']);
             return;
         }
 
-        if ($this->pattern !== null && !preg_match($this->pattern, $this->_data)) {
+        if ($this->pattern !== null && !preg_match($this->pattern, $this->data)) {
             $this->postError('invalidPattern', self::$errorCodes['invalidPattern']);
             return;
         }
 
-        if ($this->type == self::TYPE_EMAIL && !StringTools::isEmailAddress($this->_data)) {
+        if ($this->type == self::TYPE_EMAIL && !StringTools::isEmailAddress($this->data)) {
             $this->postError('invalidEmail', self::$errorCodes['invalidEmail']);
             return;
 
-        } elseif ($this->type == self::TYPE_URL && !StringTools::isUrl($this->_data)) {
+        } elseif ($this->type == self::TYPE_URL && !StringTools::isUrl($this->data)) {
             $this->postError('invalidUrl', self::$errorCodes['invalidUrl']);
             return;
         }
@@ -92,11 +92,11 @@ class TextContent extends Content
     public function render($mode)
     {
         if ($mode == Set::MODE_EXPORT) {
-            return $this->_data;
+            return $this->data;
         }
 
         if ($mode == Set::MODE_SHOW || $mode == Set::MODE_DELETE || $mode == Set::MODE_LIST || !$this->editable) {
-            return '<p>' . StringTools::escapeHtml($this->_data) . '</p>';
+            return '<p>' . StringTools::escapeHtml($this->data) . '</p>';
         }
 
 
@@ -115,10 +115,10 @@ class TextContent extends Content
 
         if ($this->multiline) {
             return '<textarea name="' . $this->name . '"' . $additionalAttributes . '>'
-            . StringTools::escapeHtml($this->_data) . '</textarea>';
+            . StringTools::escapeHtml($this->data) . '</textarea>';
         }
 
         return '<input type="text" name="' . $this->name . '" '
-        . 'value="' . StringTools::escapeHtml($this->_data) . '"' . $additionalAttributes . ' />';
+        . 'value="' . StringTools::escapeHtml($this->data) . '"' . $additionalAttributes . ' />';
     }
 }

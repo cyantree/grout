@@ -24,7 +24,7 @@ class CheckboxContent extends Content
 
     public function render($mode)
     {
-        $isChecked = $this->_data == $this->value;
+        $isChecked = $this->data == $this->value;
 
         if ($mode == Set::MODE_EXPORT) {
             return $isChecked ? $this->label : '';
@@ -50,18 +50,18 @@ class CheckboxContent extends Content
 
     public function getData()
     {
-        return $this->_data !== null && $this->_data !== false;
+        return $this->data !== null && $this->data !== false;
     }
 
     public function check()
     {
-        if ($this->required && $this->_data != $this->value) {
+        if ($this->required && $this->data != $this->value) {
             $this->postError('notSelected', self::$errorCodes['notSelected']);
         }
     }
 
     public function save()
     {
-        $this->_data = $this->_data == $this->value ? $this->value : null;
+        $this->data = $this->data == $this->value ? $this->value : null;
     }
 }
