@@ -25,21 +25,21 @@ abstract class FileSet extends Set
         }
     }
 
-    abstract protected function _getDirectory();
+    abstract protected function getDirectory();
 
-    protected function _getExtension()
+    protected function getExtension()
     {
         return '.set';
     }
 
-    protected function _getPath($id)
+    protected function getPath($id)
     {
-        return $this->_getDirectory() . $id . $this->_getExtension();
+        return $this->getDirectory() . $id . $this->getExtension();
     }
 
     public function idExists($id)
     {
-        return is_file($this->_getPath($id));
+        return is_file($this->getPath($id));
     }
 
     public function loadById($id)
@@ -47,7 +47,7 @@ abstract class FileSet extends Set
         if (!$this->idExists($id)) {
             return false;
         }
-        $file = $this->_getPath($id);
+        $file = $this->getPath($id);
 
         $this->saveData = unserialize(file_get_contents($file));
 
@@ -78,14 +78,14 @@ abstract class FileSet extends Set
 
     protected function doDelete()
     {
-        unlink($this->_getPath($this->getId()));
+        unlink($this->getPath($this->getId()));
     }
 
-    protected function _getNewId()
+    protected function getNewId()
     {
         do {
             $id = StringTools::random(16, 'abcdefghijklmnopqrstuvwxyz0123456789');
-        } while (is_file($this->_getPath($id)));
+        } while (is_file($this->getPath($id)));
 
         return $id;
     }
@@ -93,10 +93,10 @@ abstract class FileSet extends Set
     protected function doSave()
     {
         if (!$this->getId()) {
-            $this->setId($this->_getNewId());
+            $this->setId($this->getNewId());
         }
 
-        $path = $this->_getPath($this->getId());
+        $path = $this->getPath($this->getId());
 
         if (!is_dir(dirname($path))) {
             mkdir(dirname($path), 0777, true);
@@ -121,7 +121,7 @@ abstract class FileSet extends Set
 
         $options = new ArrayFilter($options);
 
-        $directory = $this->_getDirectory();
+        $directory = $this->getDirectory();
 
         if (is_dir($directory)) {
             $dir = opendir($directory);
@@ -129,7 +129,7 @@ abstract class FileSet extends Set
             $offset = $options->get('offset', 0);
             $count = $options->get('count', 0);
 
-            $extension = $this->_getExtension();
+            $extension = $this->getExtension();
             $extensionLength = strlen($extension);
 
             $i = 0;
