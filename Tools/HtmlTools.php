@@ -15,8 +15,13 @@ class HtmlTools
         return $q;
     }
 
-    public static function createTag($tagName, $attributes = null, $content = null, $quickClose = false, $escapeContent = true)
-    {
+    public static function createTag(
+        $tagName,
+        $attributes = null,
+        $content = null,
+        $quickClose = false,
+        $escapeContent = true
+    ) {
         $tag = '<' . $tagName;
 
         if ($attributes) {
@@ -46,7 +51,8 @@ class HtmlTools
         if ($windowTarget) {
             $windowTarget .= '.';
         }
-        $content = 'setTimeout(function(){window.' . $windowTarget . 'location.href="' . $url . '";}, ' . ($delaySeconds * 1000) . ');';
+        $content = 'setTimeout(function(){'
+                 . 'window.' . $windowTarget . 'location.href="' . $url . '";}, ' . ($delaySeconds * 1000) . ');';
         if ($echoScriptTag) {
             return '<script type="text/javascript">' . $content . '</script>' . chr(10);
         }

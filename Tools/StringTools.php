@@ -40,7 +40,11 @@ class StringTools
 
     public static function escapeMySql($string)
     {
-        return str_replace(array('\\', '"', chr(0), chr(10), chr(13), chr(26), "'"), array('\\\\', '\\"', '\\0', '\\n', '\\r', '\\Z', '\\\''), $string);
+        return str_replace(
+            array('\\', '"', chr(0), chr(10), chr(13), chr(26), "'"),
+            array('\\\\', '\\"', '\\0', '\\n', '\\r', '\\Z', '\\\''),
+            $string
+        );
     }
 
     public static function escapeSqlite($string)
@@ -461,12 +465,25 @@ class StringTools
 
     public static function isJunkMailAddress($mail)
     {
-        return preg_match('/@(trash\-mail\.com|sofort\-mail\.de|spoofmail\.de|spambog\.com|wegwerfmail\.com|wegwerfemail\.de|dodgeit\.com|mailinator\.com|jetable\.org|spam\.la|mytrashmail\.com|discardmail\.com|e4ward\.com|spamgourmet\.com|trashmail\.ws|spambog\.de|spambog\.ru|discardmail\.de|cust\.in|imails\.info|teewars\.org|0815\.ru|s0ny\.net|politikerclub\.de|mypartyclip\.de|hochsitze\.com|hulapla\.de|fr33mail\.de|m4ilweb\.info|nospamthanks\.info|webm4il\.info)$/', strtolower($mail)) == 1;
+        return preg_match(
+            '/@(trash\-mail\.com|sofort\-mail\.de|spoofmail\.de|spambog\.com|wegwerfmail\.com'
+            . '|wegwerfemail\.de|dodgeit\.com|mailinator\.com|jetable\.org|spam\.la|mytrashmail\.com'
+            . '|discardmail\.com|e4ward\.com|spamgourmet\.com|trashmail\.ws|spambog\.de|spambog\.ru|discardmail\.de'
+            . '|cust\.in|imails\.info|teewars\.org|0815\.ru|s0ny\.net|politikerclub\.de|mypartyclip\.de|hochsitze\.com'
+            . '|hulapla\.de|fr33mail\.de|m4ilweb\.info|nospamthanks\.info|webm4il\.info)$/',
+            strtolower($mail)
+        ) == 1;
     }
 
     public static function isRobotUserAgent($browser)
     {
-        return preg_match("/cronBROWSE|Googlebot|Baiduspider|bingbot|Sogou\-Test\-Spider|Yahoo|MSN|msn|SheenBot|aiHitBot|NetcraftSurvey|Sosospider|DotBot|Yandex|Gigabot|StackRambler|speedy_spider|seoprofiler|sogou|80legs|VoilaBot|Yeti|\.attentio\.com|Cligoo|Domnutch|oBot|\.ask\.com|Ezooms|Exabot|MJ12bot|DomainCrawler|HuaweiSymantecSpider|SeznamBot/", $browser);
+        return preg_match(
+            '/cronBROWSE|Googlebot|Baiduspider|bingbot|Sogou\-Test\-Spider|Yahoo|MSN|msn|SheenBot'
+            . '|aiHitBot|NetcraftSurvey|Sosospider|DotBot|Yandex|Gigabot|StackRambler|speedy_spider|seoprofiler|sogou'
+            . '|80legs|VoilaBot|Yeti|\.attentio\.com|Cligoo|Domnutch|oBot|\.ask\.com|Ezooms|Exabot|MJ12bot'
+            . '|DomainCrawler|HuaweiSymantecSpider|SeznamBot/',
+            $browser
+        );
     }
 
     public static function isHex($txt)

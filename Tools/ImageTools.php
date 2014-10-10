@@ -35,7 +35,13 @@ class ImageTools
             $backgroundColor = self::colorHexToRgba($backgroundColor);
         }
 
-        $backgroundColor = imagecolorallocatealpha($i, $backgroundColor['r'], $backgroundColor['g'], $backgroundColor['b'], 127 - floor($backgroundColor['a'] / 2));
+        $backgroundColor = imagecolorallocatealpha(
+            $i,
+            $backgroundColor['r'],
+            $backgroundColor['g'],
+            $backgroundColor['b'],
+            127 - floor($backgroundColor['a'] / 2)
+        );
 
         imagefilledrectangle($i, 0, 0, $width, $height, $backgroundColor);
 
@@ -50,8 +56,14 @@ class ImageTools
 
     /** Resizes an image
      */
-    public static function resizeImage($image, $newWidth, $newHeight, $autoRotate = false, $mode = ImageTools::MODE_SCALE_CROP, $backgroundColor = 0x00000000)
-    {
+    public static function resizeImage(
+        $image,
+        $newWidth,
+        $newHeight,
+        $autoRotate = false,
+        $mode = ImageTools::MODE_SCALE_CROP,
+        $backgroundColor = 0x00000000
+    ) {
         $sourceWidth = imagesx($image);
         $sourceHeight = imagesy($image);
 
@@ -121,7 +133,13 @@ class ImageTools
         imagealphablending($new, false);
 
         $backgroundColor = self::colorHexToRgba($backgroundColor);
-        $backgroundColor = imagecolorallocatealpha($new, $backgroundColor['r'], $backgroundColor['g'], $backgroundColor['b'], 127 - floor($backgroundColor['a'] / 2));
+        $backgroundColor = imagecolorallocatealpha(
+            $new,
+            $backgroundColor['r'],
+            $backgroundColor['g'],
+            $backgroundColor['b'],
+            127 - floor($backgroundColor['a'] / 2)
+        );
 
         imagefilledrectangle($new, 0, 0, $newWidth, $newHeight, $backgroundColor);
 
@@ -171,8 +189,14 @@ class ImageTools
         return array($width, $height);
     }
 
-    public static function drawText($text, $ttfFont, $size, $textColor = 0x000000ff, $backgroundColor = 0x00000000, $additionalConfigs = null)
-    {
+    public static function drawText(
+        $text,
+        $ttfFont,
+        $size,
+        $textColor = 0x000000ff,
+        $backgroundColor = 0x00000000,
+        $additionalConfigs = null
+    ) {
         $text = StringTools::toNumericEntities($text);
 
         $box = imagettfbbox($size, 0, $ttfFont, $text);
@@ -189,7 +213,16 @@ class ImageTools
 
         imagefilledrectangle($image, 0, 0, $width, $height, $cropCol);
 
-        imagettftext($image, $size, 0, $xOffset, $height - $yOffset, imagecolorallocate($image, 255, 255, 255), $ttfFont, $text);
+        imagettftext(
+            $image,
+            $size,
+            0,
+            $xOffset,
+            $height - $yOffset,
+            imagecolorallocate($image, 255, 255, 255),
+            $ttfFont,
+            $text
+        );
 
         $croppingPrecision = ArrayTools::get($additionalConfigs, 'croppingPrecision', 2);
 
@@ -253,10 +286,22 @@ class ImageTools
         imagesavealpha($image, true);
 
         $backgroundColor = self::colorHexToRgba($backgroundColor);
-        $backgroundColor = imagecolorallocatealpha($image, $backgroundColor['r'], $backgroundColor['g'], $backgroundColor['b'], 127 - floor($backgroundColor['a'] / 2));
+        $backgroundColor = imagecolorallocatealpha(
+            $image,
+            $backgroundColor['r'],
+            $backgroundColor['g'],
+            $backgroundColor['b'],
+            127 - floor($backgroundColor['a'] / 2)
+        );
 
         $textColor = self::colorHexToRgba($textColor);
-        $textColor = imagecolorallocatealpha($image, $textColor['r'], $textColor['g'], $textColor['b'], 127 - floor($textColor['a'] / 2));
+        $textColor = imagecolorallocatealpha(
+            $image,
+            $textColor['r'],
+            $textColor['g'],
+            $textColor['b'],
+            127 - floor($textColor['a'] / 2)
+        );
 
         imagefilledrectangle($image, 0, 0, $width, $height, $backgroundColor);
         imagealphablending($image, true);
@@ -265,8 +310,18 @@ class ImageTools
         return $image;
     }
 
-    public static function checkFile($file, $filename = null, $maxFilesize = null, $minWidth = null, $minHeight = null, $maxWidth = null, $maxHeight = null, $minAspectRatio = null, $maxAspectRatio = null, $allowRotation = false)
-    {
+    public static function checkFile(
+        $file,
+        $filename = null,
+        $maxFilesize = null,
+        $minWidth = null,
+        $minHeight = null,
+        $maxWidth = null,
+        $maxHeight = null,
+        $minAspectRatio = null,
+        $maxAspectRatio = null,
+        $allowRotation = false
+    ) {
         $result = new ImageToolsCheckFileResult();
 
         // Check filesize
@@ -328,7 +383,9 @@ class ImageTools
                         ($minAspectRatio !== null ? $minAspectRatio :
                               ($maxAspectRatio !== null ? $maxAspectRatio : null)));
 
-            if ($aspectRatio !== null && ($imageAspectRatio > 1 && $aspectRatio < 1 || $imageAspectRatio < 1 && $aspectRatio > 1)) {
+            if ($aspectRatio !== null
+                && ($imageAspectRatio > 1 && $aspectRatio < 1 || $imageAspectRatio < 1 && $aspectRatio > 1)
+            ) {
                 $temp = $width;
                 $width = $height;
                 $height = $temp;
@@ -396,7 +453,12 @@ class ImageTools
 
     public static function colorHexToRgba($color)
     {
-        return array('r' => $color >> 24 & 0xFF, 'g' => $color >> 16 & 0xFF, 'b' => $color >> 8 & 0xFF, 'a' => $color & 0xFF);
+        return array(
+            'r' => $color >> 24 & 0xFF,
+            'g' => $color >> 16 & 0xFF,
+            'b' => $color >> 8 & 0xFF,
+            'a' => $color & 0xFF
+        );
     }
 
     public static function colorRgbaToHex($color)

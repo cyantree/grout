@@ -38,7 +38,8 @@ class CheckboxContent extends Content
 
         $id = 'c' . StringTools::random(15);
 
-        $c = '<input id="' . $id . '" type="checkbox" name="' . $this->name . '" value="' . StringTools::escapeHtml($this->value) . '"' . $attributes . ' />';
+        $c = '<input id="' . $id . '" type="checkbox" name="' . $this->name . '" '
+           . 'value="' . StringTools::escapeHtml($this->value) . '"' . $attributes . ' />';
 
         if ($this->label != '') {
             $c .= '<label for="' . $id . '">' . StringTools::escapeHtml($this->label) . '</label>';

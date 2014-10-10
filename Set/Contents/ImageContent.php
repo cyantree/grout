@@ -121,10 +121,18 @@ class ImageContent extends Content
                 $sizeY = imagesy($image->image);
 
                 if ($this->minWidth && ($sizeX < $this->minWidth || $sizeY < $this->minHeight)) {
-                    $this->postError('tooSmall', self::$errorCodes['tooSmall'], array('%width%' => $this->minWidth, '%height%' => $this->minHeight));
+                    $this->postError(
+                        'tooSmall',
+                        self::$errorCodes['tooSmall'],
+                        array('%width%' => $this->minWidth, '%height%' => $this->minHeight)
+                    );
 
                 } elseif ($this->maxWidth && ($sizeX > $this->maxWidth || $sizeY > $this->maxHeight)) {
-                    $this->postError('tooLarge', self::$errorCodes['tooLarge'], array('%width%' => $this->maxWidth, '%height%' => $this->maxHeight));
+                    $this->postError(
+                        'tooLarge',
+                        self::$errorCodes['tooLarge'],
+                        array('%width%' => $this->maxWidth, '%height%' => $this->maxHeight)
+                    );
                 }
             }
 
@@ -160,7 +168,14 @@ class ImageContent extends Content
             }
 
             if ($this->resizeToWidth) {
-                $image = ImageTools::resizeImage($this->_image, $this->resizeToWidth, $this->resizeToHeight, false, $this->resizeImageToolsScaleMode, $this->resizeImageToolsBackground);
+                $image = ImageTools::resizeImage(
+                    $this->_image,
+                    $this->resizeToWidth,
+                    $this->resizeToHeight,
+                    false,
+                    $this->resizeImageToolsScaleMode,
+                    $this->resizeImageToolsBackground
+                );
 
             } else {
                 $image = $this->_image;

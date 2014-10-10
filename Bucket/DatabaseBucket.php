@@ -28,10 +28,16 @@ class DatabaseBucket extends Bucket
         $expires = DateTime::$utc->toSqlString($this->expires);
 
         if ($createNew) {
-            $this->database->exec('INSERT INTO ' . $this->table . ' (id, expires, data, context) VALUES (%t%, %t%, %t%, %t%)', array($this->id, $expires, $data, $this->context));
+            $this->database->exec(
+                'INSERT INTO ' . $this->table . ' (id, expires, data, context) VALUES (%t%, %t%, %t%, %t%)',
+                array($this->id, $expires, $data, $this->context)
+            );
 
         } else {
-            $this->database->exec('UPDATE ' . $this->table . ' SET data = %t%, expires = %t%, context = %t% WHERE id = %t%', array($data, $expires, $this->context, $this->id));
+            $this->database->exec(
+                'UPDATE ' . $this->table . ' SET data = %t%, expires = %t%, context = %t% WHERE id = %t%',
+                array($data, $expires, $this->context, $this->id)
+            );
         }
     }
 
@@ -44,7 +50,11 @@ class DatabaseBucket extends Bucket
     {
         do {
             $id = Bucket::createId();
-            $exists = $this->database->query('SELECT COUNT(*) c FROM ' . $this->table . ' WHERE id = %t%', array($id), Database::FILTER_FIELD);
+            $exists = $this->database->query(
+                'SELECT COUNT(*) c FROM ' . $this->table . ' WHERE id = %t%',
+                array($id),
+                Database::FILTER_FIELD
+            );
         } while ($exists);
 
         return $id;
@@ -67,7 +77,10 @@ class DatabaseBucket extends Bucket
     {
         $this->checkDatabase();
 
-        $this->database->exec('DELETE FROM ' . $this->table . ' WHERE expires < %t%', array(DateTime::$utc->toSqlString(time())));
+        $this->database->exec(
+            'DELETE FROM ' . $this->table . ' WHERE expires < %t%',
+            array(DateTime::$utc->toSqlString(time()))
+        );
     }
 
     public function create($data = '', $expires = null, $context = null, $id = null, $returnNewBucket = true)
@@ -97,7 +110,10 @@ class DatabaseBucket extends Bucket
         $data = base64_encode(serialize($b->data));
 
         $expires = DateTime::$utc->toSqlString($b->expires);
-        $this->database->exec('INSERT INTO ' . $this->table . ' (id, expires, data, context) VALUES (%t%, %t%, %t%, %t%)', array($b->id, $expires, $data, $b->context));
+        $this->database->exec(
+            'INSERT INTO ' . $this->table . ' (id, expires, data, context) VALUES (%t%, %t%, %t%, %t%)',
+            array($b->id, $expires, $data, $b->context)
+        );
 
         return $b;
     }
@@ -110,7 +126,11 @@ class DatabaseBucket extends Bucket
 
         $this->checkDatabase();
 
-        $data = $this->database->query('SELECT expires, data, context FROM ' . $this->table . ' WHERE id = %t% LIMIT 0, 1', array($id), Database::FILTER_ROW);
+        $data = $this->database->query(
+            'SELECT expires, data, context FROM ' . $this->table . ' WHERE id = %t% LIMIT 0, 1',
+            array($id),
+            Database::FILTER_ROW
+        );
         if (!$data) {
             return false;
         }

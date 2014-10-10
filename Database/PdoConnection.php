@@ -29,7 +29,12 @@ class PdoConnection extends DatabaseConnection
             return true;
         }
 
-        $this->connection = new PDO('mysql:host=' . $host . ';port=' . $port . ';dbname=' . $database, $user, $pass, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $charset));
+        $this->connection = new PDO(
+            'mysql:host=' . $host . ';port=' . $port . ';dbname=' . $database,
+            $user,
+            $pass,
+            array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $charset)
+        );
 
         $this->_errorHandler = ErrorHandler::getHandler(array($this, 'onError'), null, false);
 

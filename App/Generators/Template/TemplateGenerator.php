@@ -26,8 +26,12 @@ class TemplateGenerator
 
     private function decodeName($name)
     {
-        $data = AppTools::decodeUri($name, $this->app, $this->defaultModule ? $this->defaultModule : $this->app->currentTask->module,
-            $this->defaultPlugin ? $this->defaultPlugin : $this->app->currentTask->plugin);
+        $data = AppTools::decodeUri(
+            $name,
+            $this->app,
+            $this->defaultModule ? $this->defaultModule : $this->app->currentTask->module,
+            $this->defaultPlugin ? $this->defaultPlugin : $this->app->currentTask->plugin
+        );
 
         if ($data[1]) {
             $template = $data[1]->path . 'templates/' . $data[2] . '.php';

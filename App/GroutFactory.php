@@ -45,7 +45,9 @@ class GroutFactory
                 $module = $activeModuleTypeOrInstance;
                 $factoryContext = $module->id;
 
-            } elseif ($app->currentTask && get_class($app->currentTask->module) == 'Grout\\' . $activeModuleTypeOrInstance) {
+            } elseif ($app->currentTask
+                && get_class($app->currentTask->module) == 'Grout\\' . $activeModuleTypeOrInstance
+            ) {
                 $module = $app->currentTask->module;
                 $factoryContext = $module->id;
 
@@ -119,7 +121,8 @@ class GroutFactory
 
             if ($declaredClass === null) {
                 if ($this->reflection->hasMethod($name)) {
-                    $this->toolClasses[$name] = $declaredClass = $this->reflection->getMethod($name)->getDeclaringClass()->getName();
+                    $this->toolClasses[$name] = $declaredClass =
+                        $this->reflection->getMethod($name)->getDeclaringClass()->getName();
 
                 } else {
                     $this->toolClasses[$name] = $declaredClass = false;

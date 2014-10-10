@@ -43,7 +43,11 @@ class BucketSession
     {
         $this->id = $this->bucket = null;
 
-        if ($id === null && $this->useCookie && isset($_COOKIE[$this->name]) && preg_match('/^[0-9a-zA-Z]{32}$/', $_COOKIE[$this->name])) {
+        if ($id === null
+            && $this->useCookie
+            && isset($_COOKIE[$this->name])
+            && preg_match('/^[0-9a-zA-Z]{32}$/', $_COOKIE[$this->name])
+        ) {
             $id = $_COOKIE[$this->name];
         }
 
@@ -97,7 +101,15 @@ class BucketSession
         $this->bucket->save();
 
         if ($this->useCookie && !headers_sent()) {
-            setcookie($this->name, $this->id, time() + $this->expirationTime, $this->cookiePath, $this->cookieDomain, $this->cookieSecure, $this->cookieHttpOnly);
+            setcookie(
+                $this->name,
+                $this->id,
+                time() + $this->expirationTime,
+                $this->cookiePath,
+                $this->cookieDomain,
+                $this->cookieSecure,
+                $this->cookieHttpOnly
+            );
         }
     }
 
@@ -118,7 +130,15 @@ class BucketSession
 
         if ($this->useCookie && !headers_sent()) {
             unset($_COOKIE[$this->name]);
-            setcookie($this->name, '', time() - 100, $this->cookiePath, $this->cookieDomain, $this->cookieSecure, $this->cookieHttpOnly);
+            setcookie(
+                $this->name,
+                '',
+                time() - 100,
+                $this->cookiePath,
+                $this->cookieDomain,
+                $this->cookieSecure,
+                $this->cookieHttpOnly
+            );
         }
 
         $this->isNew = true;

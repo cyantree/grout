@@ -66,17 +66,27 @@ class AppTools
         return null;
     }
 
-    public static function createConfigChain($primaryConfig, $defaultConfig, $namespace = '', $useServerAdmin = true, $useServerName = true, $prefix = '')
-    {
+    public static function createConfigChain(
+        $primaryConfig,
+        $defaultConfig,
+        $namespace = '',
+        $useServerAdmin = true,
+        $useServerName = true,
+        $prefix = ''
+    ) {
         $chain = array();
         if ($primaryConfig) {
             $chain[] = $namespace . '\\' . $prefix . $primaryConfig . 'Config';
         }
         if ($useServerAdmin) {
-            $chain[] = $namespace . '\\' . $prefix . StringTools::camelCase(StringTools::toURLPart(ArrayTools::get($_SERVER, 'SERVER_ADMIN')), '-') . 'Config';
+            $chain[] = $namespace . '\\' . $prefix
+                . StringTools::camelCase(StringTools::toURLPart(ArrayTools::get($_SERVER, 'SERVER_ADMIN')), '-')
+                . 'Config';
         }
         if ($useServerName) {
-            $chain[] = $namespace . '\\' . $prefix . StringTools::camelCase(StringTools::toURLPart(ArrayTools::get($_SERVER, 'HTTP_HOST')), '-') . 'Config';
+            $chain[] = $namespace . '\\' . $prefix
+                . StringTools::camelCase(StringTools::toURLPart(ArrayTools::get($_SERVER, 'HTTP_HOST')), '-')
+                . 'Config';
         }
         if ($defaultConfig) {
             $chain[] = $namespace . '\\' . $prefix . $defaultConfig . 'Config';

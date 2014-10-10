@@ -136,8 +136,14 @@ class TemporaryFiles
         return $f;
     }
 
-    public function createFromExistingFile($file, $expirationDate = 86400, $id = null, $leaveFile = true, $metadata = null, $originalFilename = null)
-    {
+    public function createFromExistingFile(
+        $file,
+        $expirationDate = 86400,
+        $id = null,
+        $leaveFile = true,
+        $metadata = null,
+        $originalFilename = null
+    ) {
         if ($this->filesExpire) {
             $t = time();
 
@@ -190,8 +196,13 @@ class TemporaryFiles
         return $f;
     }
 
-    public function createFromContent($content, $expirationDate = 86400, $id = null, $metadata = null, $originalFilename = null)
-    {
+    public function createFromContent(
+        $content,
+        $expirationDate = 86400,
+        $id = null,
+        $metadata = null,
+        $originalFilename = null
+    ) {
         if ($this->filesExpire) {
             $t = time();
 
@@ -255,7 +266,10 @@ class TemporaryFiles
         array_unshift($directories, '');
 
         foreach ($directories as $directory) {
-            $files = glob($this->directory . $directory . $this->idPrefix . '*' . $this->idSuffix . $this->extension, GLOB_NOSORT);
+            $files = glob(
+                $this->directory . $directory . $this->idPrefix . '*' . $this->idSuffix . $this->extension,
+                GLOB_NOSORT
+            );
 
             if ($files) {
                 foreach ($files as $file) {

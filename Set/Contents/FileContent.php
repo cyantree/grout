@@ -63,7 +63,8 @@ class FileContent extends Content
             }
 
             if ($url) {
-                $c .= '<a href="' . StringTools::escapeHtml($url) . '" target="_blank">' . StringTools::escapeHtml($url) . '</a>';
+                $c .= '<a href="' . StringTools::escapeHtml($url) . '" target="_blank">'
+                    . StringTools::escapeHtml($url) . '</a>';
 
             } else {
                 $c .= StringTools::escapeHtml($this->_data);

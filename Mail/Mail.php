@@ -42,7 +42,9 @@ class Mail
         }
 
         // Encode sender
-        $from = is_array($this->from) ? MailTools::encodeString(current($this->from)) . ' <' . key($this->from) . '>' : $this->from;
+        $from = is_array($this->from) ?
+            MailTools::encodeString(current($this->from)) . ' <' . key($this->from) . '>' :
+            $this->from;
         $headers = 'From: ' . str_replace(array(chr(13), chr(10)), array('', ''), $from);
 
         // Encode recipients

@@ -39,7 +39,9 @@ class DoctrineBatchReader
                 $maxResults = $this->resultsPerBatch;
             }
 
-            $this->results = $this->query->setFirstResult($this->offset)->setMaxResults($maxResults)->getResult($this->hydrationMode);
+            $this->results = $this->query->setFirstResult($this->offset)
+                ->setMaxResults($maxResults)
+                ->getResult($this->hydrationMode);
 
         } else {
             $this->results = array();

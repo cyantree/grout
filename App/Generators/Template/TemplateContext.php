@@ -45,7 +45,11 @@ class TemplateContext
         $this->content = ob_get_clean();
 
         if ($this->baseTemplate) {
-            $this->content = $this->generator->load($this->baseTemplate, array('content' => $this->content, 'data' => $this->out), false)->content;
+            $this->content = $this->generator->load(
+                $this->baseTemplate,
+                array('content' => $this->content, 'data' => $this->out),
+                false
+            )->content;
         }
     }
 

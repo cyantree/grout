@@ -52,7 +52,9 @@ class Ui
 
         $this->processGenericParameters($el, $parameters);
 
-        $isCheckboxOrRadioButton = $element && $element->tag == 'input' && ($element->attributes['type'] == 'checkbox' || $element->attributes['type'] == 'radio');
+        $isCheckboxOrRadioButton = $element
+            && $element->tag == 'input'
+            && ($element->attributes['type'] == 'checkbox' || $element->attributes['type'] == 'radio');
 
         if ($isCheckboxOrRadioButton) {
             return new UiElement(null, null, array('element' => $element ? $element : $elementContent, 'label' => $el));
@@ -138,7 +140,10 @@ class Ui
         $el = new UiElement('input', array('type' => 'checkbox'));
         $el->type = 'Checkbox';
 
-        if ($checked !== false && ($checked === true || (is_array($checked) && array_key_exists($value, $checked)) || (!is_array($checked) && strval($checked) === strval($value)))) {
+        if ($checked !== false
+            && ($checked === true || (is_array($checked) && array_key_exists($value, $checked))
+            || (!is_array($checked) && strval($checked) === strval($value)))
+        ) {
             $el->attributes['checked'] = 'checked';
         }
         if ($name) {
@@ -156,7 +161,10 @@ class Ui
         $el = new UiElement('option', array('value' => $value), $label);
         $el->type = 'SelectOption';
 
-        if ($selected === true || strval($selected) === strval($value) || (is_array($selected) && in_array($value, $selected))) {
+        if ($selected === true
+            || strval($selected) === strval($value)
+            || (is_array($selected) && in_array($value, $selected))
+        ) {
             $el->attributes['selected'] = 'selected';
         }
 
@@ -345,7 +353,9 @@ class Ui
 
     public function textArea($name, $value = '', $parameters = null)
     {
-        $el = new UiElement('textarea', array('cols' => '30', 'rows' => '5', 'name' => $name), StringTools::escapeHtml($value));
+        $el = new UiElement('textarea', array('cols' => '30', 'rows' => '5', 'name' => $name), StringTools::escapeHtml(
+            $value
+        ));
         $el->type = 'TextArea';
 
         if ($parameters) {
@@ -583,8 +593,13 @@ class Ui
         return $el;
     }
 
-    public function calculatePageSelector($countPages, $currentPage, $startEndCount = 3, $innerRadius = 3, $ignoreGapSize = 1)
-    {
+    public function calculatePageSelector(
+        $countPages,
+        $currentPage,
+        $startEndCount = 3,
+        $innerRadius = 3,
+        $ignoreGapSize = 1
+    ) {
         if ($currentPage < 1) {
             $currentPage = 1;
         }

@@ -33,7 +33,12 @@ class ErrorWrapper
         if ($code & E_WARNING || $code & E_USER_WARNING) {
             $e = new PhpWarningException();
 
-        } elseif ($code & E_NOTICE || $code & E_USER_NOTICE || $code & E_DEPRECATED || $code & E_USER_DEPRECATED || $code & E_STRICT) {
+        } elseif ($code & E_NOTICE
+            || $code & E_USER_NOTICE
+            || $code & E_DEPRECATED
+            || $code & E_USER_DEPRECATED
+            || $code & E_STRICT
+        ) {
             $e = new PhpNoticeException();
 
         } else {

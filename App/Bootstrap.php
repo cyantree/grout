@@ -103,7 +103,8 @@ class Bootstrap
             if ($scriptName[0] != '/') {
                 $scriptName = '/' . $scriptName;
             }
-            $this->app->publicUrl = $this->app->url . substr($scriptName, 0, strlen($scriptName) - strlen(basename($scriptName)));
+            $this->app->publicUrl = $this->app->url
+                . substr($scriptName, 0, strlen($scriptName) - strlen(basename($scriptName)));
             $this->app->url .= $scriptName . '/';
         }
     }

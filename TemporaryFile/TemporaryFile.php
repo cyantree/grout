@@ -58,7 +58,10 @@ class TemporaryFile
 
     public function save()
     {
-        file_put_contents($this->path . '.dat', serialize(array('filename' => $this->originalFilename, 'metadata' => $this->metadata)));
+        file_put_contents(
+            $this->path . '.dat',
+            serialize(array('filename' => $this->originalFilename, 'metadata' => $this->metadata))
+        );
 
         if ($this->expires) {
             touch($this->path, $this->expires);

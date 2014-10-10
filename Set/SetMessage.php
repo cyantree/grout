@@ -10,6 +10,13 @@ class SetMessage
 
     public function __toString()
     {
-        return $this->values ? str_replace(array_keys($this->values), array_values($this->values), $this->message) : $this->message;
+        if ($this->values) {
+            $message = str_replace(array_keys($this->values), array_values($this->values), $this->message);
+
+        } else {
+            $message = $this->message;
+        }
+
+        return $message;
     }
 }

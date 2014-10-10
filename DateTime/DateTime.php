@@ -127,7 +127,10 @@ class DateTime extends \DateTime
 
     public function toLongDateTimeString($timestamp = null, $showSeconds = false)
     {
-        return $this->format($showSeconds ? $this->language->formatLongDateTimeSeconds : $this->language->formatLongDateTime, $timestamp);
+        return $this->format(
+            $showSeconds ? $this->language->formatLongDateTimeSeconds : $this->language->formatLongDateTime,
+            $timestamp
+        );
     }
 
     public function toLongDateString($timestamp = null)
@@ -137,7 +140,10 @@ class DateTime extends \DateTime
 
     public function toTimeString($timestamp = null, $showSeconds = false)
     {
-        return $this->format($showSeconds ? $this->language->formatTimeSeconds : $this->language->formatTime, $timestamp);
+        return $this->format(
+            $showSeconds ? $this->language->formatTimeSeconds : $this->language->formatTime,
+            $timestamp
+        );
     }
 
     public function copy()

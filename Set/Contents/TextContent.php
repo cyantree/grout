@@ -114,9 +114,11 @@ class TextContent extends Content
         }
 
         if ($this->multiline) {
-            return '<textarea name="' . $this->name . '"' . $additionalAttributes . '>' . StringTools::escapeHtml($this->_data) . '</textarea>';
+            return '<textarea name="' . $this->name . '"' . $additionalAttributes . '>'
+            . StringTools::escapeHtml($this->_data) . '</textarea>';
         }
 
-        return '<input type="text" name="' . $this->name . '" value="' . StringTools::escapeHtml($this->_data) . '"' . $additionalAttributes . ' />';
+        return '<input type="text" name="' . $this->name . '" '
+        . 'value="' . StringTools::escapeHtml($this->_data) . '"' . $additionalAttributes . ' />';
     }
 }

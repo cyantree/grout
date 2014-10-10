@@ -18,7 +18,12 @@ class Crypt
 
     public function init()
     {
-        $this->crypt = mcrypt_module_open($this->algorithm, $this->algorithmDirectory, $this->encryptionMode, $this->encryptionModeDirectory);
+        $this->crypt = mcrypt_module_open(
+            $this->algorithm,
+            $this->algorithmDirectory,
+            $this->encryptionMode,
+            $this->encryptionModeDirectory
+        );
         $this->keyLength = mcrypt_enc_get_key_size($this->crypt);
         $this->ivLength = mcrypt_enc_get_iv_size($this->crypt);
     }
@@ -155,6 +160,11 @@ class Crypt
 
     public function __wakeup()
     {
-        $this->crypt = mcrypt_module_open($this->algorithm, $this->algorithmDirectory, $this->encryptionMode, $this->encryptionModeDirectory);
+        $this->crypt = mcrypt_module_open(
+            $this->algorithm,
+            $this->algorithmDirectory,
+            $this->encryptionMode,
+            $this->encryptionModeDirectory
+        );
     }
 }

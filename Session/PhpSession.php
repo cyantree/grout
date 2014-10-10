@@ -33,7 +33,10 @@ class PhpSession
         if ($id) {
             $this->id = $id;
 
-        } elseif ($this->useCookie && isset($_COOKIE[$this->name]) && preg_match('/^[0-9a-zA-Z]{32}$/', $_COOKIE[$this->name])) {
+        } elseif ($this->useCookie
+            && isset($_COOKIE[$this->name])
+            && preg_match('/^[0-9a-zA-Z]{32}$/', $_COOKIE[$this->name])
+        ) {
             $this->id = $_COOKIE[$this->name];
 
         } else {
@@ -46,7 +49,15 @@ class PhpSession
         $this->isNew = !isset($_SESSION['_data']);
 
         if ($this->useCookie) {
-            setcookie($this->name, $this->id, time() + $this->expirationTime * 4, $this->cookiePath, $this->cookieDomain, $this->cookieSecure, $this->cookieHttpOnly);
+            setcookie(
+                $this->name,
+                $this->id,
+                time() + $this->expirationTime * 4,
+                $this->cookiePath,
+                $this->cookieDomain,
+                $this->cookieSecure,
+                $this->cookieHttpOnly
+            );
         }
 
         if (!$this->isNew) {
@@ -96,7 +107,15 @@ class PhpSession
 
         if ($this->useCookie) {
             unset($_COOKIE[$this->name]);
-            setcookie($this->name, '', time() - 100, $this->cookiePath, $this->cookieDomain, $this->cookieSecure, $this->cookieHttpOnly);
+            setcookie(
+                $this->name,
+                '',
+                time() - 100,
+                $this->cookiePath,
+                $this->cookieDomain,
+                $this->cookieSecure,
+                $this->cookieHttpOnly
+            );
         }
 
         $this->isNew = true;
@@ -104,8 +123,10 @@ class PhpSession
 
     public function checkSession()
     {
-        return ArrayTools::get($_SESSION, '_name') == $this->name && isset($_SESSION['_lastAction']) && (!$this->checkIp || ArrayTools::get($_SESSION, '_ip') == $_SERVER['REMOTE_ADDR']) &&
-              (!$this->checkBrowser || $_SESSION['_browser'] == ArrayTools::get($_SERVER, 'HTTP_USER_AGENT')) &&
-              time() - $_SESSION['_lastAction'] <= $this->expirationTime;
+        return ArrayTools::get($_SESSION, '_name') == $this->name
+        && isset($_SESSION['_lastAction'])
+        && (!$this->checkIp || ArrayTools::get($_SESSION, '_ip') == $_SERVER['REMOTE_ADDR'])
+        && (!$this->checkBrowser || $_SESSION['_browser'] == ArrayTools::get($_SERVER, 'HTTP_USER_AGENT'))
+        && (time() - $_SESSION['_lastAction']) <= $this->expirationTime;
     }
 }

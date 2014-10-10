@@ -79,17 +79,29 @@ class DoctrineBucket extends Bucket
         $expires = DateTime::$utc->copy();
 
         if ($createNew) {
-            $st = DoctrineTools::prepareQuery($this->connection, 'INSERT INTO ' . $this->table . ' (id, expiresOn, data, context) VALUES (%t%, %d%, %t%, %t%)', array($this->id, $expires, $data, $this->context));
+            $st = DoctrineTools::prepareQuery(
+                $this->connection,
+                'INSERT INTO ' . $this->table . ' (id, expiresOn, data, context) VALUES (%t%, %d%, %t%, %t%)',
+                array($this->id, $expires, $data, $this->context)
+            );
 
         } else {
-            $st = DoctrineTools::prepareQuery($this->connection, 'UPDATE ' . $this->table . ' SET data = %t%, expiresOn = %d%, context = %t% WHERE id = %t%', array($data, $expires, $this->context, $this->id));
+            $st = DoctrineTools::prepareQuery(
+                $this->connection,
+                'UPDATE ' . $this->table . ' SET data = %t%, expiresOn = %d%, context = %t% WHERE id = %t%',
+                array($data, $expires, $this->context, $this->id)
+            );
         }
         $st->execute();
     }
 
     public function delete()
     {
-        DoctrineTools::prepareQuery($this->connection, 'DELETE FROM ' . $this->table . ' WHERE id = %t%', $this->id)->execute();
+        DoctrineTools::prepareQuery(
+            $this->connection,
+            'DELETE FROM ' . $this->table . ' WHERE id = %t%',
+            $this->id
+        )->execute();
 
     }
 
@@ -97,7 +109,11 @@ class DoctrineBucket extends Bucket
     {
         do {
             $id = Bucket::createId();
-            $st = DoctrineTools::prepareQuery($this->connection, 'SELECT COUNT(*) c FROM ' . $this->table . ' WHERE id = %t%', array($id));
+            $st = DoctrineTools::prepareQuery(
+                $this->connection,
+                'SELECT COUNT(*) c FROM ' . $this->table . ' WHERE id = %t%',
+                array($id)
+            );
             $st->execute();
             $exists = $st->fetchColumn() > 0;
 
@@ -114,7 +130,11 @@ class DoctrineBucket extends Bucket
 
     public function cleanUp()
     {
-        DoctrineTools::prepareQuery($this->connection, 'DELETE FROM ' . $this->table . ' WHERE expiresOn < %t%', array(DateTime::$utc->toSQLString(time())))->execute();
+        DoctrineTools::prepareQuery(
+            $this->connection,
+            'DELETE FROM ' . $this->table . ' WHERE expiresOn < %t%',
+            array(DateTime::$utc->toSQLString(time()))
+        )->execute();
     }
 
     public function create($data = '', $expires = null, $context = null, $id = null, $returnNewBucket = true)
@@ -144,7 +164,11 @@ class DoctrineBucket extends Bucket
         DateTime::$utc->setTimestamp($b->expires);
         $expires = DateTime::$utc->copy();
 
-        DoctrineTools::prepareQuery($this->connection, 'INSERT INTO ' . $this->table . ' (id, expiresOn, data, context) VALUES (%t%, %d%, %t%, %t%)', array($b->id, $expires, $data, $b->context))->execute();
+        DoctrineTools::prepareQuery(
+            $this->connection,
+            'INSERT INTO ' . $this->table . ' (id, expiresOn, data, context) VALUES (%t%, %d%, %t%, %t%)',
+            array($b->id, $expires, $data, $b->context)
+        )->execute();
 
         return $b;
     }
@@ -155,7 +179,12 @@ class DoctrineBucket extends Bucket
             return false;
         }
 
-        $data = DoctrineTools::prepareQuery($this->connection, 'SELECT expiresOn, data, context FROM ' . $this->table . ' WHERE id = %t%', array($id), Database::FILTER_ROW);
+        $data = DoctrineTools::prepareQuery(
+            $this->connection,
+            'SELECT expiresOn, data, context FROM ' . $this->table . ' WHERE id = %t%',
+            array($id),
+            Database::FILTER_ROW
+        );
         $data->execute();
 
         $data = $data->fetch();
@@ -175,7 +204,11 @@ class DoctrineBucket extends Bucket
         $expires = DateTime::$utc->setBySqlString($data['expireson'])->getTimestamp();
 
         if ($expires < time()) {
-            DoctrineTools::prepareQuery($this->connection, 'DELETE FROM ' . $this->table . ' WHERE id = %t%', $id)->execute();
+            DoctrineTools::prepareQuery(
+                $this->connection,
+                'DELETE FROM ' . $this->table . ' WHERE id = %t%',
+                $id
+            )->execute();
             return false;
         }
 

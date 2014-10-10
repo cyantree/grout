@@ -3,8 +3,13 @@ namespace Cyantree\Grout\Tools;
 
 class FileTools
 {
-    public static function listDirectory($directory, $includeDirectories = true, $includeFiles = true, $absolutePaths = false, $recursive = true)
-    {
+    public static function listDirectory(
+        $directory,
+        $includeDirectories = true,
+        $includeFiles = true,
+        $absolutePaths = false,
+        $recursive = true
+    ) {
         $directory = str_replace('\\', '/', $directory);
 
         $items = array();
@@ -210,7 +215,9 @@ class FileTools
 
                 if ($excludes !== null) {
                     foreach ($excludes as $exclude) {
-                        if ((substr($exclude, 0, 1) == '@' && preg_match($exclude, '/' . $path)) || $exclude == '/' . $path) {
+                        if ((substr($exclude, 0, 1) == '@' && preg_match($exclude, '/' . $path))
+                            || $exclude == '/' . $path
+                        ) {
                             $ignorePath = true;
                             break;
                         }
@@ -219,7 +226,9 @@ class FileTools
 
                 if ($ignorePath && $includes !== null) {
                     foreach ($includes as $include) {
-                        if ((substr($include, 0, 1) == '@' && preg_match($include, '/' . $path)) || $include == '/' . $path) {
+                        if ((substr($include, 0, 1) == '@' && preg_match($include, '/' . $path))
+                            || $include == '/' . $path
+                        ) {
                             $ignorePath = false;
                             break;
                         }
@@ -266,11 +275,24 @@ class FileTools
 
     public static function replaceSection($file, $start, $end, $replaceWith, $trimStart = false, $trimEnd = false)
     {
-        file_put_contents($file, StringTools::replaceSection(file_get_contents($file), $start, $end, $replaceWith, $trimStart, $trimEnd));
+        $content = StringTools::replaceSection(
+            file_get_contents($file),
+            $start,
+            $end,
+            $replaceWith,
+            $trimStart,
+            $trimEnd
+        );
+        file_put_contents($file, $content);
     }
 
-    public static function createUniqueFilename($prefix, $extension = '', $randomChars = 32, $onlyReturnRandomizedPart = false, $charList = null)
-    {
+    public static function createUniqueFilename(
+        $prefix,
+        $extension = '',
+        $randomChars = 32,
+        $onlyReturnRandomizedPart = false,
+        $charList = null
+    ) {
         do {
             $random = StringTools::random($randomChars, $charList);
             $file = $prefix . $random . $extension;

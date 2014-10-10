@@ -16,8 +16,14 @@ class UiElement
 
     public $metadata;
 
-    public function __construct($tag = null, $attributes = null, $contents = null, $escapeContent = false, $quickClose = true, $metadata = array())
-    {
+    public function __construct(
+        $tag = null,
+        $attributes = null,
+        $contents = null,
+        $escapeContent = false,
+        $quickClose = true,
+        $metadata = array()
+    ) {
         $this->tag = $tag;
         $this->attributes = $attributes;
         if ($contents && !is_array($contents)) {

@@ -79,8 +79,14 @@ class Database
         return self::$default->prepareQuery($query, $args);
     }
 
-    public static function insert($table, $fields, $values, $nestedRows = false, $rowsPerInsert = 100, $returnQueries = false)
-    {
+    public static function insert(
+        $table,
+        $fields,
+        $values,
+        $nestedRows = false,
+        $rowsPerInsert = 100,
+        $returnQueries = false
+    ) {
         if (!self::$default && self::$connectHandler) {
             self::$connectHandler[0]->{self::$connectHandler[1]}();
         }

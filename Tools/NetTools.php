@@ -12,6 +12,9 @@ class NetTools
 
     public static function numberToIpP($number)
     {
-        return ($number >> 24 & 0xFF) . '.' . ($number >> 16 & 0xFF) . '.' . ($number >> 8 & 0xFF) . '.' . ($number & 0xFF);
+        return ($number >> 24 & 0xFF)
+        . '.' . ($number >> 16 & 0xFF)
+        . '.' . ($number >> 8 & 0xFF)
+        . '.' . ($number & 0xFF);
     }
 }

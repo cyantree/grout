@@ -51,7 +51,12 @@ class GroutQuick extends Quick
             return $this->publicAssetUrl . $uri;
 
         } else {
-            $data = AppTools::decodeUri($uri, $this->_app, $this->_app->currentTask->module, $this->_app->currentTask->plugin);
+            $data = AppTools::decodeUri(
+                $uri,
+                $this->_app,
+                $this->_app->currentTask->module,
+                $this->_app->currentTask->plugin
+            );
             if ($data[0]) {
                 /** @var Module $m */
                 $m = $data[0];

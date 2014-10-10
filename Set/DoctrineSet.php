@@ -179,7 +179,9 @@ abstract class DoctrineSet extends Set
                     $orderClause = 'e.' . $orderField;
 
                 } else {
-                    $identifiers = $this->_getEntityManager()->getClassMetadata($this->_getEntityClass())->getIdentifierFieldNames();
+                    $identifiers = $this->_getEntityManager()
+                        ->getClassMetadata($this->_getEntityClass())
+                        ->getIdentifierFieldNames();
                     $orderClause = 'e.' . $identifiers[0] . ' DESC';
                 }
             }

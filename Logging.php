@@ -71,7 +71,12 @@ class Logging
                 $durationFlag = 'c';
             }
 
-            fwrite($f, $this->id . ': ' . self::formatTime($duration) . $durationFlag . ': ' . self::formatTime($this->tracks[3 * $i] - $start) . ': ' . $this->tracks[3 * $i + 1] . chr(10));
+            fwrite(
+                $f,
+                $this->id . ': ' . self::formatTime($duration) . $durationFlag
+                . ': ' . self::formatTime($this->tracks[3 * $i] - $start)
+                . ': ' . $this->tracks[3 * $i + 1] . chr(10)
+            );
         }
 
         fwrite($f, chr(10));
