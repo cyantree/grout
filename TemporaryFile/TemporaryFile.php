@@ -68,7 +68,7 @@ class TemporaryFile
         }
     }
 
-    public function _readAdditionalData()
+    public function readAdditionalData()
     {
         $data = unserialize(file_get_contents($this->path . '.dat'));
 

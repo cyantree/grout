@@ -131,7 +131,7 @@ class TemporaryFiles
         $f->path = $path;
         $f->expires = $expires;
         $f->url = $this->baseUrl . $id . $this->extension;
-        $f->_readAdditionalData();
+        $f->readAdditionalData();
 
         return $f;
     }
