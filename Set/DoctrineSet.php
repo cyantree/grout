@@ -13,28 +13,28 @@ abstract class DoctrineSet extends Set
     public static $capabilities;
 
     /** @return EntityManager */
-    abstract protected function _getEntityManager();
+    abstract protected function getEntityManager();
 
-    abstract protected function _getEntityClass();
+    abstract protected function getEntityClass();
 
-    protected function _getIdField()
+    protected function getIdField()
     {
         return 'id';
     }
 
     public function getId()
     {
-        return $this->entity ? $this->entity->{$this->_getIdField()} : null;
+        return $this->entity ? $this->entity->{$this->getIdField()} : null;
     }
 
     public function setId($id)
     {
-        $this->entity->{$this->_getIdField()} = $id;
+        $this->entity->{$this->getIdField()} = $id;
     }
 
     public function createNew()
     {
-        $c = $this->_getEntityClass();
+        $c = $this->getEntityClass();
 
         $this->setEntity(new $c());
 
@@ -43,7 +43,7 @@ abstract class DoctrineSet extends Set
 
     public function loadById($id)
     {
-        $e = $this->_getEntityManager()->find($this->_getEntityClass(), $id);
+        $e = $this->getEntityManager()->find($this->getEntityClass(), $id);
 
         if ($e) {
             $this->setEntity($e);
@@ -65,7 +65,7 @@ abstract class DoctrineSet extends Set
         return $a;
     }
 
-    protected function _getListQueryData(ArrayFilter $options)
+    protected function getListQueryData(ArrayFilter $options)
     {
         return array(
             'clauses' => array(
@@ -100,15 +100,15 @@ abstract class DoctrineSet extends Set
 
     protected function _doDelete()
     {
-        $this->_getEntityManager()->remove($this->entity);
-        $this->_getEntityManager()->flush();
+        $this->getEntityManager()->remove($this->entity);
+        $this->getEntityManager()->flush();
     }
 
 
     protected function _doSave()
     {
-        $this->_getEntityManager()->persist($this->entity);
-        $this->_getEntityManager()->flush();
+        $this->getEntityManager()->persist($this->entity);
+        $this->getEntityManager()->flush();
     }
 
     public function setEntity($e)
@@ -138,7 +138,7 @@ abstract class DoctrineSet extends Set
         $parameters = array();
 
         // Create queries
-        $data = $this->_getListQueryData($options);
+        $data = $this->getListQueryData($options);
 
         // Create search queries
         $searchQueries = & $data['searchQueries'];
@@ -179,8 +179,8 @@ abstract class DoctrineSet extends Set
                     $orderClause = 'e.' . $orderField;
 
                 } else {
-                    $identifiers = $this->_getEntityManager()
-                        ->getClassMetadata($this->_getEntityClass())
+                    $identifiers = $this->getEntityManager()
+                        ->getClassMetadata($this->getEntityClass())
                         ->getIdentifierFieldNames();
                     $orderClause = 'e.' . $identifiers[0] . ' DESC';
                 }
@@ -197,7 +197,7 @@ abstract class DoctrineSet extends Set
             $filterClause,
             $orderClause,
             'e',
-            $this->_getEntityClass() . ' e',
+            $this->getEntityClass() . ' e',
         );
 
         $queryClauseLookUps = array(
@@ -219,7 +219,7 @@ abstract class DoctrineSet extends Set
         $query = str_replace($queryLookUps, $queryReplaces, $query);
         $parameters = array_merge($parameters, $queryData['parameters'], $data['parameters']);
 
-        $query = $this->_getEntityManager()->createQuery($query);
+        $query = $this->getEntityManager()->createQuery($query);
 
         if ($offset) {
             $query->setFirstResult($offset);
@@ -240,7 +240,7 @@ abstract class DoctrineSet extends Set
         $query = str_replace($queryClauseLookUps, $queryClauseReplaces, $queryData['query']);
         $query = str_replace($queryLookUps, $queryReplaces, $query);
 
-        $query = $this->_getEntityManager()->createQuery($query);
+        $query = $this->getEntityManager()->createQuery($query);
         if ($parameters) {
             $query->setParameters($parameters);
         }
