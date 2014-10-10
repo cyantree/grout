@@ -10,7 +10,7 @@ class FileBucket extends Bucket
     public function save()
     {
         if ($this->id === null) {
-            $this->id = $this->_createBucketId();
+            $this->id = $this->createBucketId();
         }
         $this->expires = Bucket::mapExpirationDate($this->expires);
         $file = $this->directory . $this->id . '.bck';
@@ -49,7 +49,7 @@ class FileBucket extends Bucket
         }
     }
 
-    protected function _createBucketId()
+    protected function createBucketId()
     {
         do {
             $id = Bucket::createId();
@@ -77,7 +77,7 @@ class FileBucket extends Bucket
             $b->id = $id;
 
         } else {
-            $b->id = $this->_createBucketId();
+            $b->id = $this->createBucketId();
         }
 
         $b->save();

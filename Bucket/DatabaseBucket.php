@@ -19,7 +19,7 @@ class DatabaseBucket extends Bucket
 
         $createNew = false;
         if ($this->id === null) {
-            $this->id = $this->_createBucketId();
+            $this->id = $this->createBucketId();
             $createNew = true;
         }
 
@@ -46,7 +46,7 @@ class DatabaseBucket extends Bucket
         $this->database->exec('DELETE FROM ' . $this->table . ' WHERE id = %t%', array($this->id));
     }
 
-    protected function _createBucketId()
+    protected function createBucketId()
     {
         do {
             $id = Bucket::createId();
@@ -104,7 +104,7 @@ class DatabaseBucket extends Bucket
             $b->id = $id;
 
         } else {
-            $b->id = $this->_createBucketId();
+            $b->id = $this->createBucketId();
         }
 
         $data = base64_encode(serialize($b->data));

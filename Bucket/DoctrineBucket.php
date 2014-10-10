@@ -69,7 +69,7 @@ class DoctrineBucket extends Bucket
 
         $createNew = false;
         if ($this->id === null) {
-            $this->id = $this->_createBucketId();
+            $this->id = $this->createBucketId();
             $createNew = true;
         }
 
@@ -105,7 +105,7 @@ class DoctrineBucket extends Bucket
 
     }
 
-    protected function _createBucketId()
+    protected function createBucketId()
     {
         do {
             $id = Bucket::createId();
@@ -156,7 +156,7 @@ class DoctrineBucket extends Bucket
             $b->id = $id;
 
         } else {
-            $b->id = $this->_createBucketId();
+            $b->id = $this->createBucketId();
         }
 
         $data = base64_encode(serialize($b->data));

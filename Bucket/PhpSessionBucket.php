@@ -10,7 +10,7 @@ class PhpSessionBucket extends Bucket
     public function save()
     {
         if ($this->id === null) {
-            $this->id = $this->_createBucketId();
+            $this->id = $this->createBucketId();
             $_SESSION[$this->containerName][$this->id] = $this;
         }
 
@@ -37,7 +37,7 @@ class PhpSessionBucket extends Bucket
 
     /* Work as static function */
 
-    protected function _createBucketId()
+    protected function createBucketId()
     {
         do {
             $id = Bucket::createId();
@@ -90,7 +90,7 @@ class PhpSessionBucket extends Bucket
             $b->id = $id;
 
         } else {
-            $b->id = $this->_createBucketId();
+            $b->id = $this->createBucketId();
         }
 
         $_SESSION[$this->containerName][$b->id] = $b;
