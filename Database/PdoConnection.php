@@ -36,7 +36,7 @@ class PdoConnection extends DatabaseConnection
             array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $charset)
         );
 
-        $this->_errorHandler = ErrorHandler::getHandler(array($this, 'onError'), null, false);
+        $this->errorHandler = ErrorHandler::getHandler(array($this, 'onError'), null, false);
 
         return true;
     }
@@ -52,7 +52,7 @@ class PdoConnection extends DatabaseConnection
     {
         $this->connection = $connection;
 
-        $this->_errorHandler = ErrorHandler::getHandler(array($this, 'onError'), null, false);
+        $this->errorHandler = ErrorHandler::getHandler(array($this, 'onError'), null, false);
     }
 
     public function query($query, $args = null, $flags = 0)
@@ -67,13 +67,13 @@ class PdoConnection extends DatabaseConnection
 
         $query = $this->prepareQuery($query, $args, true);
 
-        $this->_errorHandler->register($query);
+        $this->errorHandler->register($query);
         $q = $this->connection->query($query);
         if ($q === false) {
             $e = $this->connection->errorInfo();
             trigger_error($e[2], E_USER_ERROR);
         }
-        $this->_errorHandler->unRegister();
+        $this->errorHandler->unRegister();
 
         if (!$q || $q->rowCount() == 0) {
             if (($flags & Database::FILTER_COLUMN) || ($flags & Database::FILTER_ARRAY) || ($flags & Database::FILTER_ROW)) {
@@ -122,13 +122,13 @@ class PdoConnection extends DatabaseConnection
     {
         $query = $this->prepareQuery($query, $args, true);
 
-        $this->_errorHandler->register($query);
+        $this->errorHandler->register($query);
         $affectedRows = $this->connection->exec($query);
         if ($affectedRows === false) {
             $e = $this->connection->errorInfo();
             trigger_error($e[2], E_USER_ERROR);
         }
-        $this->_errorHandler->unRegister();
+        $this->errorHandler->unRegister();
 
         if ($affectedRows === false) {
             return false;

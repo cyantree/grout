@@ -26,7 +26,7 @@ class SqliteConnection extends DatabaseConnection
             return false;
         }
 
-        $this->_errorHandler = ErrorHandler::getHandler(array($this, 'onError'), null, false);
+        $this->errorHandler = ErrorHandler::getHandler(array($this, 'onError'), null, false);
 
         return true;
     }
@@ -42,7 +42,7 @@ class SqliteConnection extends DatabaseConnection
     {
         $this->connection = $connection;
 
-        $this->_errorHandler = ErrorHandler::getHandler(array($this, 'onError'), null, false);
+        $this->errorHandler = ErrorHandler::getHandler(array($this, 'onError'), null, false);
     }
 
     public function close()
@@ -54,8 +54,8 @@ class SqliteConnection extends DatabaseConnection
         $this->connection->close();
         $this->connection = null;
 
-        $this->_errorHandler->destroy();
-        $this->_errorHandler = null;
+        $this->errorHandler->destroy();
+        $this->errorHandler = null;
     }
 
     public function query($query, $args = null, $flags = 0)
@@ -69,9 +69,9 @@ class SqliteConnection extends DatabaseConnection
 
         $query = $this->prepareQuery($query, $args, true);
 
-        $this->_errorHandler->register($query);
+        $this->errorHandler->register($query);
         $q = $this->connection->query($query);
-        $this->_errorHandler->unRegister();
+        $this->errorHandler->unRegister();
 
         if (!$q) {
             if (($flags & Database::FILTER_COLUMN) || ($flags & Database::FILTER_ARRAY) || ($flags & Database::FILTER_ROW)) {
@@ -122,9 +122,9 @@ class SqliteConnection extends DatabaseConnection
     {
         $query = $this->prepareQuery($query, $args, true);
 
-        $this->_errorHandler->register($query);
+        $this->errorHandler->register($query);
         $result = $this->connection->exec($query);
-        $this->_errorHandler->unRegister();
+        $this->errorHandler->unRegister();
 
         if (!$result) {
             return false;

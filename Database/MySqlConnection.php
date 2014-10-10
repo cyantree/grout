@@ -43,7 +43,7 @@ class MySqlConnection extends DatabaseConnection
 
         mysql_set_charset($charset, $this->connection);
 
-        $this->_errorHandler = ErrorHandler::getHandler(array($this, 'onError'), null, false);
+        $this->errorHandler = ErrorHandler::getHandler(array($this, 'onError'), null, false);
 
         return true;
     }
@@ -56,7 +56,7 @@ class MySqlConnection extends DatabaseConnection
     public function useExistingConnection($connection)
     {
         $this->connection = $connection;
-        $this->_errorHandler = ErrorHandler::getHandler(array($this, 'onError'), null, false);
+        $this->errorHandler = ErrorHandler::getHandler(array($this, 'onError'), null, false);
     }
 
     public function close()
@@ -67,8 +67,8 @@ class MySqlConnection extends DatabaseConnection
         mysql_close($this->connection);
         $this->connection = null;
 
-        $this->_errorHandler->destroy();
-        $this->_errorHandler = null;
+        $this->errorHandler->destroy();
+        $this->errorHandler = null;
     }
 
     public function query($query, $args = null, $flags = 0)
@@ -83,12 +83,12 @@ class MySqlConnection extends DatabaseConnection
         }
 
         $query = $this->prepareQuery($query, $args, true);
-        $this->_errorHandler->register($query);
+        $this->errorHandler->register($query);
         $q = mysql_query($query, $this->connection);
         if ($q === false) {
             trigger_error(mysql_error($this->connection), E_USER_ERROR);
         }
-        $this->_errorHandler->unRegister();
+        $this->errorHandler->unRegister();
 
         if (!$q || mysql_num_rows($q) == 0) {
             if (($flags & Database::FILTER_COLUMN) || ($flags & Database::FILTER_ARRAY) || ($flags & Database::FILTER_ROW)) {
@@ -139,12 +139,12 @@ class MySqlConnection extends DatabaseConnection
     {
         $query = $this->prepareQuery($query, $args, true);
 
-        $this->_errorHandler->register($query);
+        $this->errorHandler->register($query);
         $res = mysql_query($query, $this->connection);
         if ($res === false) {
             trigger_error(mysql_error($this->connection), E_USER_ERROR);
         }
-        $this->_errorHandler->unRegister();
+        $this->errorHandler->unRegister();
 
         if ($res === false) {
             return false;

@@ -21,11 +21,11 @@ class DatabaseConnection
 
     public $conversionTarget;
 
-    protected $_backupLastQuery = false;
-    protected $_lastQuery;
+    protected $backupLastQuery = false;
+    protected $lastQuery;
 
     /** @var ErrorHandler */
-    protected $_errorHandler;
+    protected $errorHandler;
 
     public function __construct()
     {
@@ -61,8 +61,8 @@ class DatabaseConnection
             Database::$countQueries++;
             $this->countQueries++;
 
-            if ($this->_backupLastQuery) {
-                $this->_lastQuery = $query;
+            if ($this->backupLastQuery) {
+                $this->lastQuery = $query;
             }
 
             if ($this->debug && $this->events) {
@@ -95,22 +95,15 @@ class DatabaseConnection
 
     public function backupLastQuery($flag)
     {
-        $this->_backupLastQuery = $flag;
+        $this->backupLastQuery = $flag;
         if (!$flag) {
-            $this->_lastQuery = '';
+            $this->lastQuery = '';
         }
     }
-
-    protected function _destroy()
-    {
-        $this->_errorHandler->destroy();
-        $this->_errorHandler = null;
-    }
-
 
     /** @return string */
     public function getLastQuery()
     {
-        return $this->_lastQuery;
+        return $this->lastQuery;
     }
 }
