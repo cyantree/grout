@@ -189,9 +189,9 @@ abstract class Set
             }
         }
 
-        $this->_collectData();
+        $this->collectData();
 
-        $this->_doSave();
+        $this->doSave();
 
         foreach ($this->contents as $content) {
             if ($content->editable) {
@@ -227,7 +227,7 @@ abstract class Set
 ////            $this->_data[$name] = $content->getData();
 //        }
 //
-//        $this->_collectData();
+//        $this->collectData();
 //
 //        if ($saveOnSuccess) {
 //            $this->save();
@@ -235,12 +235,12 @@ abstract class Set
 //        return true;
 //    }
 
-    protected function _collectData()
+    protected function collectData()
     {
 
     }
 
-    protected function _doSave()
+    protected function doSave()
     {
 
     }
@@ -249,14 +249,14 @@ abstract class Set
     {
         $this->mode = $mode;
 
-        $this->_doPrepareRendering();
+        $this->doPrepareRendering();
 
         foreach ($this->contents as $content) {
             $content->prepareRendering($mode);
         }
     }
 
-    protected function _doPrepareRendering()
+    protected function doPrepareRendering()
     {
 
     }
@@ -287,7 +287,7 @@ abstract class Set
         return $this->contents[$nameOrContent]->render($this->mode, $nameOrContent);
     }
 
-    protected function _onLoaded()
+    protected function onLoaded()
     {
 
     }
@@ -301,7 +301,7 @@ abstract class Set
             $content->onDelete();
         }
 
-        $this->_doDelete();
+        $this->doDelete();
 
         foreach ($this->contents as $content) {
             $content->onDeleted();
@@ -310,7 +310,7 @@ abstract class Set
         return true;
     }
 
-    protected function _doDelete()
+    protected function doDelete()
     {
 
     }

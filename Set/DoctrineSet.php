@@ -89,7 +89,7 @@ abstract class DoctrineSet extends Set
     }
 
 
-    protected function _collectData()
+    protected function collectData()
     {
         foreach ($this->contents as $name => $content) {
             if ($content->storeInSet) {
@@ -98,14 +98,14 @@ abstract class DoctrineSet extends Set
         }
     }
 
-    protected function _doDelete()
+    protected function doDelete()
     {
         $this->getEntityManager()->remove($this->entity);
         $this->getEntityManager()->flush();
     }
 
 
-    protected function _doSave()
+    protected function doSave()
     {
         $this->getEntityManager()->persist($this->entity);
         $this->getEntityManager()->flush();
@@ -121,7 +121,7 @@ abstract class DoctrineSet extends Set
             }
         }
 
-        $this->_onLoaded();
+        $this->onLoaded();
     }
 
     public function listSets($options)

@@ -53,7 +53,7 @@ abstract class EntitySet extends Set
 
 
 
-    protected function _collectData()
+    protected function collectData()
     {
         foreach ($this->contents as $name => $content) {
             if ($content->storeInSet) {
@@ -62,13 +62,13 @@ abstract class EntitySet extends Set
         }
     }
 
-    protected function _doDelete()
+    protected function doDelete()
     {
         $this->entity->delete();
     }
 
 
-    protected function _doSave()
+    protected function doSave()
     {
         $this->entity->save();
     }

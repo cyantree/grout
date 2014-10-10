@@ -16,7 +16,7 @@ abstract class FileSet extends Set
     private $saveData;
     private $id;
 
-    protected function _collectData()
+    protected function collectData()
     {
         foreach ($this->contents as $name => $content) {
             if ($content->storeInSet) {
@@ -59,7 +59,7 @@ abstract class FileSet extends Set
 
         $this->setId($id);
 
-        $this->_onLoaded();
+        $this->onLoaded();
 
         return true;
     }
@@ -76,7 +76,7 @@ abstract class FileSet extends Set
     }
 
 
-    protected function _doDelete()
+    protected function doDelete()
     {
         unlink($this->_getPath($this->getId()));
     }
@@ -90,7 +90,7 @@ abstract class FileSet extends Set
         return $id;
     }
 
-    protected function _doSave()
+    protected function doSave()
     {
         if (!$this->getId()) {
             $this->setId($this->_getNewId());
