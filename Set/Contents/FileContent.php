@@ -44,7 +44,7 @@ class FileContent extends Content
 
     public function render($mode)
     {
-        $url = $this->_getFileUrl();
+        $url = $this->getFileUrl();
 
         if ($mode == Set::MODE_EXPORT) {
             return $url ? $url : $this->data;
@@ -74,7 +74,7 @@ class FileContent extends Content
         return $c;
     }
 
-    protected function _getFileUrl()
+    protected function getFileUrl()
     {
         return $this->saveDirectoryUrl . $this->data;
     }
