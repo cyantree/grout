@@ -30,52 +30,52 @@ class Form
     public function execute()
     {
         // PreInit form
-        $this->_preInit();
+        $this->preInit();
 
         $this->status = new StatusContainer();
 
         $this->dataIn = $this->getDataIn();
 
         if ($this->status->error) {
-            $this->_deInit();
+            $this->deInit();
             return;
         }
 
         // New form, create data object
-        $this->data = $this->_createDataObject();
+        $this->data = $this->createDataObject();
 
-        $this->isSubmit = $this->_isSubmit();
+        $this->isSubmit = $this->isSubmit();
 
         // Init form
-        $this->_init();
+        $this->init();
 
         // Form hasn't been submitted yet or an error has occurred, so end processing here
         if (!$this->isSubmit || $this->status->error) {
-            $this->_deInit();
+            $this->deInit();
             return;
         }
 
-        $this->_getData();
+        $this->getData();
 
         if ($this->status->error) {
-            $this->_deInit();
+            $this->deInit();
             return;
         }
 
-        $this->_checkData();
+        $this->checkData();
 
         // Form has some errors, so end processing here
         if ($this->status->error) {
-            $this->_deInit();
+            $this->deInit();
             return;
         }
 
-        $this->_submit();
+        $this->submit();
 
-        $this->_deInit();
+        $this->deInit();
     }
 
-    protected function _isSubmit()
+    protected function isSubmit()
     {
         if (is_string($this->submitButton)) {
             if ($this->dataIn->has(strval($this->submitButton))) {
@@ -107,40 +107,40 @@ class Form
         return false;
     }
 
-    protected function _preInit()
+    protected function preInit()
     {
     }
 
-    protected function _init()
+    protected function init()
     {
     }
 
-    protected function _deInit()
+    protected function deInit()
     {
     }
 
     /** @return mixed */
-    protected function _createDataObject()
+    protected function createDataObject()
     {
         return null;
     }
 
-    protected function _getData()
+    protected function getData()
     {
     }
 
-    protected function _checkData()
+    protected function checkData()
     {
         return null;
     }
 
-    protected function _submit()
+    protected function submit()
     {
     }
 
-    protected function _finishForm()
+    protected function finishForm()
     {
-        $this->data = $this->_createDataObject();
+        $this->data = $this->createDataObject();
     }
 
     public static function addDefaultSubmitButton($name)
