@@ -44,7 +44,7 @@ class ImageContent extends Content
     /** @var FileUpload */
     public $uploadedFile;
 
-    protected $_image;
+    protected $image;
 
     public static $errorCodes = array(
         'notSelected' => 'Im Feld „%name%“ wurde kein Bild ausgewählt.',
@@ -56,7 +56,7 @@ class ImageContent extends Content
 
     public function render($mode)
     {
-        $url = $this->_getImageUrl();
+        $url = $this->getImageUrl();
 
         if ($mode == Set::MODE_EXPORT) {
             return $url ? $url : $this->data;
@@ -86,7 +86,7 @@ class ImageContent extends Content
         return $c;
     }
 
-    protected function _getImageUrl()
+    protected function getImageUrl()
     {
         return $this->saveDirectoryUrl . $this->data . ($this->valueContainsExtension ? '' : '.' . $this->saveFormat);
     }
@@ -136,15 +136,15 @@ class ImageContent extends Content
                 }
             }
 
-            $this->_image = $image->image;
+            $this->image = $image->image;
         }
     }
 
 
     public function save()
     {
-        if ($this->_image) {
-            $this->onProcessImage($this->_image);
+        if ($this->image) {
+            $this->onProcessImage($this->image);
 
             $saveFilename = null;
             $oldSaveFilename = $this->data;
@@ -169,7 +169,7 @@ class ImageContent extends Content
 
             if ($this->resizeToWidth) {
                 $image = ImageTools::resizeImage(
-                    $this->_image,
+                    $this->image,
                     $this->resizeToWidth,
                     $this->resizeToHeight,
                     false,
@@ -178,7 +178,7 @@ class ImageContent extends Content
                 );
 
             } else {
-                $image = $this->_image;
+                $image = $this->image;
             }
 
             if ($oldSaveFilename && $oldSaveFilename != $saveFilename) {
@@ -192,10 +192,10 @@ class ImageContent extends Content
                 imagepng($image, $this->saveDirectory . $saveFilename);
             }
 
-            $this->onImageProcessed($this->_image);
+            $this->onImageProcessed($this->image);
 
-            if ($image != $this->_image) {
-                imagedestroy($this->_image);
+            if ($image != $this->image) {
+                imagedestroy($this->image);
             }
             imagedestroy($image);
 
