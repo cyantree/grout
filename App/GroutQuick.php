@@ -8,13 +8,13 @@ use Cyantree\Grout\Tools\AppTools;
 class GroutQuick extends Quick
 {
     /** @var App */
-    protected $_app;
+    protected $app;
 
     public $publicAssetUrl;
 
     public function __construct($app)
     {
-        $this->_app = $app;
+        $this->app = $app;
 
         parent::__construct();
     }
@@ -31,7 +31,7 @@ class GroutQuick extends Quick
 
     public function r($uri, $arguments = null, $parameters = null)
     {
-        $data = AppTools::decodeUri($uri, $this->_app, $this->_app->currentTask->module, $this->_app->currentTask->plugin);
+        $data = AppTools::decodeUri($uri, $this->app, $this->app->currentTask->module, $this->app->currentTask->plugin);
         if ($data[0]) {
             /** @var Module $m */
             $m = $data[0];
@@ -53,9 +53,9 @@ class GroutQuick extends Quick
         } else {
             $data = AppTools::decodeUri(
                 $uri,
-                $this->_app,
-                $this->_app->currentTask->module,
-                $this->_app->currentTask->plugin
+                $this->app,
+                $this->app->currentTask->module,
+                $this->app->currentTask->plugin
             );
             if ($data[0]) {
                 /** @var Module $m */
