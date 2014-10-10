@@ -10,18 +10,18 @@ class ServiceDriver
     public $commandNamespaces = array();
 
     /** @var Task */
-    protected $_task;
+    protected $task;
 
     /** @param $task Task */
     public function processTask($task)
     {
-        $this->_task = $task;
+        $this->task = $task;
     }
 
     /** @param $task Task */
     public function processError($task)
     {
-        $this->_task = $task;
+        $this->task = $task;
 
         $this->postResults(array(ServiceResult::createWithError('error', 'An unknown error occurred', '::GLOBAL::')));
     }
@@ -30,7 +30,7 @@ class ServiceDriver
     {
     }
 
-    protected function _executeCommand($command, $data = null, $id = null)
+    protected function executeCommand($command, $data = null, $id = null)
     {
         try {
             if (!preg_match('!^[a-zA-Z0-9_/]+$!', $command)) {
@@ -52,8 +52,8 @@ class ServiceDriver
                 if ($found) {
                     /** @var ServiceCommand $c */
                     $c = new $className();
-                    $c->task = $this->_task;
-                    $c->app = $this->_task->app;
+                    $c->task = $this->task;
+                    $c->app = $this->task->app;
                     $c->data = $data;
                     $c->result = new ServiceResult($id);
                     $c->execute();
@@ -66,11 +66,11 @@ class ServiceDriver
             }
 
         } catch (PhpWarningException $e) {
-            $this->_task->app->events->trigger('logException', $e);
+            $this->task->app->events->trigger('logException', $e);
             return ServiceResult::createWithError('error', 'An unknown error has occurred', $id);
 
         } catch (PhpErrorException $e) {
-            $this->_task->app->events->trigger('logException', $e);
+            $this->task->app->events->trigger('logException', $e);
             return ServiceResult::createWithError('error', 'An unknown error has occurred', $id);
         }
     }

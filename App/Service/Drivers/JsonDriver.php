@@ -51,7 +51,7 @@ class JsonDriver extends ServiceDriver
             $command = $f->get('command');
             $data = $f->asFilter('data');
 
-            $results[] = $this->_executeCommand($command, $data, $id);
+            $results[] = $this->executeCommand($command, $data, $id);
         }
 
         $this->postResults($results);
@@ -59,6 +59,6 @@ class JsonDriver extends ServiceDriver
 
     public function postResults($results)
     {
-        $this->_task->response->postContent(json_encode($results), ContentType::TYPE_PLAIN_UTF8);
+        $this->task->response->postContent(json_encode($results), ContentType::TYPE_PLAIN_UTF8);
     }
 }
