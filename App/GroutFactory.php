@@ -1,11 +1,9 @@
 <?php
 namespace Cyantree\Grout\App;
 
-use Cyantree\Grout\App\Generators\Template\TemplateGenerator;
 use Cyantree\Grout\Event\Events;
 use Cyantree\Grout\Filter\ArrayFilter;
 use Cyantree\Grout\Tools\ArrayTools;
-use Cyantree\Grout\Ui\Ui;
 
 class GroutFactory
 {
@@ -73,7 +71,7 @@ class GroutFactory
                 $f->module = $module;
             }
             $f->context = $factoryContext;
-            $f->_onInit();
+            $f->onInit();
 
             self::$instances[$factoryId] = $f;
         }
@@ -89,12 +87,12 @@ class GroutFactory
         $this->class = get_class($this);
     }
 
-    protected function _onInit()
+    protected function onInit()
     {
 
     }
 
-    protected function _getParentFactory()
+    protected function getParentFactory()
     {
         $class = get_parent_class($this);
 
@@ -130,7 +128,7 @@ class GroutFactory
             }
 
             if ($declaredClass && $this->class != $declaredClass) {
-                $tool = $this->_getParentFactory()->$name();
+                $tool = $this->getParentFactory()->$name();
             }
         }
 
