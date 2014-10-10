@@ -77,7 +77,7 @@ class AdvancedForm
     public function execute()
     {
         // PreInit form
-        $this->_preInit();
+        $this->preInit();
 
         if ($this->flags == -1) {
             $this->flags = self::$defaultFlags;
@@ -107,7 +107,7 @@ class AdvancedForm
         $context = $this->getContext();
 
         if ($this->status->error) {
-            $this->_endProcessing();
+            $this->endProcessing();
             return;
         }
 
@@ -118,7 +118,7 @@ class AdvancedForm
             // No valid bucket found
             if (!$this->bucket) {
                 $isNew = true;
-                $this->_processSecurityError(self::ERROR_DELETED);
+                $this->processSecurityError(self::ERROR_DELETED);
 
             } else {
                 /** @var AdvancedFormData $formData */
@@ -130,12 +130,12 @@ class AdvancedForm
                 // Bucket is valid but doesn't fit to this form
                 if ($this->formData->id != $this->dataIn->get('CT_Form_ID')) {
                     $isNew = true;
-                    $this->_processSecurityError(self::ERROR_DELETED);
+                    $this->processSecurityError(self::ERROR_DELETED);
                     $this->bucket = null;
 
                 } elseif ($this->formData->resetOnNextAccess) {
                     $this->formData->reset();
-                    $this->formData->data = $this->data = $this->_createDataObject();
+                    $this->formData->data = $this->data = $this->createDataObject();
                 }
 
                 if ($this->formData->finished) {
@@ -146,21 +146,21 @@ class AdvancedForm
 
         // New form, create data object
         if ($isNew) {
-            $this->data = $this->_createDataObject();
+            $this->data = $this->createDataObject();
             $uID = StringTools::random(32);
 
             $this->formData = new AdvancedFormData($uID, $this->data);
             $this->bucket = $this->bucketBase->create('', 86400, $context);
         }
 
-        $this->isSubmit = $this->_isSubmit();
+        $this->isSubmit = $this->isSubmit();
 
         // Init form
-        $this->_init();
+        $this->init();
 
         // Form hasn't been submitted yet or an error has occurred, so end processing here
         if (!$this->isSubmit || ((!$this->flags & self::FLAG_ALLOW_INSTANT_SUBMIT) && $isNew) || $this->status->error) {
-            $this->_endProcessing();
+            $this->endProcessing();
             return;
         }
 
@@ -172,23 +172,23 @@ class AdvancedForm
         }
 
         if ($step < 1) {
-            $this->_endProcessing();
+            $this->endProcessing();
             return;
         }
 
         if ($step > $this->formData->currentStep) {
-            $this->_endProcessing();
+            $this->endProcessing();
             return;
         }
 
-        $this->_getStepData($step);
+        $this->getStepData($step);
 
         // Check whether earlier step is requested
         if (is_int($this->action)) {
             $this->formData->nextStep = $this->action;
             if ($this->formData->nextStep > 0 && $this->formData->nextStep <= $this->formData->currentStep) {
                 $this->formData->currentStep = $this->formData->nextStep;
-                $this->_endProcessing();
+                $this->endProcessing();
                 return;
 
             } else {
@@ -202,10 +202,10 @@ class AdvancedForm
 
         // Calculate next step
         if ($this->action == 'next') {
-            $this->formData->nextStep = $this->_getNextStep($step);
+            $this->formData->nextStep = $this->getNextStep($step);
 
         } elseif ($this->action == 'prev') {
-            $this->formData->nextStep = $this->_getPrevStep($step);
+            $this->formData->nextStep = $this->getPrevStep($step);
 
         } else {
             $this->formData->nextStep = $step;
@@ -221,50 +221,50 @@ class AdvancedForm
         // Let's check some security stuff
         if (($this->flags & self::FLAG_ACTION_TIME) && (!$this->flags & self::FLAG_ALLOW_INSTANT_SUBMIT)) {
             if (microtime(true) - $this->formData->lastAction < self::$earlyTimeout) {
-                $this->_processSecurityError(self::ERROR_EARLY);
+                $this->processSecurityError(self::ERROR_EARLY);
             }
         }
 
         if ($this->action == 'prev') {
             $this->formData->currentStep = $this->formData->nextStep;
-            $this->_endProcessing();
+            $this->endProcessing();
             return;
         }
 
         if ($this->status->error || ($this->steps > 1 && $step == $this->steps)) {
-            $this->_endProcessing();
+            $this->endProcessing();
             return;
         }
 
-        $this->_checkStepData($step);
+        $this->checkStepData($step);
 
         // Form has some errors, so end processing here
         if ($this->status->error) {
-            $this->_endProcessing();
+            $this->endProcessing();
             return;
         }
 
-        $this->_submitStep($step);
+        $this->submitStep($step);
 
         // Processing successful so set next step
         if (!$this->status->error && $this->steps > 1) {
             $this->formData->currentStep = $this->formData->nextStep;
         }
 
-        $this->_endProcessing();
+        $this->endProcessing();
     }
 
-    protected function _getNextStep($lastStep)
+    protected function getNextStep($lastStep)
     {
         return $lastStep + 1;
     }
 
-    protected function _getPrevStep($lastStep)
+    protected function getPrevStep($lastStep)
     {
         return $lastStep - 1;
     }
 
-    protected function _isSubmit()
+    protected function isSubmit()
     {
         if (is_string($this->submitButton)) {
             if ($this->dataIn->has(strval($this->submitButton))) {
@@ -320,43 +320,43 @@ class AdvancedForm
         return false;
     }
 
-    protected function _preInit()
+    protected function preInit()
     {
     }
 
-    protected function _init()
+    protected function init()
     {
     }
 
-    protected function _deInit()
+    protected function deInit()
     {
     }
 
     /** @return mixed */
-    protected function _createDataObject()
+    protected function createDataObject()
     {
         return null;
     }
 
-    protected function _getStepData($step)
+    protected function getStepData($step)
     {
     }
 
-    protected function _checkStepData($step)
+    protected function checkStepData($step)
     {
     }
 
-    protected function _submitStep($step)
+    protected function submitStep($step)
     {
     }
 
-    protected function _finishForm($resetData = false)
+    protected function finishForm($resetData = false)
     {
         $this->formData->id = StringTools::random(32);
 
         if ($resetData) {
             $this->formData->reset();
-            $this->formData->data = $this->data = $this->_createDataObject();
+            $this->formData->data = $this->data = $this->createDataObject();
         } else {
             $this->formData->resetOnNextAccess = true;
         }
@@ -364,7 +364,7 @@ class AdvancedForm
         $this->formData->finished = true;
     }
 
-    protected function _processSecurityError($id)
+    protected function processSecurityError($id)
     {
         if ($id == self::ERROR_DELETED) {
             $this->status->addError('GroutFormSecurity', self::$MESSAGE_ERROR_DELETED);
@@ -374,7 +374,7 @@ class AdvancedForm
         }
     }
 
-    protected function _endProcessing()
+    protected function endProcessing()
     {
         if ($this->bucket) {
             $this->formData->lastAction = microtime(true);
@@ -382,7 +382,7 @@ class AdvancedForm
             $this->bucket->save();
         }
 
-        $this->_deInit();
+        $this->deInit();
     }
 
     public function show()
