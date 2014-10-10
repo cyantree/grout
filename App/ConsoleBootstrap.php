@@ -19,7 +19,7 @@ class ConsoleBootstrap
 
         $this->app->isConsole = true;
 
-        $this->_setBasePaths();
+        $this->setBasePaths();
 
         $r = new Request();
 
@@ -53,7 +53,7 @@ class ConsoleBootstrap
         return $r;
     }
 
-    protected function _setBasePaths()
+    protected function setBasePaths()
     {
         // Set server base paths
         $this->app->path = str_replace('\\', '/', realpath($this->applicationPath)) . '/';
