@@ -9,7 +9,9 @@ class DoctrineBatchReader
 
     public $resultsPerBatch = 500;
     public $offset = 0;
-    public $countTotal = 0;
+    public $limit = 0;
+
+    private $countTotal = 0;
 
     private $index = 0;
     private $count = 0;
@@ -19,7 +21,7 @@ class DoctrineBatchReader
     public $hydrationMode = Query::HYDRATE_OBJECT;
 
     /** @var Query */
-    public $query;
+    private $query;
 
     private function getNextBatch()
     {
@@ -32,16 +34,16 @@ class DoctrineBatchReader
         }
 
         if (!$this->count || $this->count == $this->resultsPerBatch) {
-            if ($this->countTotal && $this->offset + $this->resultsPerBatch > $this->countTotal) {
-                $maxResults = $this->countTotal - $this->offset;
+            $maxResults = $this->limit ? min($this->resultsPerBatch, $this->limit - $this->countTotal) : $this->resultsPerBatch;
+
+            if ($maxResults) {
+                $this->results = $this->query->setFirstResult($this->offset)
+                        ->setMaxResults($maxResults)
+                        ->getResult($this->hydrationMode);
 
             } else {
-                $maxResults = $this->resultsPerBatch;
+                $this->results = array();
             }
-
-            $this->results = $this->query->setFirstResult($this->offset)
-                ->setMaxResults($maxResults)
-                ->getResult($this->hydrationMode);
 
         } else {
             $this->results = array();
@@ -50,6 +52,7 @@ class DoctrineBatchReader
         $this->offset += $this->resultsPerBatch;
         $this->index = 0;
         $this->count = count($this->results);
+        $this->countTotal += $this->count;
     }
 
     public function close()
@@ -80,5 +83,23 @@ class DoctrineBatchReader
         $this->index++;
 
         return $result;
+    }
+
+    /**
+     * @return Query
+     */
+    public function getQuery()
+    {
+        return $this->query;
+    }
+
+    /**
+     * @param Query $query
+     */
+    public function setQuery(Query $query)
+    {
+        $this->query = $query;
+        $this->offset = $query->getFirstResult();
+        $this->limit = $query->getMaxResults();
     }
 }
