@@ -1,22 +1,27 @@
 <?php
 namespace Cyantree\Grout\Set;
 
+use Cyantree\Grout\Doctrine\DoctrineBatchReader;
+use Doctrine\ORM\Query;
+
 class DoctrineSetListResult extends SetListResult
 {
     /** @var DoctrineSet */
     private $set;
 
-    private $entities;
+    /** @var DoctrineBatchReader */
+    private $reader;
 
-    public function __construct($set, $entities)
+    public function __construct($set, Query $query)
     {
+        $this->reader = new DoctrineBatchReader();
+        $this->reader->setQuery($query);
+
         $this->set = $set;
-        $this->entities = $entities;
-        $this->count = count($entities);
     }
     public function getNext()
     {
-        $entity = array_shift($this->entities);
+        $entity = $this->reader->getNext();
 
         if ($entity === null) {
             return null;

@@ -233,7 +233,7 @@ abstract class DoctrineSet extends Set
             $query->setParameters($parameters);
         }
 
-        $result = new DoctrineSetListResult($this, $query->getResult());
+        $result = new DoctrineSetListResult($this, $query);
 
         // Get count
         $queryData = $data['count'];
