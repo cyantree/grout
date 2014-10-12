@@ -25,13 +25,7 @@ class DoctrineBatchReader
 
     private function getNextBatch()
     {
-        if ($this->clearEntitiesOnBatch) {
-            $em = $this->query->getEntityManager();
-
-            foreach ($this->clearEntitiesOnBatch as $e) {
-                $em->clear($e);
-            }
-        }
+        $this->clearEntitiesOnBatch();
 
         if (!$this->count || $this->count == $this->resultsPerBatch) {
             $maxResults = $this->limit ? min($this->resultsPerBatch, $this->limit - $this->countTotal) : $this->resultsPerBatch;
@@ -57,13 +51,7 @@ class DoctrineBatchReader
 
     public function close()
     {
-        if ($this->clearEntitiesOnBatch) {
-            $em = $this->query->getEntityManager();
-
-            foreach ($this->clearEntitiesOnBatch as $e) {
-                $em->clear($e);
-            }
-        }
+        $this->clearEntitiesOnBatch();
 
         $this->query = null;
         $this->results = null;
@@ -101,5 +89,21 @@ class DoctrineBatchReader
         $this->query = $query;
         $this->offset = $query->getFirstResult();
         $this->limit = $query->getMaxResults();
+    }
+
+    private function clearEntitiesOnBatch()
+    {
+        if ($this->clearEntitiesOnBatch) {
+            $em = $this->query->getEntityManager();
+
+            if ($this->clearEntitiesOnBatch === true) {
+                $em->clear();
+
+            } else {
+                foreach ($this->clearEntitiesOnBatch as $e) {
+                    $em->clear($e);
+                }
+            }
+        }
     }
 }
