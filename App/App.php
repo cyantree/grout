@@ -474,10 +474,14 @@ class App
     }
 
     /** @return Module */
-    public function getModuleById($id)
+    public function getModuleById($id, $throwExceptionIfNotExists = false)
     {
         if (isset($this->moduleIds[$id])) {
             return $this->moduleIds[$id];
+        }
+
+        if ($throwExceptionIfNotExists) {
+            throw new \Exception('Module ' . $id . ' does not exist.');
         }
 
         return null;
