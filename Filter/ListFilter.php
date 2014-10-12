@@ -8,9 +8,11 @@ class ListFilter extends ValueFilter
         return new ListFilter($value);
     }
 
-    public function match($acceptedValues, $defaultValue = null)
+    public function match($acceptedValues, $defaultValue = null, $lookUpKeys = false)
     {
-        if (!in_array($this->value, $acceptedValues)) {
+        if (($lookUpKeys && !array_key_exists($this->value, $acceptedValues))
+            || (!$lookUpKeys && !in_array($this->value, $acceptedValues)
+        )) {
             $this->value = $defaultValue;
         }
 
