@@ -36,6 +36,7 @@ class Module
     public $routesEnabled = true;
 
     public $urlPrefix;
+    public $assetUrlPrefix;
 
     public $path;
 
@@ -134,34 +135,23 @@ class Module
 
     public function getPublicUrl($path = '', $absoluteURL = true, $parameters = null)
     {
-        $u = $this->urlPrefix . $path;
-        if ($parameters != null) {
-            $u .= StringTools::getQueryString($parameters);
-        }
+        return $this->app->getPublicUrl($this->urlPrefix . $path, $absoluteURL, $parameters);
+    }
 
-        if ($absoluteURL) {
-            return $this->app->publicUrl . $u;
-        }
-        return $u;
+    public function getPublicAssetUrl($path = '', $absoluteURL = true, $parameters = null)
+    {
+        return $this->app->getPublicAssetUrl($this->assetUrlPrefix . $path, $absoluteURL, $parameters);
     }
 
     public function getUrl($path = '', $absoluteURL = true, $parameters = null)
     {
-        $u = $this->urlPrefix . $path;
-        if ($parameters != null) {
-            $u .= StringTools::getQueryString($parameters);
-        }
-
-        if ($absoluteURL) {
-            return $this->app->url . $u;
-        }
-        return $u;
+        return $this->app->getUrl($this->urlPrefix . $path, $absoluteURL, $parameters);
     }
 
     public function getRouteUrl($id, $arguments = null, $absoluteURL = true, $parameters = null, $escapeArguments = true)
     {
         if (!isset($this->routes[$id])) {
-            trigger_error('The route "' . $id . '" does not exist in module "' . $this->id . '".', E_USER_WARNING);
+            throw new \Exception('The route "' . $id . '" does not exist in module "' . $this->id . '".');
         }
         /** @var $route Route */
         $route = $this->routes[$id];

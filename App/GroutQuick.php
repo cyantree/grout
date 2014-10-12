@@ -10,8 +10,6 @@ class GroutQuick extends Quick
     /** @var App */
     protected $app;
 
-    public $publicAssetUrl;
-
     public function __construct($app)
     {
         $this->app = $app;
@@ -31,43 +29,37 @@ class GroutQuick extends Quick
 
     public function r($uri, $arguments = null, $parameters = null)
     {
-        $data = AppTools::decodeUri($uri, $this->app, $this->app->currentTask->module, $this->app->currentTask->plugin);
-        if ($data[0]) {
-            /** @var Module $m */
-            $m = $data[0];
-            return $m->getRouteUrl($data[2], $arguments, true, $parameters);
+        $context = AppTools::decodeContext($uri, $this->app, $this->app->currentTask->module, $this->app->currentTask->plugin);
 
-        } elseif ($data[1]) {
-            /** @var Plugin $p */
-            $p = $data[1];
-            return $p->getRouteUrl($data[2], $arguments, true, $parameters);
-        }
-        return null;
-    }
+        if ($context->plugin) {
+            return $context->plugin->getRouteUrl($context->uri, $arguments, true, $parameters);
 
-    public function a($uri, $parameters = null)
-    {
-        if ($this->publicAssetUrl !== null && strpos($uri, ':') === false) {
-            return $this->publicAssetUrl . $uri;
+        } elseif ($context->module) {
+            return $context->module->getRouteUrl($context->uri, $arguments, true, $parameters);
 
         } else {
-            $data = AppTools::decodeUri(
+            throw new \Exception('Route could not be resolved.');
+        }
+    }
+
+    public function a($uri, $parameters = null, $absolute = false)
+    {
+        $context = AppTools::decodeContext(
                 $uri,
                 $this->app,
                 $this->app->currentTask->module,
                 $this->app->currentTask->plugin
-            );
-            if ($data[0]) {
-                /** @var Module $m */
-                $m = $data[0];
-                return $m->getPublicUrl($data[2], true, $parameters);
+        );
 
-            } elseif ($data[1]) {
-                /** @var Plugin $p */
-                $p = $data[1];
-                return $p->getPublicUrl($data[2], true, $parameters);
-            }
-            return null;
+
+        if ($context->plugin) {
+            return $context->plugin->getPublicAssetUrl($context->uri, $absolute, $parameters);
+
+        } elseif ($context->module) {
+            return $context->module->getPublicAssetUrl($context->uri, $absolute, $parameters);
+
+        } else {
+            return $context->app->getPublicAssetUrl($context->uri, $absolute, $parameters);
         }
     }
 }

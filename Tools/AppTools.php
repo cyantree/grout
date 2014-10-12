@@ -4,37 +4,38 @@ namespace Cyantree\Grout\Tools;
 use Cyantree\Grout\App\App;
 use Cyantree\Grout\App\Module;
 use Cyantree\Grout\App\Plugin;
+use Cyantree\Grout\App\Types\Context;
 
 class AppTools
 {
     /**
-     * @param $uri
+     * @param $context
      * @param $app App
      * @param $module Module
      * @param $plugin Plugin
-     * @return array
+     * @return Context
      */
-    public static function decodeUri($uri, $app, $module = null, $plugin = null)
+    public static function decodeContext($context, App $app, $module = null, $plugin = null)
     {
-        $uri = explode(':', $uri, 3);
-        $c = count($uri);
+        $contextPieces = explode(':', $context, 3);
+        $c = count($contextPieces);
 
         if ($c == 1) {
-            return array($module, $plugin, $uri[0]);
+            return new Context($contextPieces[0], $app, $module, $plugin);
 
         } elseif ($c == 2) {
-            if ($uri[0] !== '') {
-                $module = $app->getModuleById($uri[0]);
+            if ($contextPieces[0] !== '') {
+                $module = $app->getModuleById($contextPieces[0]);
 
-            } elseif ($uri[0] === 'App') {
+            } elseif ($contextPieces[0] === 'App') {
                 $module = null;
             }
 
-            return array($module, null, $uri[1]);
+            return new Context($contextPieces[1], $app, $module);
 
         } elseif ($c == 3) {
-            $moduleId = $uri[0];
-            $pluginId = $uri[1];
+            $moduleId = $contextPieces[0];
+            $pluginId = $contextPieces[1];
 
             if ($moduleId === 'App') {
                 $module = null;
@@ -60,10 +61,10 @@ class AppTools
 
             }
 
-            return array($module, $plugin, $uri[2]);
+            return new Context($contextPieces[2], $app, $module, $plugin);
         }
 
-        return null;
+        throw new \Exception('Invalid context ' . $context);
     }
 
     public static function createConfigChain(

@@ -8,6 +8,8 @@ class ConsoleBootstrap
 
     public $applicationPath;
 
+    public $assetDirectory = 'assets/';
+
     public function __construct(App $app)
     {
         $this->app = $app;
@@ -58,5 +60,6 @@ class ConsoleBootstrap
         // Set server base paths
         $this->app->path = str_replace('\\', '/', realpath($this->applicationPath)) . '/';
         $this->app->publicPath = str_replace('\\', '/', dirname($_SERVER['SCRIPT_FILENAME'])) . '/';
+        $this->app->publicAssetPath = $this->app->publicPath . $this->assetDirectory;
     }
 }

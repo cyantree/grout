@@ -26,17 +26,21 @@ class TemplateGenerator
 
     private function decodeName($name)
     {
-        $data = AppTools::decodeUri(
+        $context = AppTools::decodeContext(
             $name,
             $this->app,
             $this->defaultModule ? $this->defaultModule : $this->app->currentTask->module,
             $this->defaultPlugin ? $this->defaultPlugin : $this->app->currentTask->plugin
         );
 
-        if ($data[1]) {
-            $template = $data[1]->path . 'templates/' . $data[2] . '.php';
+        if ($context->plugin) {
+            $template = $context->plugin->path . 'templates/' . $context->uri . '.php';
+
+        } elseif ($context->module) {
+            $template = $context->module->path . 'templates/' . $context->uri . '.php';
+
         } else {
-            $template = $data[0]->path . 'templates/' . $data[2] . '.php';
+            throw new \Exception('Context could not be resolved.');
         }
 
         return $template;

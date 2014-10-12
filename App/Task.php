@@ -1,7 +1,9 @@
 <?php
 namespace Cyantree\Grout\App;
 
+use Cyantree\Grout\App\Types\Context;
 use Cyantree\Grout\Filter\ArrayFilter;
+use Cyantree\Grout\Tools\AppTools;
 
 class Task
 {
@@ -41,15 +43,11 @@ class Task
     public function __construct()
     {
         $this->data = new ArrayFilter();
+        $this->vars = new ArrayFilter();
     }
-
 
     public function setRoute($route, $routeVars = null)
     {
-        if (!$this->vars) {
-            $this->vars = new ArrayFilter();
-        }
-
         $this->route = $route;
         $this->plugin = $route->plugin;
         $this->module = $route->module;
@@ -63,6 +61,13 @@ class Task
         } else {
             $this->vars->setData($routeVars);
         }
+    }
+
+    public function setContext(Context $context)
+    {
+        $this->module = $context->module;
+        $this->plugin = $context->plugin;
+        $this->app = $context->app;
     }
 
     public function setPage($p)
@@ -88,10 +93,30 @@ class Task
     }
 
     /**
-     * @param $page Page
+     * @param $page Page|string
      */
     public function redirectToPage($page, $action = 'parseTask')
     {
-        $this->app->redirectTaskToPage($this, $page, $action);
+        if (!is_resource($page)) {
+            $context = AppTools::decodeContext($page, $this->app);
+            $pageClass = $context->uri;
+            
+            if ($context->plugin) {
+                $pageClass = $context->plugin->namespace . $pageClass;
+                
+            } elseif ($context->module) {
+                $pageClass = $context->module->namespace . $pageClass;
+            }
+
+            $page = new $pageClass();
+
+        } else {
+            /** @var Page $page */
+            $context = new Context('', $page->app, $page->module, $page->plugin);
+        }
+
+        /** @var $page Page */
+
+        $this->app->redirectTaskToPage($this, $page, $action, $context);
     }
 }

@@ -98,16 +98,19 @@ class Route
             return;
         }
 
-        $data = AppTools::decodeUri($url, $this->module->app, $this->module, $this->plugin);
+        $context = AppTools::decodeContext($url, $this->module->app, $this->module, $this->plugin);
 
-        $url = '';
-        if ($data[1]) {
-            $url .= $data[1]->urlPrefix;
+        $this->permaUrl = '';
 
-        } elseif ($data[0]) {
-            $url .= $data[0]->urlPrefix;
+        if ($context->plugin) {
+            // TODO: Plugins should also have urlPrefix
+            $this->permaUrl .= $context->module->urlPrefix;
+
+        } elseif ($context->module) {
+            $this->permaUrl .= $context->module->urlPrefix;
         }
-        $this->permaUrl = $url . $data[2];
+
+        $this->permaUrl .= $context->uri;
     }
 
     public function setMatchUrl($url)
@@ -118,16 +121,19 @@ class Route
             $this->methods = ArrayTools::convertToKeyArray(explode(',', strtoupper($urlData[1])));
         }
 
-        $data = AppTools::decodeUri($url, $this->module->app, $this->module, $this->plugin);
+        $context = AppTools::decodeContext($url, $this->module->app, $this->module, $this->plugin);
 
-        $url = '';
-        if ($data[1]) {
-            $url .= $data[1]->urlPrefix;
+        $this->matchUrl = '';
 
-        } elseif ($data[0]) {
-            $url .= $data[0]->urlPrefix;
+        if ($context->plugin) {
+            // TODO: Plugins should also have urlPrefix
+            $this->matchUrl .= $context->module->urlPrefix;
+
+        } elseif ($context->module) {
+            $this->matchUrl .= $context->module->urlPrefix;
         }
-        $this->matchUrl = $url . $data[2];
+
+        $this->matchUrl .= $context->uri;
         $this->matchData = null;
     }
 

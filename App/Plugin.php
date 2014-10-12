@@ -82,6 +82,11 @@ class Plugin
         return $this->module->getPublicUrl($path, $absoluteURL, $parameters);
     }
 
+    public function getPublicAssetUrl($path = '', $absoluteURL = true, $parameters = null)
+    {
+        return $this->module->getPublicAssetUrl($path, $absoluteURL, $parameters);
+    }
+
     public function getUrl($path = '', $absoluteURL = true, $parameters = null)
     {
         return $this->module->getUrl($path, $absoluteURL, $parameters);

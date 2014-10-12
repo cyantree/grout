@@ -2,6 +2,7 @@
 namespace Cyantree\Grout\App;
 
 use Cyantree\Grout\App\Config\ConfigContainer;
+use Cyantree\Grout\App\Types\Context;
 use Cyantree\Grout\App\Types\ResponseCode;
 use Cyantree\Grout\AutoLoader;
 use Cyantree\Grout\DataStorage;
@@ -20,6 +21,9 @@ class App
     public $publicPath;
     public $url;
     public $publicUrl;
+    public $publicAssetPath;
+    public $publicAssetUrl;
+    public $publicAssetUrlIsAbsolute = false;
     public $dataPath;
 
     public $isConsole = false;
@@ -269,16 +273,15 @@ class App
             $action = 'parseTask';
         }
 
-        $classData = AppTools::decodeUri($class, $this, $task->route->module, $task->route->plugin);
-        if ($classData[1]) {
-            $class = NamespaceTools::getNamespaceOfInstance($classData[1]) . '\\' . $classData[2];
+        $context = AppTools::decodeContext($class, $this, $task->route->module, $task->route->plugin);
+        if ($context->plugin) {
+            $class = $context->plugin->namespace . $context->uri;
 
-        } elseif ($classData[0]) {
-            $class = NamespaceTools::getNamespaceOfInstance($classData[0]) . '\\' . $classData[2];
+        } elseif ($context->module) {
+            $class = $context->module->namespace . $context->uri;
 
         } else {
-            trigger_error('No page class found for "' . $task->request->url . '" with "' . $task->route->page . '"');
-            $class = null;
+            throw new \Exception('No page class found for "' . $task->request->url . '" with "' . $task->route->page . '"');
         }
 
         $task->setPage(new $class());
@@ -427,6 +430,7 @@ class App
         $m->app = $this;
         $m->config = & $config;
         $m->urlPrefix = $urlPrefix !== null ? $urlPrefix : '';
+        $m->assetUrlPrefix = str_replace('\\', '/', $type) . '/';
         $m->path = $path;
         $m->namespace = NamespaceTools::getNamespaceOfInstance($m) . '\\';
 
@@ -490,6 +494,19 @@ class App
         }
 
         return $path;
+    }
+
+    public function getPublicAssetUrl($path = '', $absoluteURL = true, $parameters = null)
+    {
+        if ($parameters != null) {
+            $path .= StringTools::getQueryString($parameters);
+        }
+
+        if ($absoluteURL && !$this->publicAssetUrlIsAbsolute) {
+            return $this->publicUrl . $this->publicAssetUrl . $path;
+        }
+
+        return $this->publicAssetUrl . $path;
     }
 
     public function getUrl($path = '', $absoluteURL = true, $parameters = null)
@@ -562,22 +579,21 @@ class App
             $action = 'parseTask';
         }
 
-        $classData = AppTools::decodeUri($class, $this, $task->route->module, $task->route->plugin);
-        if ($classData[1]) {
-            $class = NamespaceTools::getNamespaceOfInstance($classData[1]) . '\\' . $classData[2];
+        $context = AppTools::decodeContext($class, $this, $task->route->module, $task->route->plugin);
+        if ($context->plugin) {
+            $class = $context->plugin->namespace . $context->uri;
 
-        } elseif ($classData[0]) {
-            $class = NamespaceTools::getNamespaceOfInstance($classData[0]) . '\\' . $classData[2];
+        } elseif ($context->module) {
+            $class = $context->module->namespace . $context->uri;
 
         } else {
-            trigger_error('No page class found for "' . $task->request->url . '" with "' . $task->route->page . '"');
-            $class = null;
+            throw new \Exception('No page class found for "' . $task->request->url . '" with "' . $task->route->page . '"');
         }
 
         $task->setPage(new $class());
 
         if (!$task->page) {
-            trigger_error('No page was set', E_USER_ERROR);
+            throw new \Exception('No page was set');
         }
 
         $task->page->task = $task;
@@ -589,12 +605,16 @@ class App
     /** @param $task Task
      * @param $page Page
      */
-    public function redirectTaskToPage($task, $page, $action = 'parseTask')
+    public function redirectTaskToPage($task, $page, $action = 'parseTask', Context $context = null)
     {
+        if ($context) {
+            $task->setContext($context);
+        }
+
         $task->setPage($page);
 
         if (!$task->page) {
-            trigger_error('No page was set', E_USER_ERROR);
+            throw new \Exception('No page was set');
         }
 
         $task->page->task = $task;

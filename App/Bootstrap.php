@@ -26,6 +26,8 @@ class Bootstrap
 
     public $applicationPath;
 
+    public $assetDirectory = 'assets/';
+
     public $usesModRewrite;
 
     public $checkForMagicQuotes;
@@ -107,6 +109,8 @@ class Bootstrap
                 . substr($scriptName, 0, strlen($scriptName) - strlen(basename($scriptName)));
             $this->app->url .= $scriptName . '/';
         }
+
+        $this->app->publicAssetUrl = $this->assetDirectory;
     }
 
     protected function setBasePaths()
@@ -114,6 +118,7 @@ class Bootstrap
         // Set server base paths
         $this->app->path = str_replace('\\', '/', realpath($this->applicationPath)) . '/';
         $this->app->publicPath = str_replace('\\', '/', dirname($_SERVER['SCRIPT_FILENAME'])) . '/';
+        $this->app->publicAssetPath = $this->app->publicPath . $this->assetDirectory;
     }
 
     protected function retrieveUrl()
