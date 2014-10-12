@@ -228,6 +228,14 @@ class App
                     continue;
                 }
 
+                $event = $route->events->trigger('retrieved', null, array('task' => $task, 'route' => $route));
+
+                if ($event->data) {
+                    $foundRoute = $event->data;
+                    $routeVars = array();
+                    break 2;
+                }
+
                 if ($route->data->has('onMatch')) {
                     /** @var $onMatch callable */
                     $onMatch = $route->data->get('onMatch');

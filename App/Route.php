@@ -1,6 +1,7 @@
 <?php
 namespace Cyantree\Grout\App;
 
+use Cyantree\Grout\Event\Events;
 use Cyantree\Grout\Filter\ArrayFilter;
 use Cyantree\Grout\Tools\AppTools;
 use Cyantree\Grout\Tools\ArrayTools;
@@ -34,11 +35,15 @@ class Route
 
     public $page;
 
+    /** @var Events */
+    public $events;
+
     public function __construct($url, $data = null, $priority = 0)
     {
         $this->matchUrl = $this->permaUrl = $url;
         $this->priority = $priority;
         $this->data = new ArrayFilter($data);
+        $this->events = new Events();
     }
 
     public function init()
