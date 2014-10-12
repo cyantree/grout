@@ -12,10 +12,11 @@ class DoctrineSetListResult extends SetListResult
     /** @var DoctrineBatchReader */
     private $reader;
 
-    public function __construct($set, Query $query)
+    public function __construct(DoctrineSet $set, Query $query)
     {
         $this->reader = new DoctrineBatchReader();
         $this->reader->setQuery($query);
+        $this->reader->clearEntitiesOnBatch = true;
 
         $this->set = $set;
     }
