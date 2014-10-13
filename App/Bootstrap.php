@@ -111,6 +111,11 @@ class Bootstrap
         }
 
         $this->app->publicAssetUrl = $this->assetDirectory;
+
+        if (!$this->usesModRewrite) {
+            $this->app->publicAssetUrl = $this->app->publicUrl . $this->app->publicAssetUrl;
+            $this->app->publicAssetUrlIsAbsolute = true;
+        }
     }
 
     protected function setBasePaths()
