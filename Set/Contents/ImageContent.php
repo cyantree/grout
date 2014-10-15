@@ -2,11 +2,9 @@
 namespace Cyantree\Grout\Set\Contents;
 
 use Cyantree\Grout\Set\Content;
-use Cyantree\Grout\Set\Set;
-use Cyantree\Grout\Tools\ArrayTools;
+use Cyantree\Grout\Set\ContentRenderers\ImageContentRenderer;
 use Cyantree\Grout\Tools\FileTools;
 use Cyantree\Grout\Tools\ImageTools;
-use Cyantree\Grout\Tools\StringTools;
 use Cyantree\Grout\Types\FileUpload;
 
 // Fake calls to enable gettext extraction
@@ -54,39 +52,7 @@ class ImageContent extends Content
         'tooLarge' => 'Das Bild „%name%“ darf nicht größer als %width%x%height% Pixel sein.'
     );
 
-    public function render($mode)
-    {
-        $url = $this->getImageUrl();
-
-        if ($mode == Set::MODE_EXPORT) {
-            return $url ? $url : $this->data;
-        }
-
-        if ($this->editable && ($mode == Set::MODE_ADD || $mode == Set::MODE_EDIT)) {
-            $c = '<input type="file" name="' . $this->name . '" />';
-
-        } else {
-            $c = '';
-        }
-
-        if ($this->data) {
-            if ($c) {
-                $c .= '<br /><br />';
-            }
-
-            if ($url) {
-                $c .= '<img id="' . $this->name . '_preview" src="' .
-                      StringTools::escapeHtml($url) . '" alt="" />';
-
-            } else {
-                $c .= StringTools::escapeHtml($this->data);
-            }
-        }
-
-        return $c;
-    }
-
-    protected function getImageUrl()
+    public function getImageUrl()
     {
         return $this->saveDirectoryUrl . $this->data . ($this->valueContainsExtension ? '' : '.' . $this->saveFormat);
     }
@@ -217,5 +183,10 @@ class ImageContent extends Content
         if ($this->data) {
             unlink($this->saveDirectory . $this->data . ($this->valueContainsExtension ? '' : '.' . $this->saveFormat));
         }
+    }
+
+    protected function getDefaultRenderer()
+    {
+        return new ImageContentRenderer();
     }
 }

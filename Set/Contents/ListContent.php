@@ -2,8 +2,7 @@
 namespace Cyantree\Grout\Set\Contents;
 
 use Cyantree\Grout\Set\Content;
-use Cyantree\Grout\Set\Set;
-use Cyantree\Grout\Tools\StringTools;
+use Cyantree\Grout\Set\ContentRenderers\ListContentRenderer;
 
 // Fake calls to enable gettext extraction
 if (0) {
@@ -25,34 +24,8 @@ class ListContent extends Content
         }
     }
 
-    public function save()
+    protected function getDefaultRenderer()
     {
-    }
-
-    public function render($mode)
-    {
-        if ($mode == Set::MODE_EXPORT) {
-            return $this->options[$this->data];
-        }
-
-        if ($mode == Set::MODE_SHOW || $mode == Set::MODE_DELETE || $mode == Set::MODE_LIST || !$this->editable) {
-            return '<p>' . StringTools::escapeHtml($this->options[$this->data]) . '</p>';
-
-        } elseif ($mode == Set::MODE_EDIT || $mode == Set::MODE_ADD) {
-
-            $c = '<select name="' . $this->name . '">';
-
-            $data = strval($this->data);
-            foreach ($this->options as $key => $value) {
-                $selected = strval($key) === $data ? ' selected="selected"' : '';
-                $c .= '<option value="' . StringTools::escapeHtml($key) . '"' . $selected . '>'
-                    . StringTools::escapeHtml($value) . '</option>';
-            }
-
-            $c .= '</select>';
-            return $c;
-        }
-
-        return $this->options[$this->data];
+        return new ListContentRenderer();
     }
 }

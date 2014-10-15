@@ -2,7 +2,7 @@
 namespace Cyantree\Grout\Set\Contents;
 
 use Cyantree\Grout\Set\Content;
-use Cyantree\Grout\Set\Set;
+use Cyantree\Grout\Set\ContentRenderers\CustomContentRenderer;
 use Cyantree\Grout\Tools\StringTools;
 
 class CustomContent extends Content
@@ -27,13 +27,8 @@ class CustomContent extends Content
         $this->escapeContent = $escapeContent;
     }
 
-    public function render($mode)
+    protected function getDefaultRenderer()
     {
-        if ($mode == Set::MODE_EXPORT || !$this->escapeContent) {
-            return $this->content;
-
-        } else {
-            return StringTools::escapeHtml($this->content);
-        }
+        return new CustomContentRenderer();
     }
 }

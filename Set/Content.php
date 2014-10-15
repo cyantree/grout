@@ -3,7 +3,7 @@ namespace Cyantree\Grout\Set;
 
 use Cyantree\Grout\Filter\ArrayFilter;
 
-class Content
+abstract class Content
 {
     /** @var Set */
     public $set;
@@ -28,12 +28,19 @@ class Content
     /** @var Content  */
     public $previousContent = null;
 
+    /** @var ContentRenderer */
+    public $renderer;
+
+    protected $mode;
+
     protected $data;
 
     public function __construct()
     {
         $this->config = new ArrayFilter(array('visible' => true));
     }
+
+    abstract protected function getDefaultRenderer();
 
     public function setData($data)
     {
@@ -53,13 +60,18 @@ class Content
     {
     }
 
-    public function render($mode)
+    public function render()
     {
-        return '';
+        return $this->renderer->render($this, $this->mode);
     }
 
     public function prepareRendering($mode)
     {
+        $this->mode = $mode;
+
+        if ($this->renderer === null) {
+            $this->renderer = $this->getDefaultRenderer();
+        }
     }
 
     /**

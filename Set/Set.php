@@ -281,15 +281,17 @@ abstract class Set
     public function render($nameOrContent)
     {
         if (is_object($nameOrContent)) {
-            return $nameOrContent->render($this->mode, $nameOrContent->name);
+            return $nameOrContent->render();
         }
 
-        return $this->contents[$nameOrContent]->render($this->mode, $nameOrContent);
+        return $this->contents[$nameOrContent]->render();
     }
 
     protected function onLoaded()
     {
-
+        foreach ($this->contents as $content) {
+            $content->onLoaded();
+        }
     }
 
     public function delete()

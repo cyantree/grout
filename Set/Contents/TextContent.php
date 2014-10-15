@@ -2,6 +2,7 @@
 namespace Cyantree\Grout\Set\Contents;
 
 use Cyantree\Grout\Set\Content;
+use Cyantree\Grout\Set\ContentRenderers\TextContentRenderer;
 use Cyantree\Grout\Set\Set;
 use Cyantree\Grout\Tools\StringTools;
 
@@ -25,8 +26,6 @@ class TextContent extends Content
     public $maxLength = 0;
     public $pattern = null;
 
-    public $stringDomain = 'admin';
-
     const TYPE_URL = 'url';
     const TYPE_EMAIL = 'email';
 
@@ -38,6 +37,12 @@ class TextContent extends Content
         'minLength' => 'Das Feld „%name%“ darf nicht kürzer als %length% Zeichen sein.',
         'maxLength' => 'Das Feld „%name%“ darf nicht länger als %length% Zeichen sein.'
     );
+
+    protected function getDefaultRenderer()
+    {
+        return new TextContentRenderer();
+    }
+
 
     public function getData()
     {
@@ -87,38 +92,5 @@ class TextContent extends Content
 
     public function save()
     {
-    }
-
-    public function render($mode)
-    {
-        if ($mode == Set::MODE_EXPORT) {
-            return $this->data;
-        }
-
-        if ($mode == Set::MODE_SHOW || $mode == Set::MODE_DELETE || $mode == Set::MODE_LIST || !$this->editable) {
-            return '<p>' . StringTools::escapeHtml($this->data) . '</p>';
-        }
-
-
-        $additionalAttributes = '';
-
-        $attributes = $this->config->get('attributes');
-        if ($attributes) {
-            foreach ($attributes as $key => $value) {
-                $additionalAttributes .= " {$key}=\"" . StringTools::escapeHtml($value) . "\"";
-            }
-        }
-
-        if ($this->password) {
-            return '<input type="password" name="' . $this->name . '" value=""' . $additionalAttributes . ' />';
-        }
-
-        if ($this->multiline) {
-            return '<textarea name="' . $this->name . '"' . $additionalAttributes . '>'
-            . StringTools::escapeHtml($this->data) . '</textarea>';
-        }
-
-        return '<input type="text" name="' . $this->name . '" '
-        . 'value="' . StringTools::escapeHtml($this->data) . '"' . $additionalAttributes . ' />';
     }
 }

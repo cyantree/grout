@@ -2,6 +2,7 @@
 namespace Cyantree\Grout\Set\Contents;
 
 use Cyantree\Grout\Set\Content;
+use Cyantree\Grout\Set\ContentRenderers\InternalContentRenderer;
 
 class InternalContent extends Content
 {
@@ -22,5 +23,10 @@ class InternalContent extends Content
     public function getData()
     {
         return $this->content;
+    }
+
+    protected function getDefaultRenderer()
+    {
+        return new InternalContentRenderer();
     }
 }

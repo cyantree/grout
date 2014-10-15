@@ -2,8 +2,7 @@
 namespace Cyantree\Grout\Set\Contents;
 
 use Cyantree\Grout\Set\Content;
-use Cyantree\Grout\Set\Set;
-use Cyantree\Grout\Tools\StringTools;
+use Cyantree\Grout\Set\ContentRenderers\DateTimeContentRenderer;
 
 class DateTimeContent extends Content
 {
@@ -17,15 +16,8 @@ class DateTimeContent extends Content
 
     }
 
-    public function render($mode)
+    protected function getDefaultRenderer()
     {
-        $date = $this->data ? $this->data->format($this->format) : '';
-
-        if ($mode == Set::MODE_EXPORT) {
-            return $date;
-
-        } else {
-            return '<p>' . StringTools::escapeHtml($date) . '</p>';
-        }
+        return new DateTimeContentRenderer();
     }
 }
