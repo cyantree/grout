@@ -92,6 +92,7 @@ class GroutFactory
 
     }
 
+    /** @return GroutFactory */
     protected function getParentFactory()
     {
         $class = get_parent_class($this);
@@ -99,7 +100,7 @@ class GroutFactory
         return $class::get($this->app);
     }
 
-    public function getTool($name, $executeFactoryMethod = true)
+    public function getTool($name, $executeFactoryMethod = true, $checkParentFactories = false)
     {
         $tool = $this->tools->get($name);
         if ($tool) {
@@ -107,7 +108,7 @@ class GroutFactory
         }
 
         if ($executeFactoryMethod && $this->reflection->hasMethod($name)) {
-            return $this->{$tool}();
+            return $this->{$name}();
         }
 
         $event = $this->events->trigger($name);
@@ -127,8 +128,10 @@ class GroutFactory
                 }
             }
 
-            if ($declaredClass && $this->class != $declaredClass) {
-                $tool = $this->getParentFactory()->$name();
+            if ($declaredClass && ($this->class != $declaredClass || $checkParentFactories)) {
+                $parentFactory = $this->getParentFactory();
+
+                $tool = $parentFactory ? $parentFactory->getTool($name) : null;
             }
         }
 
