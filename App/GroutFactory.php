@@ -100,15 +100,11 @@ class GroutFactory
         return $class::get($this->app);
     }
 
-    public function getTool($name, $executeFactoryMethod = true, $checkParentFactories = false)
+    protected function retrieveTool($name, $checkParentFactories = false)
     {
         $tool = $this->tools->get($name);
         if ($tool) {
             return $tool;
-        }
-
-        if ($executeFactoryMethod && $this->reflection->hasMethod($name)) {
-            return $this->{$name}();
         }
 
         $event = $this->events->trigger($name);
@@ -121,7 +117,7 @@ class GroutFactory
             if ($declaredClass === null) {
                 if ($this->reflection->hasMethod($name)) {
                     $this->toolClasses[$name] = $declaredClass =
-                        $this->reflection->getMethod($name)->getDeclaringClass()->getName();
+                            $this->reflection->getMethod($name)->getDeclaringClass()->getName();
 
                 } else {
                     $this->toolClasses[$name] = $declaredClass = false;
@@ -135,12 +131,26 @@ class GroutFactory
             }
         }
 
-
         if ($tool) {
             $this->tools->set($name, $tool);
         }
 
         return $tool;
+    }
+
+    public function getTool($name)
+    {
+        $tool = $this->tools->get($name);
+        if ($tool) {
+            return $tool;
+        }
+
+        if ($this->reflection->hasMethod($name)) {
+            return $this->{$name}();
+
+        } else {
+            return $this->retrieveTool($name);
+        }
     }
 
     public function hasTool($name)
