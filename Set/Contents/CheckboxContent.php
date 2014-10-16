@@ -4,11 +4,6 @@ namespace Cyantree\Grout\Set\Contents;
 use Cyantree\Grout\Set\Content;
 use Cyantree\Grout\Set\ContentRenderers\CheckboxContentRenderer;
 
-// Fake calls to enable gettext extraction
-if (0) {
-    _('Das Feld „%name%“ wurde nicht ausgewählt.');
-}
-
 class CheckboxContent extends Content
 {
     public $required = false;
@@ -19,9 +14,18 @@ class CheckboxContent extends Content
 
     public $value = true;
 
-    public static $errorCodes = array(
-        'notSelected' => 'Das Feld „%name%“ wurde nicht ausgewählt.'
-    );
+    protected function getDefaultErrorMessage($code)
+    {
+        static $errors = null;
+
+        if ($errors === null) {
+            $errors = array(
+                    'notSelected' => _('Das Feld „%name%“ wurde nicht ausgewählt.')
+            );
+        }
+
+        return $errors[$code];
+    }
 
     public function getData()
     {
@@ -31,7 +35,7 @@ class CheckboxContent extends Content
     public function check()
     {
         if ($this->required && $this->data != $this->value) {
-            $this->postError('notSelected', self::$errorCodes['notSelected']);
+            $this->postError('notSelected');
         }
     }
 

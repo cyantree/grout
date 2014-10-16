@@ -3,18 +3,7 @@ namespace Cyantree\Grout\Set\Contents;
 
 use Cyantree\Grout\Set\Content;
 use Cyantree\Grout\Set\ContentRenderers\TextContentRenderer;
-use Cyantree\Grout\Set\Set;
 use Cyantree\Grout\Tools\StringTools;
-
-// Fake calls to enable gettext extraction
-if (0) {
-    _('Das Feld „%name%“ darf nicht leer sein.');
-    _('Das Feld „%name%“ hat kein gültiges Format.');
-    _('Im Feld „%name%“ wurde keine gültige E-Mail-Adresse angegeben.');
-    _('Im Feld „%name%“ wurde keine gültige URL angegeben.');
-    _('Das Feld „%name%“ darf nicht kürzer als %length% Zeichen sein.');
-    _('Das Feld „%name%“ darf nicht länger als %length% Zeichen sein.');
-}
 
 class TextContent extends Content
 {
@@ -29,14 +18,23 @@ class TextContent extends Content
     const TYPE_URL = 'url';
     const TYPE_EMAIL = 'email';
 
-    public static $errorCodes = array(
-        'invalid' => 'Das Feld „%name%“ darf nicht leer sein.',
-        'invalidPattern' => 'Das Feld „%name%“ hat kein gültiges Format.',
-        'invalidEmail' => 'Im Feld „%name%“ wurde keine gültige E-Mail-Adresse angegeben.',
-        'invalidUrl' => 'Im Feld „%name%“ wurde keine gültige URL angegeben.',
-        'minLength' => 'Das Feld „%name%“ darf nicht kürzer als %length% Zeichen sein.',
-        'maxLength' => 'Das Feld „%name%“ darf nicht länger als %length% Zeichen sein.'
-    );
+    protected function getDefaultErrorMessage($code)
+    {
+        static $errors = null;
+
+        if ($errors === null) {
+            $errors = array(
+                    'invalid' => _('Das Feld „%name%“ darf nicht leer sein.'),
+                    'invalidPattern' => _('Das Feld „%name%“ hat kein gültiges Format.'),
+                    'invalidEmail' => _('Im Feld „%name%“ wurde keine gültige E-Mail-Adresse angegeben.'),
+                    'invalidUrl' => _('Im Feld „%name%“ wurde keine gültige URL angegeben.'),
+                    'minLength' => _('Das Feld „%name%“ darf nicht kürzer als %length% Zeichen sein.'),
+                    'maxLength' => _('Das Feld „%name%“ darf nicht länger als %length% Zeichen sein.')
+            );
+        }
+
+        return $errors[$code];
+    }
 
     protected function getDefaultRenderer()
     {
@@ -54,21 +52,21 @@ class TextContent extends Content
         $l = mb_strlen($this->data);
 
         if ($this->required && !$l) {
-            $this->postError('invalid', self::$errorCodes['invalid']);
+            $this->postError('invalid');
             return;
         }
 
         if ($this->pattern !== null && !preg_match($this->pattern, $this->data)) {
-            $this->postError('invalidPattern', self::$errorCodes['invalidPattern']);
+            $this->postError('invalidPattern');
             return;
         }
 
         if ($this->type == self::TYPE_EMAIL && !StringTools::isEmailAddress($this->data)) {
-            $this->postError('invalidEmail', self::$errorCodes['invalidEmail']);
+            $this->postError('invalidEmail');
             return;
 
         } elseif ($this->type == self::TYPE_URL && !StringTools::isUrl($this->data)) {
-            $this->postError('invalidUrl', self::$errorCodes['invalidUrl']);
+            $this->postError('invalidUrl');
             return;
         }
 
@@ -84,7 +82,7 @@ class TextContent extends Content
             }
 
             if ($code) {
-                $this->postError($code, self::$errorCodes[$code], array('%length%' => $length));
+                $this->postError($code, array('%length%' => $length));
                 return;
             }
         }

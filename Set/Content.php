@@ -8,6 +8,10 @@ abstract class Content
     /** @var Set */
     public $set;
 
+    public $errorMessages = array();
+    public $infoMessages = array();
+    public $successMessages = array();
+
     public $name;
 
     public $guid;
@@ -38,6 +42,58 @@ abstract class Content
     public function __construct()
     {
         $this->config = new ArrayFilter(array('visible' => true));
+    }
+
+    final public function init()
+    {
+        $this->onInit();
+    }
+
+    protected function getErrorMessage($code)
+    {
+        if (isset($this->errorMessages[$code])) {
+            return $this->errorMessages[$code];
+        }
+
+        return $this->getDefaultErrorMessage($code);
+    }
+
+    protected function getDefaultErrorMessage($code)
+    {
+        return '';
+    }
+
+    protected function getInfoMessage($code)
+    {
+        if (isset($this->infoMessages[$code])) {
+            return $this->infoMessages[$code];
+        }
+
+        return $this->getDefaultInfoMessage($code);
+    }
+
+    protected function getDefaultInfoMessage($code)
+    {
+        return '';
+    }
+
+    protected function getSuccessMessage($code)
+    {
+        if (isset($this->successMessages[$code])) {
+            return $this->successMessages[$code];
+        }
+
+        return $this->getDefaultSuccessMessage($code);
+    }
+
+    protected function getDefaultSuccessMessage($code)
+    {
+        return '';
+    }
+
+    protected function onInit()
+    {
+
     }
 
     abstract protected function getDefaultRenderer();
@@ -114,63 +170,37 @@ abstract class Content
         return $this->set->status->hasError($this->name);
     }
 
-    public function postError($code, $message = null, $messageReplaces = null)
+    public function postError($code, $messageReplaces = null, $message = null)
     {
         $this->set->status->addError($this->name);
 
-        if ($message) {
-            if ($messageReplaces === null) {
-                $messageReplaces = array();
-            }
-            $messageReplaces['%name%'] = $this->config->get('label');
-
-//            $message = str_replace(array_keys($messageReplaces), array_values($messageReplaces), $message);
-        }
-
-        $m = new SetMessage();
-        $m->content = $this;
-        $m->code = $this->name . '.' . $code;
-        $m->message = $message;
-        $m->values = $messageReplaces;
-
+        $m = $this->prepareSetMessage($code, $message ? $message : $this->getErrorMessage($code), $messageReplaces);
         $this->set->status->addError($this->name . '.' . $code, $m);
-//        $this->set->status->postError($this->name.'.'.$code, $message);
     }
 
-    public function postInfo($code, $message = null, $messageReplaces = null)
+    public function postInfo($code, $messageReplaces = null, $message = null)
     {
         $this->set->status->addInfo($this->name);
 
-        if ($message) {
-            if ($messageReplaces === null) {
-                $messageReplaces = array();
-            }
-            $messageReplaces['%name%'] = $this->config->get('label');
-
-//            $message = str_replace(array_keys($messageReplaces), array_values($messageReplaces), $message);
-        }
-
-        $m = new SetMessage();
-        $m->content = $this;
-        $m->code = $this->name . '.' . $code;
-        $m->message = $message;
-        $m->values = $messageReplaces;
-
+        $m = $this->prepareSetMessage($code, $message ? $message : $this->getInfoMessage($code), $messageReplaces);
         $this->set->status->addInfo($this->name . '.' . $code, $m);
-//        $this->set->status->postInfo($this->name.'.'.$code, $message);
     }
 
-    public function postSuccess($code, $message = null, $messageReplaces = null)
+    public function postSuccess($code, $messageReplaces = null, $message = null)
     {
         $this->set->status->addSuccess($this->name);
 
+        $m = $this->prepareSetMessage($code, $message ? $message : $this->getSuccessMessage($code), $messageReplaces);
+        $this->set->status->addSuccess($this->name . '.' . $code, $m);
+    }
+    
+    private function prepareSetMessage($code, $message, $messageReplaces = null)
+    {
         if ($message) {
             if ($messageReplaces === null) {
                 $messageReplaces = array();
             }
             $messageReplaces['%name%'] = $this->config->get('label');
-
-//            $message = str_replace(array_keys($messageReplaces), array_values($messageReplaces), $message);
         }
 
         $m = new SetMessage();
@@ -178,8 +208,7 @@ abstract class Content
         $m->code = $this->name . '.' . $code;
         $m->message = $message;
         $m->values = $messageReplaces;
-
-        $this->set->status->addSuccess($this->name . '.' . $code, $m);
-//        $this->set->status->postSuccess($this->name.'.'.$code, $message);
+        
+        return $m;
     }
 }

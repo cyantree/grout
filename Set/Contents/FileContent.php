@@ -8,11 +8,6 @@ use Cyantree\Grout\Tools\FileTools;
 use Cyantree\Grout\Tools\StringTools;
 use Cyantree\Grout\Types\FileUpload;
 
-// Fake calls to enable gettext extraction
-if (0) {
-    _('Das Feld „%name%“ wurde nicht ausgewählt.');
-}
-
 class FileContent extends Content
 {
     public $required = false;
@@ -28,18 +23,18 @@ class FileContent extends Content
     /** @var FileUpload */
     public $uploadedFile;
 
-    public static $errorCodes;
-
-    public function __construct()
+    protected function getDefaultErrorMessage($code)
     {
-        if (!self::$errorCodes) {
-            self::$errorCodes = array(
-                'notSelected' => _('Im Feld „%name%“ wurde keine Datei ausgewählt.'),
-                'invalidFilesize' => _('Die Datei „%name%“ darf nicht größer als %size% MB sein.')
+        static $errors = null;
+
+        if ($errors === null) {
+            $errors = array(
+                    'notSelected' => _('Im Feld „%name%“ wurde keine Datei ausgewählt.'),
+                    'invalidFilesize' => _('Die Datei „%name%“ darf nicht größer als %size% MB sein.')
             );
         }
 
-        parent::__construct();
+        return $errors[$code];
     }
 
     public function getFileUrl()
@@ -55,14 +50,14 @@ class FileContent extends Content
     public function check()
     {
         if (!$this->data && !$this->uploadedFile && $this->required) {
-            $this->postError('notSelected', self::$errorCodes['notSelected']);
+            $this->postError('notSelected');
             return;
         }
 
         if ($this->uploadedFile) {
             if ($this->maxFilesize && $this->uploadedFile->size > $this->maxFilesize) {
                 $filesize = round($this->maxFilesize / 1024 / 1024 * 10) / 10;
-                $this->postError('invalidFilesize', self::$errorCodes['invalidFilesize'], array('%size%' => $filesize));
+                $this->postError('invalidFilesize', array('%size%' => $filesize));
             }
         }
     }

@@ -7,15 +7,6 @@ use Cyantree\Grout\Tools\FileTools;
 use Cyantree\Grout\Tools\ImageTools;
 use Cyantree\Grout\Types\FileUpload;
 
-// Fake calls to enable gettext extraction
-if (0) {
-    _('Im Feld „%name%“ wurde kein Bild ausgewählt.');
-    _('Im Feld „%name%“ wurde kein gültiges Bild ausgewählt.');
-    _('Das Bild „%name%“ darf nicht größer als %size% MB sein.');
-    _('Das Bild „%name%“ muss mindestens %width%x%height% Pixel groß sein.');
-    _('Das Bild „%name%“ darf nicht größer als %width%x%height% Pixel sein.');
-}
-
 class ImageContent extends Content
 {
     public $required = false;
@@ -44,13 +35,22 @@ class ImageContent extends Content
 
     protected $image;
 
-    public static $errorCodes = array(
-        'notSelected' => 'Im Feld „%name%“ wurde kein Bild ausgewählt.',
-        'invalidImage' => 'Im Feld „%name%“ wurde kein gültiges Bild ausgewählt.',
-        'invalidFilesize' => 'Das Bild „%name%“ darf nicht größer als %size% MB sein.',
-        'tooSmall' => 'Das Bild „%name%“ muss mindestens %width%x%height% Pixel groß sein.',
-        'tooLarge' => 'Das Bild „%name%“ darf nicht größer als %width%x%height% Pixel sein.'
-    );
+    protected function getDefaultErrorMessage($code)
+    {
+        static $errors = null;
+
+        if ($errors === null) {
+            $errors = array(
+                    'notSelected' => _('Im Feld „%name%“ wurde kein Bild ausgewählt.'),
+                    'invalidImage' => _('Im Feld „%name%“ wurde kein gültiges Bild ausgewählt.'),
+                    'invalidFilesize' => _('Das Bild „%name%“ darf nicht größer als %size% MB sein.'),
+                    'tooSmall' => _('Das Bild „%name%“ muss mindestens %width%x%height% Pixel groß sein.'),
+                    'tooLarge' => _('Das Bild „%name%“ darf nicht größer als %width%x%height% Pixel sein.')
+            );
+        }
+
+        return $errors[$code];
+    }
 
     public function getImageUrl()
     {
