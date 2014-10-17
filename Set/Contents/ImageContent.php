@@ -1,6 +1,7 @@
 <?php
 namespace Cyantree\Grout\Set\Contents;
 
+use Cyantree\Grout\Filter\ArrayFilter;
 use Cyantree\Grout\Set\Content;
 use Cyantree\Grout\Set\ContentRenderers\ImageContentRenderer;
 use Cyantree\Grout\Tools\FileTools;
@@ -40,16 +41,16 @@ class ImageContent extends Content
         static $errors = null;
 
         if ($errors === null) {
-            $errors = array(
+            $errors = new ArrayFilter(array(
                     'notSelected' => _('Im Feld „%name%“ wurde kein Bild ausgewählt.'),
                     'invalidImage' => _('Im Feld „%name%“ wurde kein gültiges Bild ausgewählt.'),
                     'invalidFilesize' => _('Das Bild „%name%“ darf nicht größer als %size% MB sein.'),
                     'tooSmall' => _('Das Bild „%name%“ muss mindestens %width%x%height% Pixel groß sein.'),
                     'tooLarge' => _('Das Bild „%name%“ darf nicht größer als %width%x%height% Pixel sein.')
-            );
+            ));
         }
 
-        return $errors[$code];
+        return $errors->get($code);
     }
 
     public function getImageUrl()

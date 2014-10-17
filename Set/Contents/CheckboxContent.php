@@ -1,6 +1,7 @@
 <?php
 namespace Cyantree\Grout\Set\Contents;
 
+use Cyantree\Grout\Filter\ArrayFilter;
 use Cyantree\Grout\Set\Content;
 use Cyantree\Grout\Set\ContentRenderers\CheckboxContentRenderer;
 
@@ -19,12 +20,12 @@ class CheckboxContent extends Content
         static $errors = null;
 
         if ($errors === null) {
-            $errors = array(
-                    'notSelected' => _('Das Feld „%name%“ wurde nicht ausgewählt.')
-            );
+            $errors = new ArrayFilter(array(
+                'notSelected' => _('Das Feld „%name%“ wurde nicht ausgewählt.')
+            ));
         }
 
-        return $errors[$code];
+        return $errors->get($code);
     }
 
     public function getData()

@@ -1,6 +1,7 @@
 <?php
 namespace Cyantree\Grout\Set\Contents;
 
+use Cyantree\Grout\Filter\ArrayFilter;
 use Cyantree\Grout\Set\Content;
 use Cyantree\Grout\Set\ContentRenderers\TextContentRenderer;
 use Cyantree\Grout\Tools\StringTools;
@@ -23,17 +24,17 @@ class TextContent extends Content
         static $errors = null;
 
         if ($errors === null) {
-            $errors = array(
+            $errors = new ArrayFilter(array(
                     'invalid' => _('Das Feld „%name%“ darf nicht leer sein.'),
                     'invalidPattern' => _('Das Feld „%name%“ hat kein gültiges Format.'),
                     'invalidEmail' => _('Im Feld „%name%“ wurde keine gültige E-Mail-Adresse angegeben.'),
                     'invalidUrl' => _('Im Feld „%name%“ wurde keine gültige URL angegeben.'),
                     'minLength' => _('Das Feld „%name%“ darf nicht kürzer als %length% Zeichen sein.'),
                     'maxLength' => _('Das Feld „%name%“ darf nicht länger als %length% Zeichen sein.')
-            );
+            ));
         }
 
-        return $errors[$code];
+        return $errors->get($code);
     }
 
     protected function getDefaultRenderer()

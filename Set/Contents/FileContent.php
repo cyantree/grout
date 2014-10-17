@@ -1,6 +1,7 @@
 <?php
 namespace Cyantree\Grout\Set\Contents;
 
+use Cyantree\Grout\Filter\ArrayFilter;
 use Cyantree\Grout\Set\Content;
 use Cyantree\Grout\Set\ContentRenderers\FileContentRenderer;
 use Cyantree\Grout\Set\Set;
@@ -28,13 +29,13 @@ class FileContent extends Content
         static $errors = null;
 
         if ($errors === null) {
-            $errors = array(
+            $errors = new ArrayFilter(array(
                     'notSelected' => _('Im Feld „%name%“ wurde keine Datei ausgewählt.'),
                     'invalidFilesize' => _('Die Datei „%name%“ darf nicht größer als %size% MB sein.')
-            );
+            ));
         }
 
-        return $errors[$code];
+        return $errors->get($code);
     }
 
     public function getFileUrl()
