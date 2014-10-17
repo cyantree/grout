@@ -14,10 +14,11 @@ class CheckboxContent extends Content
     public $labelNotChecked;
 
     public $value = true;
+    public $valueNotChecked = false;
 
     public function populate($data, $files)
     {
-        $this->data = strval($data->get($this->name)) === strval($this->value);
+        $this->setData($data->get($this->name));
     }
 
     protected function getDefaultErrorMessage($code)
@@ -35,7 +36,7 @@ class CheckboxContent extends Content
 
     public function getData()
     {
-        return $this->data ? $this->value : null;
+        return $this->data ? $this->value : $this->valueNotChecked;
     }
 
     public function setData($data)
@@ -45,14 +46,9 @@ class CheckboxContent extends Content
 
     public function check()
     {
-        if ($this->required && $this->data != $this->value) {
+        if ($this->required && !$this->data) {
             $this->postError('notSelected');
         }
-    }
-
-    public function save()
-    {
-        $this->data = $this->data == $this->value ? $this->value : null;
     }
 
     protected function getDefaultRenderer()
