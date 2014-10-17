@@ -15,6 +15,11 @@ class CheckboxContent extends Content
 
     public $value = true;
 
+    public function populate($data, $files)
+    {
+        $this->data = strval($data->get($this->name)) === strval($this->value);
+    }
+
     protected function getDefaultErrorMessage($code)
     {
         static $errors = null;
@@ -30,7 +35,12 @@ class CheckboxContent extends Content
 
     public function getData()
     {
-        return $this->data !== null && $this->data !== false;
+        return $this->data ? $this->value : null;
+    }
+
+    public function setData($data)
+    {
+        $this->data = $data === $this->value || strval($data) === strval($this->value);
     }
 
     public function check()
