@@ -2,11 +2,15 @@
 namespace Cyantree\Grout\App\Config;
 
 use Cyantree\Grout\App\App;
+use Cyantree\Grout\Event\Events;
 
 class ConfigContainer
 {
     /** @var App */
     public $app;
+
+    /** @var Events */
+    public $events;
 
     private $configs = array();
     private $appConfigs = array();
@@ -15,6 +19,8 @@ class ConfigContainer
     public function __construct(App $app)
     {
         $this->app = $app;
+
+        $this->events = new Events();
 
         $this->appConfigs = array(
             array(), array(), array(), array(), array(), array(), array(), array(), array(), array()
@@ -55,8 +61,13 @@ class ConfigContainer
             }
         }
 
-        $this->configs[$id] = $config['config'];
+        $config = $config['config'];
 
-        return $config['config'];
+        $event = $this->events->trigger($id, $config);
+        $config = $event->data;
+
+        $this->configs[$id] = $config;
+
+        return $config;
     }
 }
