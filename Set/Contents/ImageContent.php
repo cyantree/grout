@@ -66,7 +66,7 @@ class ImageContent extends Content
     public function check()
     {
         if (!$this->data && !$this->uploadedFile && $this->required) {
-            $this->postError('notSelected', self::$errorCodes['notSelected']);
+            $this->postError('notSelected');
             return;
         }
 
@@ -74,12 +74,12 @@ class ImageContent extends Content
             if ($this->maxFilesize && $this->uploadedFile->size > $this->maxFilesize) {
                 $filesize = round($this->maxFilesize / 1024 / 1024 * 10) / 10;
 
-                $this->postError('invalidFilesize', self::$errorCodes['invalidFilesize'], array('%size%' => $filesize));
+                $this->postError('invalidFilesize', array('%size%' => $filesize));
                 return;
             }
             $image = ImageTools::checkFile($this->uploadedFile->file, $this->uploadedFile->name);
             if (!$image->success) {
-                $this->postError('invalidImage', self::$errorCodes['invalidImage']);
+                $this->postError('invalidImage');
                 return;
             }
 
@@ -90,14 +90,12 @@ class ImageContent extends Content
                 if ($this->minWidth && ($sizeX < $this->minWidth || $sizeY < $this->minHeight)) {
                     $this->postError(
                         'tooSmall',
-                        self::$errorCodes['tooSmall'],
                         array('%width%' => $this->minWidth, '%height%' => $this->minHeight)
                     );
 
                 } elseif ($this->maxWidth && ($sizeX > $this->maxWidth || $sizeY > $this->maxHeight)) {
                     $this->postError(
                         'tooLarge',
-                        self::$errorCodes['tooLarge'],
                         array('%width%' => $this->maxWidth, '%height%' => $this->maxHeight)
                     );
                 }
