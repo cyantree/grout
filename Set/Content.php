@@ -16,6 +16,7 @@ abstract class Content
 
     public $guid;
     public $storeInSet = true;
+    public $visible = true;
 
     public $searchable = false;
     public $sortable = false;

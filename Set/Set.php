@@ -164,6 +164,10 @@ abstract class Set
         $files = new ArrayFilter($rawFiles);
 
         foreach ($this->contents as $content) {
+            if (!$content->visible) {
+                continue;
+            }
+
             if ($content->editable) {
                 $content->populate($d, $files);
             }
@@ -175,6 +179,10 @@ abstract class Set
         $this->status->reset();
 
         foreach ($this->contents as $content) {
+            if (!$content->visible) {
+                continue;
+            }
+
             if ($content->editable) {
                 $content->check();
             }
@@ -184,6 +192,10 @@ abstract class Set
     public function save()
     {
         foreach ($this->contents as $content) {
+            if (!$content->visible) {
+                continue;
+            }
+
             if ($content->editable) {
                 $content->save();
             }
@@ -194,6 +206,10 @@ abstract class Set
         $this->doSave();
 
         foreach ($this->contents as $content) {
+            if (!$content->visible) {
+                continue;
+            }
+
             if ($content->editable) {
                 $content->onSaved();
             }
@@ -252,6 +268,10 @@ abstract class Set
         $this->doPrepareRendering();
 
         foreach ($this->contents as $content) {
+            if (!$content->visible) {
+                continue;
+            }
+
             $content->prepareRendering($mode);
         }
     }
@@ -290,6 +310,10 @@ abstract class Set
     protected function onLoaded()
     {
         foreach ($this->contents as $content) {
+            if (!$content->visible) {
+                continue;
+            }
+
             $content->onLoaded();
         }
     }
@@ -297,15 +321,27 @@ abstract class Set
     public function delete()
     {
         foreach ($this->contents as $content) {
+            if (!$content->visible) {
+                continue;
+            }
+
             $content->prepareDelete();
         }
         foreach ($this->contents as $content) {
+            if (!$content->visible) {
+                continue;
+            }
+
             $content->onDelete();
         }
 
         $this->doDelete();
 
         foreach ($this->contents as $content) {
+            if (!$content->visible) {
+                continue;
+            }
+
             $content->onDeleted();
         }
 

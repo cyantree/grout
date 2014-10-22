@@ -57,6 +57,10 @@ abstract class DoctrineSet extends Set
         $a = array();
 
         foreach ($this->contents as $name => $content) {
+            if (!$content->visible) {
+                continue;
+            }
+
             if ($content->storeInSet) {
                 $a[$name] = $content->getData();
             }
@@ -92,6 +96,10 @@ abstract class DoctrineSet extends Set
     protected function collectData()
     {
         foreach ($this->contents as $name => $content) {
+            if (!$content->visible) {
+                continue;
+            }
+
             if ($content->storeInSet) {
                 $this->entity->{$name} = $content->getData();
             }
@@ -116,6 +124,10 @@ abstract class DoctrineSet extends Set
         $this->entity = $e;
 
         foreach ($this->contents as $name => $content) {
+            if (!$content->visible) {
+                continue;
+            }
+
             if ($content->storeInSet) {
                 $content->setData($e->{$name});
             }
@@ -144,6 +156,10 @@ abstract class DoctrineSet extends Set
         $searchQueries = & $data['searchQueries'];
         if ($search != '') {
             foreach ($this->contents as $content) {
+                if (!$content->visible) {
+                    continue;
+                }
+
                 if ($content->searchable) {
                     $parameters['search'] = '%' . $search . '%';
                     $searchQueries[] = 'e.' . $content->name . ' LIKE :search';
@@ -163,6 +179,10 @@ abstract class DoctrineSet extends Set
         $orderClause = '';
         if ($sortingField) {
             foreach ($this->contents as $content) {
+                if (!$content->visible) {
+                    continue;
+                }
+
                 if ($content->sortable && $content->name == $sortingField) {
                     $orderClause = 'e.' . $content->name . ' ' . $sortingDirection;
                     break;
