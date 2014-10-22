@@ -331,6 +331,53 @@ class ArrayTools
         return $result;
     }
 
+    public static function groupByKeyValues($elements, $keys)
+    {
+        // Copies selection of properties from elements to new array
+
+        $keysIsArray = is_array($keys);
+        $defaultKey = null;
+
+        $result = array();
+
+        if (!$keysIsArray) {
+            $defaultKey = $keys;
+            $keys = array($keys);
+        }
+
+        foreach ($keys as $property) {
+            $result[$property] = array();
+        }
+
+        $isObject = is_object(current($elements));
+
+        // It's faster to execute to different loops for object and arrays than checking the type while iterating
+        foreach ($keys as $property) {
+            foreach ($elements as $element) {
+                if ($isObject) {
+                    $value = $element->{$property};
+
+                } else {
+                    $value = $element[$property];
+                }
+
+                if (!array_key_exists($value, $result[$property])) {
+                    $result[$property][$value] = array($element);
+
+                } else {
+                    $result[$property][$value][] = $element;
+                }
+            }
+        }
+
+        if (!$keysIsArray) {
+            return $result[$defaultKey];
+
+        } else {
+            return $result;
+        }
+    }
+
     public static function convertToKeyArray($array, $value = true)
     {
         if (!count($array)) {
