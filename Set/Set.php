@@ -298,6 +298,23 @@ abstract class Set
         }
     }
 
+    public function setContentProperty($property, $value, $contentNames = null)
+    {
+        if ($contentNames) {
+            if (is_array($contentNames)) {
+                foreach ($contentNames as $contentName) {
+                    $this->contents[$contentName]->{$property} = $value;
+                }
+            } else {
+                $this->contents[$contentNames]->{$property} = $value;
+            }
+        } else {
+            foreach ($this->contents as $content) {
+                $content->{$property} = $value;
+            }
+        }
+    }
+
     public function render($nameOrContent)
     {
         if (is_object($nameOrContent)) {
