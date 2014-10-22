@@ -2,8 +2,7 @@
 namespace Cyantree\Grout\Form;
 
 use Cyantree\Grout\Filter\ArrayFilter;
-use Cyantree\Grout\StatusContainer;
-use Cyantree\Grout\Tools\ArrayTools;
+use Cyantree\Grout\Status\StatusBag;
 
 class Form
 {
@@ -19,7 +18,7 @@ class Form
     public $mode;
     public $isSubmit;
 
-    /** @var StatusContainer */
+    /** @var StatusBag */
     public $status;
 
     public function getDataIn()
@@ -32,11 +31,11 @@ class Form
         // PreInit form
         $this->preInit();
 
-        $this->status = new StatusContainer();
+        $this->status = new StatusBag();
 
         $this->dataIn = $this->getDataIn();
 
-        if ($this->status->error) {
+        if ($this->status->error->hasStatuses) {
             $this->deInit();
             return;
         }
@@ -50,14 +49,14 @@ class Form
         $this->init();
 
         // Form hasn't been submitted yet or an error has occurred, so end processing here
-        if (!$this->isSubmit || $this->status->error) {
+        if (!$this->isSubmit || $this->status->error->hasStatuses) {
             $this->deInit();
             return;
         }
 
         $this->getData();
 
-        if ($this->status->error) {
+        if ($this->status->error->hasStatuses) {
             $this->deInit();
             return;
         }
@@ -65,7 +64,7 @@ class Form
         $this->checkData();
 
         // Form has some errors, so end processing here
-        if ($this->status->error) {
+        if ($this->status->error->hasStatuses) {
             $this->deInit();
             return;
         }

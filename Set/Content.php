@@ -2,6 +2,7 @@
 namespace Cyantree\Grout\Set;
 
 use Cyantree\Grout\Filter\ArrayFilter;
+use Cyantree\Grout\Status\Status;
 
 abstract class Content
 {
@@ -163,36 +164,42 @@ abstract class Content
 
     public function hasError($code)
     {
-        return $this->set->status->hasError($this->name . '.' . $code);
+        return $this->set->status->error->has($this->name . '.' . $code);
     }
 
     public function hasErrors()
     {
-        return $this->set->status->hasError($this->name);
+        return $this->set->status->error->has($this->name);
     }
 
     public function postError($code, $messageReplaces = null, $message = null)
     {
-        $this->set->status->addError($this->name);
+        $this->set->status->error->addManual($this->name);
 
-        $m = $this->prepareSetMessage($code, $message ? $message : $this->getErrorMessage($code), $messageReplaces);
-        $this->set->status->addError($this->name . '.' . $code, $m);
+        $message = $message ? $message : $this->getErrorMessage($code);
+        $this->set->status->error->add(
+                $this->prepareSetMessage($this->name . '.' . $code, $message, $messageReplaces)
+        );
     }
 
     public function postInfo($code, $messageReplaces = null, $message = null)
     {
-        $this->set->status->addInfo($this->name);
+        $this->set->status->info->addManual($this->name);
 
-        $m = $this->prepareSetMessage($code, $message ? $message : $this->getInfoMessage($code), $messageReplaces);
-        $this->set->status->addInfo($this->name . '.' . $code, $m);
+        $message = $message ? $message : $this->getInfoMessage($code);
+        $this->set->status->info->add(
+                $this->prepareSetMessage($this->name . '.' . $code, $message, $messageReplaces)
+        );
     }
 
     public function postSuccess($code, $messageReplaces = null, $message = null)
     {
-        $this->set->status->addSuccess($this->name);
+        $this->set->status->success->addManual($this->name);
 
-        $m = $this->prepareSetMessage($code, $message ? $message : $this->getSuccessMessage($code), $messageReplaces);
-        $this->set->status->addSuccess($this->name . '.' . $code, $m);
+        $message = $message ? $message : $this->getSuccessMessage($code);
+        $this->set->status->success->add(
+                $this->prepareSetMessage($this->name . '.' . $code, $message, $messageReplaces)
+        );
     }
     
     private function prepareSetMessage($code, $message, $messageReplaces = null)
@@ -204,11 +211,10 @@ abstract class Content
             $messageReplaces['%name%'] = $this->config->get('label');
         }
 
-        $m = new SetMessage();
-        $m->content = $this;
+        $m = new Status();
         $m->code = $this->name . '.' . $code;
         $m->message = $message;
-        $m->values = $messageReplaces;
+        $m->replaces = $messageReplaces;
         
         return $m;
     }

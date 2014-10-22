@@ -1,9 +1,8 @@
 <?php
 namespace Cyantree\Grout\Form;
 
-use Cyantree\Grout\Bucket\Bucket;
 use Cyantree\Grout\Filter\ArrayFilter;
-use Cyantree\Grout\StatusContainer;
+use Cyantree\Grout\Status\StatusBag;
 use Cyantree\Grout\Tools\ArrayTools;
 use Cyantree\Grout\Tools\StringTools;
 
@@ -54,7 +53,7 @@ class AdvancedForm
     /** @var \Cyantree\Grout\Bucket\Bucket */
     private $bucket;
 
-    /** @var StatusContainer */
+    /** @var StatusBag */
     public $status;
 
     private $internalID;
@@ -83,7 +82,7 @@ class AdvancedForm
             $this->flags = self::$defaultFlags;
         }
 
-        $this->status = new StatusContainer();
+        $this->status = new StatusBag();
 
         if (!$this->id) {
             $this->id = get_class($this);
@@ -106,7 +105,7 @@ class AdvancedForm
 
         $context = $this->getContext();
 
-        if ($this->status->error) {
+        if ($this->status->error->hasStatuses) {
             $this->endProcessing();
             return;
         }
@@ -159,7 +158,7 @@ class AdvancedForm
         $this->init();
 
         // Form hasn't been submitted yet or an error has occurred, so end processing here
-        if (!$this->isSubmit || ((!$this->flags & self::FLAG_ALLOW_INSTANT_SUBMIT) && $isNew) || $this->status->error) {
+        if (!$this->isSubmit || ((!$this->flags & self::FLAG_ALLOW_INSTANT_SUBMIT) && $isNew) || $this->status->error->hasStatuses) {
             $this->endProcessing();
             return;
         }
@@ -231,7 +230,7 @@ class AdvancedForm
             return;
         }
 
-        if ($this->status->error || ($this->steps > 1 && $step == $this->steps)) {
+        if ($this->status->error->hasStatuses || ($this->steps > 1 && $step == $this->steps)) {
             $this->endProcessing();
             return;
         }
@@ -239,7 +238,7 @@ class AdvancedForm
         $this->checkStepData($step);
 
         // Form has some errors, so end processing here
-        if ($this->status->error) {
+        if ($this->status->error->hasStatuses) {
             $this->endProcessing();
             return;
         }
@@ -247,7 +246,7 @@ class AdvancedForm
         $this->submitStep($step);
 
         // Processing successful so set next step
-        if (!$this->status->error && $this->steps > 1) {
+        if (!$this->status->error->hasStatuses && $this->steps > 1) {
             $this->formData->currentStep = $this->formData->nextStep;
         }
 
@@ -367,10 +366,10 @@ class AdvancedForm
     protected function processSecurityError($id)
     {
         if ($id == self::ERROR_DELETED) {
-            $this->status->addError('GroutFormSecurity', self::$MESSAGE_ERROR_DELETED);
+            $this->status->error->addManual('GroutFormSecurity', self::$MESSAGE_ERROR_DELETED);
 
         } elseif ($id == self::ERROR_EARLY) {
-            $this->status->addError('GroutFormSecurity', self::$MESSAGE_ERROR_EARLY);
+            $this->status->error->addManual('GroutFormSecurity', self::$MESSAGE_ERROR_EARLY);
         }
     }
 

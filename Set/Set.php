@@ -2,7 +2,7 @@
 namespace Cyantree\Grout\Set;
 
 use Cyantree\Grout\Filter\ArrayFilter;
-use Cyantree\Grout\StatusContainer;
+use Cyantree\Grout\Status\StatusBag;
 
 abstract class Set
 {
@@ -31,7 +31,7 @@ abstract class Set
     /** @var ArrayFilter */
     public $config;
 
-    /** @var StatusContainer */
+    /** @var StatusBag */
     public $status;
 
     public $mode;
@@ -39,7 +39,7 @@ abstract class Set
     public function __construct()
     {
         $this->config = new ArrayFilter(null, true);
-        $this->status = new StatusContainer();
+        $this->status = new StatusBag();
     }
 
     public function init()
@@ -387,32 +387,17 @@ abstract class Set
 
     public function postError($code, $message = null, $messageReplaces = null)
     {
-        $m = new SetMessage();
-        $m->code = $code;
-        $m->message = $message;
-        $m->values = $messageReplaces;
-
-        $this->status->addError($code, $m);
+        $this->status->error->addManual($code, $message, $messageReplaces);
     }
 
     public function postInfo($code, $message = null, $messageReplaces = null)
     {
-        $m = new SetMessage();
-        $m->code = $code;
-        $m->message = $message;
-        $m->values = $messageReplaces;
-
-        $this->status->addInfo($code, $m);
+        $this->status->info->addManual($code, $message, $messageReplaces);
     }
 
     public function postSuccess($code, $message = null, $messageReplaces = null)
     {
-        $m = new SetMessage();
-        $m->code = $code;
-        $m->message = $message;
-        $m->values = $messageReplaces;
-
-        $this->status->addSuccess($code, $m);
+        $this->status->success->addManual($code, $message, $messageReplaces);
     }
 
     /** @return SetListResult */

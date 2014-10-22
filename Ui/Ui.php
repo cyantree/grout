@@ -1,7 +1,8 @@
 <?php
 namespace Cyantree\Grout\Ui;
 
-use Cyantree\Grout\StatusContainer;
+use Cyantree\Grout\Status\Status;
+use Cyantree\Grout\Status\StatusBag;
 use Cyantree\Grout\Tools\ArrayTools;
 use Cyantree\Grout\Tools\StringTools;
 
@@ -384,83 +385,52 @@ class Ui
         return $this->addStatus($textOrTexts, 'success');
     }
 
+    public function statusWarning($textOrTexts, $parameters = null)
+    {
+        return $this->addStatus($textOrTexts, 'warning');
+    }
+
     public function statusError($textOrTexts, $parameters = null)
     {
         return $this->addStatus($textOrTexts, 'error');
     }
 
-    /** @param StatusContainer|UiElement|string $status */
+    /** @param StatusBag|UiElement|string $status */
     public function status($status, $parameters = null)
     {
-        $isStatusContainer = $status instanceof StatusContainer;
+        $isStatusBag = $status instanceof StatusBag;
 
         $noStatus = $status === ''
-            || ($isStatusContainer && !$status->hasSuccessMessages && !$status->hasErrorMessages && !$status->hasInfoMessages);
+            || ($isStatusBag && !$status->success->hasStatuses && !$status->info->hasStatuses && !$status->warning->hasStatuses && !$status->error->hasStatuses);
 
         if ($noStatus && !ArrayTools::get($parameters, 'showIfEmpty')) {
             return '';
         }
 
-        if ($isStatusContainer) {
-            /** @var $status StatusContainer */
-
-            $includeStatusCodes = ArrayTools::get($parameters, 'include');
-            $excludeStatusCodes = ArrayTools::get($parameters, 'exclude');
-
-            if (is_string($includeStatusCodes)) {
-                $includeStatusCodes = array($includeStatusCodes);
-            }
-
-            if ($includeStatusCodes) {
-                $includeStatusCodes = ArrayTools::convertToKeyArray($includeStatusCodes);
-            }
-
-            if (is_string($excludeStatusCodes)) {
-                $excludeStatusCodes = array($excludeStatusCodes);
-            }
-
-            if ($excludeStatusCodes) {
-                $excludeStatusCodes = ArrayTools::convertToKeyArray($excludeStatusCodes);
-            }
+        if ($isStatusBag) {
+            /** @var $status StatusBag */
 
             $element = new UiElement('div', array('class' => 'GroutStatusBox'));
             $this->processGenericParameters($element, $parameters);
 
             $c = '';
 
-            $messages = array();
-            foreach ($status->infoMessages as $code => $message) {
-                if (($excludeStatusCodes === null || !isset($excludeStatusCodes[$code]))
-                    && ($includeStatusCodes === null || isset($includeStatusCodes[$code]))
-                ) {
-                    $messages[] = $message;
-                }
-            }
-
+            $messages = $status->info->getMessages(Status::TYPE_HTML);
             if ($messages) {
                 $c .= $this->statusInfo($messages);
             }
 
-            $messages = array();
-            foreach ($status->successMessages as $code => $message) {
-                if (($excludeStatusCodes === null || !isset($excludeStatusCodes[$code]))
-                    && ($includeStatusCodes === null || isset($includeStatusCodes[$code]))
-                ) {
-                    $messages[] = $message;
-                }
-            }
+            $messages = $status->success->getMessages(Status::TYPE_HTML);
             if ($messages) {
                 $c .= $this->statusSuccess($messages);
             }
 
-            $messages = array();
-            foreach ($status->errors as $code => $message) {
-                if (($excludeStatusCodes === null || !isset($excludeStatusCodes[$code]))
-                    && ($includeStatusCodes === null || isset($includeStatusCodes[$code]))
-                ) {
-                    $messages[] = $message;
-                }
+            $messages = $status->warning->getMessages(Status::TYPE_HTML);
+            if ($messages) {
+                $c .= $this->statusWarning($messages);
             }
+
+            $messages = $status->error->getMessages(Status::TYPE_HTML);
             if ($messages) {
                 $c .= $this->statusError($messages);
             }
