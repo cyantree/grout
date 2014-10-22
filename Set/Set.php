@@ -324,6 +324,21 @@ abstract class Set
         return $this->contents[$nameOrContent]->render();
     }
 
+    public function renderToArray()
+    {
+        $d = array();
+
+        $content = $this->firstContent;
+
+        do {
+            if ($content->visible) {
+                $d[$content->name] = $content->render();
+            }
+        } while ($content = $content->nextContent);
+
+        return $d;
+    }
+
     protected function onLoaded()
     {
         foreach ($this->contents as $content) {
