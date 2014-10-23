@@ -14,7 +14,7 @@ class DataStorage
 
     public function getStorage($id)
     {
-        $id = str_replace('\\', '/', $id);
+        $id = rtrim(str_replace('\\', '/', $id), '/');
         $path = $this->directory . $id . '/';
 
         return $path;
@@ -23,7 +23,7 @@ class DataStorage
 
     public function createStorage($id)
     {
-        $id = str_replace('\\', '/', $id);
+        $id = rtrim(str_replace('\\', '/', $id), '/');
         $path = $this->directory . $id . '/';
         FileTools::createDirectory($path);
 
@@ -32,7 +32,7 @@ class DataStorage
 
     public function clearStorage($id)
     {
-        $id = str_replace('\\', '/', $id);
+        $id = rtrim(str_replace('\\', '/', $id), '/');
         FileTools::deleteContents($this->directory . $id . '/');
     }
 
@@ -51,7 +51,7 @@ class DataStorage
 
     public function deleteStorage($id)
     {
-        $id = str_replace('\\', '/', $id);
+        $id = rtrim(str_replace('\\', '/', $id), '/');
         FileTools::deleteDirectory($this->directory . $id);
     }
 
