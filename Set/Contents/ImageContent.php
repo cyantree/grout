@@ -53,9 +53,24 @@ class ImageContent extends Content
         return $errors->get($code);
     }
 
+    public function getImagePath()
+    {
+        if ($this->data) {
+            return $this->saveDirectory . $this->data . ($this->valueContainsExtension ? '' : '.' . $this->saveFormat);
+
+        } else {
+            return null;
+        }
+    }
+
     public function getImageUrl()
     {
-        return $this->saveDirectoryUrl . $this->data . ($this->valueContainsExtension ? '' : '.' . $this->saveFormat);
+        if ($this->data) {
+            return $this->saveDirectoryUrl . $this->data . ($this->valueContainsExtension ? '' : '.' . $this->saveFormat);
+
+        } else {
+            return null;
+        }
     }
 
     public function populate($data, $files)
