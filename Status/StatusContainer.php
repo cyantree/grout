@@ -101,7 +101,7 @@ class StatusContainer
         }
 
         if ($codeOrStatus->replaces) {
-            $message = StringTools::parse($message, $codeOrStatus->replaces);
+            $message = str_replace(array_keys($codeOrStatus->replaces), array_values($codeOrStatus->replaces), $message);
         }
 
         if ($codeOrStatus->escapingContext == Status::TYPE_PLAIN && $outputContext == Status::TYPE_HTML) {
