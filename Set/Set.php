@@ -76,6 +76,8 @@ abstract class Set
 
         $this->lastContent = $content;
         $this->contents[$content->name] = $content;
+
+        $content->init();
     }
 
     /** @param $content Content */
@@ -92,6 +94,8 @@ abstract class Set
 
         $this->firstContent = $content;
         $this->contents[$content->name] = $content;
+
+        $content->init();
     }
 
     /** @param $content Content */
@@ -112,6 +116,8 @@ abstract class Set
         $content->previousContent = $otherContent;
 
         $this->contents[$content->name] = $content;
+
+        $content->init();
     }
 
     /** @param $content Content */
@@ -132,6 +138,8 @@ abstract class Set
         $content->nextContent = $otherContent;
 
         $this->contents[$content->name] = $content;
+
+        $content->init();
     }
 
     /** @return Content */
