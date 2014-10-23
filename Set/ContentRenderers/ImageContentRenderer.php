@@ -28,7 +28,18 @@ class ImageContentRenderer extends ContentRenderer
         $url = $content->getImageUrl();
 
         if ($mode == Set::MODE_EXPORT) {
-            return $url ? $url : $data;
+            if ($this->settings->exportData == ImageContentRendererSettings::EXPORT_URL) {
+                return $url;
+
+            } elseif ($this->settings->exportData == ImageContentRendererSettings::EXPORT_PATH) {
+                return $content->getImagePath();
+
+            } elseif ($this->settings->exportData == ImageContentRendererSettings::EXPORT_VALUE) {
+                return $data;
+
+            } else {
+                return null;
+            }
         }
 
         if ($content->editable && ($mode == Set::MODE_ADD || $mode == Set::MODE_EDIT)) {
