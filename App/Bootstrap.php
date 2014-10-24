@@ -92,22 +92,23 @@ class Bootstrap
     {
         if ($this->server->get('HTTPS') == 'on') {
             $this->app->url = 'https://' . $this->server->needs('HTTP_HOST');
+
         } else {
             $this->app->url = 'http://' . $this->server->needs('HTTP_HOST');
         }
 
+        $requestUri = $this->server->get('REQUEST_URI');
+
+        $entryFileName = basename($this->server->needs('SCRIPT_FILENAME'));
+
         if ($this->usesModRewrite) {
-            $this->app->url .= $this->server->get('SCRIPT_NAME');
-            $this->app->publicUrl = $this->app->url = substr($this->app->url, 0, strrpos($this->app->url, '/') + 1);
+            $scriptName = $this->server->get('SCRIPT_NAME');
+            $this->app->publicUrl = $this->app->url =
+                $this->app->url . substr($scriptName, 0, strpos($scriptName, $entryFileName));
 
         } else {
-            $scriptName = substr($this->server->get('SCRIPT_FILENAME'), strlen($this->server->get('DOCUMENT_ROOT')));
-            if ($scriptName[0] != '/') {
-                $scriptName = '/' . $scriptName;
-            }
-            $this->app->publicUrl = $this->app->url
-                . substr($scriptName, 0, strlen($scriptName) - strlen(basename($scriptName)));
-            $this->app->url .= $scriptName . '/';
+            $this->app->url .= substr($requestUri, 0, strpos($requestUri, $entryFileName)) . $entryFileName . '/';
+            $this->app->publicUrl = substr($this->app->url, 0, strrpos($this->app->url, '/', -2) + 1);
         }
 
         $this->app->publicAssetUrl = $this->assetDirectory;
@@ -128,44 +129,23 @@ class Bootstrap
 
     protected function retrieveUrl()
     {
+        $requestUri = $this->server->get('REQUEST_URI');
+        $entryFileName = basename($this->server->needs('SCRIPT_FILENAME'));
+
+        if (($questionMarkPos = strpos($requestUri, '?')) !== false) {
+            $requestUri = substr($requestUri, 0, $questionMarkPos);
+        }
+
         if ($this->usesModRewrite) {
-            $self = $this->server->needs('PHP_SELF');
+            $scriptName = $this->server->get('SCRIPT_NAME');
 
-//            if(($pathInfo = $this->_server->get('PATH_INFO')) || ($pathInfo = $this->_server->get('ORIG_PATH_INFO'))){
-//                $self = substr($self, 0, strlen($self) - strlen($pathInfo));
-//            }
-
-            if (($pos = strrpos($self, '/')) !== false) {
-                $self = substr($self, 0, $pos);
-
-            } else {
-                $self = substr($self, 0, strrpos($self, '\\'));
-            }
-            $url = substr($this->server->needs('REQUEST_URI'), strlen($self));
-            if ($url === false) {
-                $url = '';
-
-            } elseif ($url !== '') {
-                $posQueryString = strpos($url, '?');
-                if ($posQueryString !== false) {
-                    $url = substr($url, 0, $posQueryString);
-                }
-            }
-            $url = substr($url, 1);
+            $baseDirectory = substr($scriptName, 0, strpos($scriptName, $entryFileName));
+            $url = substr($requestUri, strlen($baseDirectory));
 
         } else {
-            if ($this->server->has('PATH_INFO')) {
-                $url = substr($this->server->get('PATH_INFO'), 1);
-
-            } else {
-                $url = substr($this->server->get('ORIG_PATH_INFO'), 1);
-            }
+            $url = substr($requestUri, strpos($requestUri, $entryFileName) + strlen($entryFileName) + 1);
         }
 
-        if (substr($url, -1, 1) != '/') {
-            $url .= '/';
-        }
-
-        return $url;
+        return rtrim($url, '/') . '/';
     }
 }
