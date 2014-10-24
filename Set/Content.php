@@ -3,6 +3,7 @@ namespace Cyantree\Grout\Set;
 
 use Cyantree\Grout\Filter\ArrayFilter;
 use Cyantree\Grout\Status\Status;
+use Cyantree\Grout\Status\StatusContainer;
 
 abstract class Content
 {
@@ -174,35 +175,25 @@ abstract class Content
 
     public function postError($code, $messageReplaces = null, $message = null)
     {
-        $this->set->status->error->addManual($this->name);
+        $this->addStatus($this->set->status->error, $code, $message, $messageReplaces);
+    }
 
-        $message = $message ? $message : $this->getErrorMessage($code);
-        $this->set->status->error->add(
-                $this->prepareSetMessage($this->name . '.' . $code, $message, $messageReplaces)
-        );
+    public function postWarning($code, $messageReplaces = null, $message = null)
+    {
+        $this->addStatus($this->set->status->warning, $code, $message, $messageReplaces);
     }
 
     public function postInfo($code, $messageReplaces = null, $message = null)
     {
-        $this->set->status->info->addManual($this->name);
-
-        $message = $message ? $message : $this->getInfoMessage($code);
-        $this->set->status->info->add(
-                $this->prepareSetMessage($this->name . '.' . $code, $message, $messageReplaces)
-        );
+        $this->addStatus($this->set->status->info, $code, $message, $messageReplaces);
     }
 
     public function postSuccess($code, $messageReplaces = null, $message = null)
     {
-        $this->set->status->success->addManual($this->name);
-
-        $message = $message ? $message : $this->getSuccessMessage($code);
-        $this->set->status->success->add(
-                $this->prepareSetMessage($this->name . '.' . $code, $message, $messageReplaces)
-        );
+        $this->addStatus($this->set->status->success, $code, $message, $messageReplaces);
     }
-    
-    private function prepareSetMessage($code, $message, $messageReplaces = null)
+
+    private function addStatus(StatusContainer $container, $code, $message, $messageReplaces = null)
     {
         if ($message) {
             if ($messageReplaces === null) {
@@ -211,11 +202,12 @@ abstract class Content
             $messageReplaces['%name%'] = $this->config->get('label');
         }
 
-        $m = new Status();
-        $m->code = $this->name . '.' . $code;
-        $m->message = $message;
-        $m->replaces = $messageReplaces;
-        
-        return $m;
+        $status = new Status();
+        $status->code = $this->name . '.' . $code;
+        $status->message = $message;
+        $status->replaces = $messageReplaces;
+
+        $container->addManual($this->name);
+        $container->add($status);
     }
 }
