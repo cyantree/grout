@@ -154,6 +154,10 @@ class App
         $task->app = $this;
         $task->url = $this->url . $task->request->url;
 
+        if ($this->isConsole) {
+            $task->response->ignoreHeaders();
+        }
+
         if ($this->currentTask) {
             $this->otherActiveTasks[] = $task;
         }
