@@ -34,6 +34,11 @@ class Response
         }
     }
 
+    public function ignoreHeaders()
+    {
+        $this->headersSent = true;
+    }
+
     public function postContent($content, $contentType = null, $overwriteExistingContent = false)
     {
         if ($this->content && !$overwriteExistingContent) {
