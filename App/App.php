@@ -366,28 +366,6 @@ class App
         return is_file($this->path . 'modules/' . $type . '/' . $type . '.php');
     }
 
-    public function importModuleNamespace($type)
-    {
-        if (!class_exists('Grout\\' . $type)) {
-            $directory = $this->path . 'modules/' . str_replace('\\', '/', $type) . '/';
-
-            AutoLoader::registerNamespace('Grout\\' . $type . '\\', $directory);
-            AutoLoader::registerNamespace('Grout\\' . $type . '\\', $directory . 'source/');
-        }
-    }
-
-    public function importPluginNamespace($type)
-    {
-        // Add plugin path to auto loading
-        if (!class_exists('Grout\\' . $type)) {
-            $directory = $this->path . 'plugins/' . str_replace('\\', '/', $type) . '/';
-
-            AutoLoader::registerNamespace('Grout\\' . $type . '\\', $directory);
-            AutoLoader::registerNamespace('Grout\\' . $type . '\\', $directory . 'source/');
-        }
-    }
-
-
     /**
      * @param $type
      * @param string $urlPrefix
@@ -426,9 +404,6 @@ class App
         }
 
         $config->set('_priority', $priority);
-
-        // Add module path to auto loading
-        $this->importModuleNamespace($type);
 
         /** @var $m Module */
         $c = 'Grout\\' . $type . '\\' . $class;

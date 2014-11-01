@@ -218,8 +218,6 @@ class Module
 //        $directory = str_replace('\\', '/', $type);
 //        $path = $this->app->path . 'plugins/' . $directory . '/';
 
-        $this->app->importPluginNamespace($type);
-
         $class = 'Grout\\' . $type . '\\' . $class;
 
         $reflection = new \ReflectionClass($class);
