@@ -30,7 +30,7 @@ class ErrorWrapper
             return;
         }
 
-        if ($code & E_WARNING || $code & E_USER_WARNING) {
+        if ($code & E_WARNING || $code & E_USER_WARNING || $code & E_RECOVERABLE_ERROR || $code & E_CORE_WARNING) {
             $e = new PhpWarningException();
 
         } elseif ($code & E_NOTICE
