@@ -36,36 +36,29 @@ class Mail
     {
         $lineFeed = "\r\n";
 
-        if (!is_array($this->recipients)) {
-            $this->recipients = array($this->recipients);
-        }
-
         if (!$this->from) {
             $this->from = self::$defaultFrom;
         }
 
         // Encode sender
-        $from = is_array($this->from) ?
-            MailTools::encodeString(current($this->from)) . ' <' . key($this->from) . '>' :
-            $this->from;
-        $headers = 'From: ' . str_replace(array(chr(13), chr(10)), array('', ''), $from);
+        $headers = 'From: ' . implode(",\r\n ", $this->encodeAddresses($this->from));
 
         // Encode recipients
         $recipients = $this->encodeAddresses($this->recipients);
 
         // Process CC
         if ($this->recipientsCc) {
-            $headers .= $lineFeed . 'CC: ' . implode(',' . $lineFeed, $this->encodeAddresses($this->recipientsCc));
+            $headers .= $lineFeed . 'CC: ' . implode(",\r\n ", $this->encodeAddresses($this->recipientsCc));
         }
 
         // Process BCC
         if ($this->recipientsBcc) {
-            $headers .= $lineFeed . 'BCC: ' . implode(',' . $lineFeed, $this->encodeAddresses($this->recipientsBcc));
+            $headers .= $lineFeed . 'BCC: ' . implode(",\r\n ", $this->encodeAddresses($this->recipientsBcc));
         }
 
         // Process Reply-To
         if ($this->replyTo) {
-            $headers .= $lineFeed . 'Reply-To: ' . implode(',' . $lineFeed, $this->encodeAddresses($this->replyTo));
+            $headers .= $lineFeed . 'Reply-To: ' . implode(",\r\n ", $this->encodeAddresses($this->replyTo));
         }
 
         // Process additional headers
