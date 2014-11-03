@@ -14,6 +14,9 @@ class Mail
     public $recipients = array();
     public $recipientsCc;
     public $recipientsBcc;
+    public $replyTo;
+
+    public $headers;
 
     /** @var string|array */
     public $from;
@@ -48,46 +51,33 @@ class Mail
         $headers = 'From: ' . str_replace(array(chr(13), chr(10)), array('', ''), $from);
 
         // Encode recipients
-        $recipients = array();
-        foreach ($this->recipients as $recipientMail => $recipientName) {
-            if (is_string($recipientMail)) {
-                $recipientMail = str_replace(array(chr(13), chr(10)), array('', ''), $recipientMail);
-                $recipients[] = MailTools::encodeString($recipientName) . ' <' . $recipientMail . '>';
+        $recipients = $this->encodeAddresses($this->recipients);
 
-            } else {
-                $recipients[] = $recipientName;
-            }
+        // Process CC
+        if ($this->recipientsCc) {
+            $headers .= $lineFeed . 'CC: ' . implode(',' . $lineFeed, $this->encodeAddresses($this->recipientsCc));
         }
 
-        // Encode recipients Cc
-        if (is_array($this->recipientsCc)) {
-            $recipientsTemp = array();
-            foreach ($this->recipientsCc as $recipientMail => $recipientName) {
-                if (is_string($recipientMail)) {
-                    $recipientMail = str_replace(array(chr(13), chr(10)), array('', ''), $recipientMail);
-                    $recipientsTemp[] = MailTools::encodeString($recipientName) . ' <' . $recipientMail . '>';
-
-                } else {
-                    $recipientsTemp[] = $recipientName;
-                }
-            }
-            $headers .= $lineFeed . 'CC: ' . implode(",\n ", $recipientsTemp);
+        // Process BCC
+        if ($this->recipientsBcc) {
+            $headers .= $lineFeed . 'BCC: ' . implode(',' . $lineFeed, $this->encodeAddresses($this->recipientsBcc));
         }
 
-        // Encode recipients Bcc
-        if (is_array($this->recipientsBcc)) {
-            $recipientsTemp = array();
-            foreach ($this->recipientsBcc as $recipientMail => $recipientName) {
-                if (is_string($recipientMail)) {
-                    $recipientMail = str_replace(array(chr(13), chr(10)), array('', ''), $recipientMail);
-                    $recipientsTemp[] = MailTools::encodeString($recipientName) . ' <' . $recipientMail . '>';
+        // Process Reply-To
+        if ($this->replyTo) {
+            $headers .= $lineFeed . 'Reply-To: ' . implode(',' . $lineFeed, $this->encodeAddresses($this->replyTo));
+        }
+
+        // Process additional headers
+        if (is_array($headers)) {
+            foreach ($headers as $name => $value) {
+                if (is_string($name)) {
+                    $headers .= $lineFeed . $name . ': ' . $value;
 
                 } else {
-                    $recipientsTemp[] = $recipientName;
+                    $headers .= $lineFeed . $value;
                 }
             }
-
-            $headers .= $lineFeed . 'BCC: ' . implode(",\n ", $recipientsTemp);
         }
 
         // Encode subject
@@ -101,7 +91,7 @@ class Mail
 
             $boundary = 'bd_' . md5(mt_rand() . time());
 
-            $headers .= $lineFeed . 'Content-Type: multipart/alternative;' . "\n\t" . 'boundary="' . $boundary . '"';
+            $headers .= $lineFeed . 'Content-Type: multipart/alternative;' . $lineFeed . "\t" . 'boundary="' . $boundary . '"';
 
             $body .= $lineFeed . $lineFeed . "--{$boundary}" . $lineFeed;
             $body .= 'Content-Type: text/plain; charset=utf-8' . $lineFeed;
@@ -128,5 +118,26 @@ class Mail
         }
 
         mail(implode(",\r\n ", $recipients), $subject, $body, $headers, $additionalParameters);
+    }
+
+    private function encodeAddresses($addresses)
+    {
+        if (!is_array($addresses)) {
+            $addresses = array($addresses);
+        }
+
+        $newAddresses = array();
+
+        foreach ($addresses as $mail => $name) {
+            if (is_string($mail)) {
+                $mail = str_replace(array(chr(13), chr(10)), array('', ''), $mail);
+                $newAddresses[] = MailTools::encodeString($name) . ' <' . $mail . '>';
+
+            } else {
+                $newAddresses[] = $name;
+            }
+        }
+
+        return $newAddresses;
     }
 }
