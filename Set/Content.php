@@ -195,6 +195,10 @@ abstract class Content
 
     private function addStatus(StatusContainer $container, $code, $message, $messageReplaces = null)
     {
+        if (!$message) {
+            $message = $this->getErrorMessage($code);
+        }
+        
         if ($message) {
             if ($messageReplaces === null) {
                 $messageReplaces = array();
