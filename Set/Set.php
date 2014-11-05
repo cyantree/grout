@@ -407,6 +407,11 @@ abstract class Set
     {
         $this->status->success->addManual($code, $message, $messageReplaces);
     }
+    
+    public function postWarning($code, $message = null, $messageReplaces = null)
+    {
+        $this->status->warning->addManual($code, $message, $messageReplaces);
+    }
 
     /** @return SetListResult */
     abstract public function listSets($options);
