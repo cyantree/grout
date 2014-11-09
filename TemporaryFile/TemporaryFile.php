@@ -58,10 +58,12 @@ class TemporaryFile
 
     public function save()
     {
-        file_put_contents(
-            $this->path . '.dat',
-            serialize(array('filename' => $this->originalFilename, 'metadata' => $this->metadata))
-        );
+        if ($this->storeMetadata) {
+            file_put_contents(
+                $this->path . '.dat',
+                serialize(array('filename' => $this->originalFilename, 'metadata' => $this->metadata))
+            );
+        }
 
         if ($this->expires) {
             touch($this->path, $this->expires);
@@ -70,6 +72,11 @@ class TemporaryFile
 
     public function readAdditionalData()
     {
+        if (!$this->storeMetadata) {
+            $this->originalFilename = $this->metadata = null;
+            return;
+        }
+
         $data = unserialize(file_get_contents($this->path . '.dat'));
 
         $this->originalFilename = $data['filename'];
