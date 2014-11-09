@@ -57,10 +57,10 @@ class FileUpload
         return $f;
     }
 
-    public static function fromFile($path)
+    public static function fromFile($path, $name = null)
     {
         $f = new FileUpload();
-        $f->name = basename($path);
+        $f->name = $name ? $name : basename($path);
         $f->file = realpath($path);
         $f->size = filesize($path);
         $f->error = 0;
