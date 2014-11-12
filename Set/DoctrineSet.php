@@ -4,6 +4,7 @@ namespace Cyantree\Grout\Set;
 use Cyantree\Grout\Database\Entity\Entity;
 use Cyantree\Grout\Filter\ArrayFilter;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 abstract class DoctrineSet extends Set
 {
@@ -255,17 +256,10 @@ abstract class DoctrineSet extends Set
 
         $result = new DoctrineSetListResult($this, $query);
 
-        // Get count
-        $queryData = $data['count'];
-        $query = str_replace($queryClauseLookUps, $queryClauseReplaces, $queryData['query']);
-        $query = str_replace($queryLookUps, $queryReplaces, $query);
-
-        $query = $this->getEntityManager()->createQuery($query);
-        if ($parameters) {
-            $query->setParameters($parameters);
+        if ($options->get('getCount', true)) {
+            $p = new Paginator($query, true);
+            $result->countAll = count($p);
         }
-
-        $result->countAll = $query->getSingleScalarResult();
 
         return $result;
     }
