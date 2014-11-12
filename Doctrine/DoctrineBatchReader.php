@@ -2,6 +2,7 @@
 namespace Cyantree\Grout\Doctrine;
 
 use Doctrine\ORM\Query;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class DoctrineBatchReader
 {
@@ -18,10 +19,11 @@ class DoctrineBatchReader
 
     public $results;
 
-    public $hydrationMode = Query::HYDRATE_OBJECT;
-
     /** @var Query */
     private $query;
+
+    /** @var Paginator */
+    private $paginator;
 
     private function getNextBatch()
     {
@@ -31,9 +33,15 @@ class DoctrineBatchReader
             $maxResults = $this->limit ? min($this->resultsPerBatch, $this->limit - $this->countTotal) : $this->resultsPerBatch;
 
             if ($maxResults) {
-                $this->results = $this->query->setFirstResult($this->offset)
-                        ->setMaxResults($maxResults)
-                        ->getResult($this->hydrationMode);
+                $this->query->setFirstResult($this->offset)
+                        ->setMaxResults($maxResults);
+
+                $this->paginator = new Paginator($this->query);
+
+                $this->results = array();
+                foreach ($this->paginator as $result) {
+                    $this->results[] = $result;
+                }
 
             } else {
                 $this->results = array();
