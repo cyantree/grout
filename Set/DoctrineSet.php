@@ -84,10 +84,6 @@ abstract class DoctrineSet extends Set
                 'parameters' => array(),
                 'defaultOrder' => null,
             ),
-            'count' => array(
-                'query' => 'SELECT COUNT({e}) FROM {from-clause} WHERE {where-clause}',
-                'parameters' => array(),
-            ),
             'searchQueries' => array(),
             'parameters' => array()
         );
