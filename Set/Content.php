@@ -44,7 +44,7 @@ abstract class Content
 
     public function __construct()
     {
-        $this->config = new ArrayFilter(array('visible' => true));
+        $this->config = new ArrayFilter();
     }
 
     final public function init()
