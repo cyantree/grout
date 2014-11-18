@@ -276,7 +276,7 @@ abstract class Set
         $this->doPrepareRendering();
 
         foreach ($this->contents as $content) {
-            if (!$content->enabled) {
+            if (!$content->enabled || !$content->render) {
                 continue;
             }
 
@@ -339,7 +339,7 @@ abstract class Set
         $content = $this->firstContent;
 
         do {
-            if ($content->enabled) {
+            if ($content->enabled && $content->render) {
                 $d[$content->name] = $content->render();
             }
         } while ($content = $content->nextContent);
