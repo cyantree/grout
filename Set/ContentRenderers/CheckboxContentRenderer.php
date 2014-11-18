@@ -38,7 +38,7 @@ class CheckboxContentRenderer extends ContentRenderer
         $id = 'c' . StringTools::random(15);
 
         $c = '<input id="' . $id . '" type="checkbox" name="' . $content->name . '" '
-                . 'value="' . StringTools::escapeHtml($content->value) . '"' . $attributes . ' />';
+                . 'value="' . StringTools::escapeHtml($content->valueChecked) . '"' . $attributes . ' />';
 
         if ($content->label != '') {
             $c .= '<label for="' . $id . '">' . StringTools::escapeHtml($content->label) . '</label>';

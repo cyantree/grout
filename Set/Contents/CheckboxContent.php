@@ -13,7 +13,7 @@ class CheckboxContent extends Content
     public $labelChecked;
     public $labelNotChecked;
 
-    public $value = true;
+    public $valueChecked = true;
     public $valueNotChecked = false;
 
     public function populate($data, $files)
@@ -36,12 +36,12 @@ class CheckboxContent extends Content
 
     public function getData()
     {
-        return $this->data ? $this->value : $this->valueNotChecked;
+        return $this->data ? $this->valueChecked : $this->valueNotChecked;
     }
 
     public function setData($data)
     {
-        $this->data = $data === $this->value || strval($data) === strval($this->value);
+        $this->data = $data === $this->valueChecked || strval($data) === strval($this->valueChecked);
     }
 
     public function check()
