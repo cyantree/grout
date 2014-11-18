@@ -9,7 +9,7 @@ class DateTimeContent extends Content
     public $format = 'Y-m-d H:i:s';
 
     /** @var \DateTime */
-    protected $data;
+    protected $value;
 
     public function populate($data, $files)
     {

@@ -12,7 +12,7 @@ class ListContentRenderer extends ContentRenderer
     public function render(Content $content, $mode)
     {
         /** @var ListContent $content */
-        $data = $content->getData();
+        $data = $content->getValue();
 
         if ($mode == Set::MODE_EXPORT) {
             return $content->options[$data];

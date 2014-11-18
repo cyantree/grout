@@ -24,7 +24,7 @@ class ListContent extends Content
 
     public function check()
     {
-        if (!isset($this->options[$this->data])) {
+        if (!isset($this->options[$this->value])) {
             $this->postError('invalid');
         }
     }

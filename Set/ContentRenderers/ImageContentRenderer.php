@@ -23,7 +23,7 @@ class ImageContentRenderer extends ContentRenderer
     public function render(Content $content, $mode)
     {
         /** @var ImageContent $content */
-        $data = $content->getData();
+        $data = $content->getValue();
 
         $url = $content->getImageUrl();
 

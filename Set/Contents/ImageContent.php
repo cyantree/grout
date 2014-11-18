@@ -65,8 +65,8 @@ class ImageContent extends Content
 
     public function getImagePath()
     {
-        if ($this->data) {
-            return $this->saveDirectory . $this->data . ($this->valueContainsExtension ? '' : '.' . $this->saveFormat);
+        if ($this->value) {
+            return $this->saveDirectory . $this->value . ($this->valueContainsExtension ? '' : '.' . $this->saveFormat);
 
         } else {
             return null;
@@ -75,8 +75,8 @@ class ImageContent extends Content
 
     public function getImageUrl()
     {
-        if ($this->data) {
-            return $this->saveDirectoryUrl . $this->data . ($this->valueContainsExtension ? '' : '.' . $this->saveFormat);
+        if ($this->value) {
+            return $this->saveDirectoryUrl . $this->value . ($this->valueContainsExtension ? '' : '.' . $this->saveFormat);
 
         } else {
             return null;
@@ -90,7 +90,7 @@ class ImageContent extends Content
 
     public function check()
     {
-        if (!$this->data && !$this->uploadedFile && $this->required) {
+        if (!$this->value && !$this->uploadedFile && $this->required) {
             $this->postError('required');
             return;
         }
@@ -170,23 +170,23 @@ class ImageContent extends Content
             $this->onProcessImage($this->image);
 
             $saveFilename = null;
-            $oldSaveFilename = $this->data;
+            $oldSaveFilename = $this->value;
 
             if ($oldSaveFilename && !$this->valueContainsExtension) {
                 $oldSaveFilename .= '.' . $this->saveFormat;
             }
 
             if ($this->saveFilename) {
-                $this->data = $saveFilename = $this->saveFilename;
+                $this->value = $saveFilename = $this->saveFilename;
 
             } elseif (!$this->saveFilename) {
-                $this->data = FileTools::createUniqueFilename($this->saveDirectory, '.' . $this->saveFormat, 32, true);
+                $this->value = FileTools::createUniqueFilename($this->saveDirectory, '.' . $this->saveFormat, 32, true);
 
                 if ($this->valueContainsExtension) {
-                    $saveFilename = $this->data = $this->data . '.' . $this->saveFormat;
+                    $saveFilename = $this->value = $this->value . '.' . $this->saveFormat;
 
                 } else {
-                    $saveFilename = $this->data . '.' . $this->saveFormat;
+                    $saveFilename = $this->value . '.' . $this->saveFormat;
                 }
             }
 
@@ -237,8 +237,8 @@ class ImageContent extends Content
 
     public function onDelete()
     {
-        if ($this->data) {
-            unlink($this->saveDirectory . $this->data . ($this->valueContainsExtension ? '' : '.' . $this->saveFormat));
+        if ($this->value) {
+            unlink($this->saveDirectory . $this->value . ($this->valueContainsExtension ? '' : '.' . $this->saveFormat));
         }
     }
 

@@ -63,7 +63,7 @@ abstract class DoctrineSet extends Set
             }
 
             if ($content->storeInSet) {
-                $a[$name] = $content->getData();
+                $a[$name] = $content->getValue();
             }
         }
 
@@ -98,7 +98,7 @@ abstract class DoctrineSet extends Set
             }
 
             if ($content->storeInSet) {
-                $this->entity->{$name} = $content->getData();
+                $this->entity->{$name} = $content->getValue();
             }
         }
     }
@@ -126,7 +126,7 @@ abstract class DoctrineSet extends Set
             }
 
             if ($content->storeInSet) {
-                $content->setData($e->{$name});
+                $content->setValue($e->{$name});
             }
         }
 

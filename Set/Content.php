@@ -40,7 +40,7 @@ abstract class Content
 
     protected $mode;
 
-    protected $data;
+    protected $value;
 
     public function __construct()
     {
@@ -101,14 +101,14 @@ abstract class Content
 
     abstract protected function getDefaultRenderer();
 
-    public function setData($data)
+    public function setValue($data)
     {
-        $this->data = $data;
+        $this->value = $data;
     }
 
-    public function getData()
+    public function getValue()
     {
-        return $this->data;
+        return $this->value;
     }
 
     public function onLoaded()
@@ -139,7 +139,7 @@ abstract class Content
      */
     public function populate($data, $files)
     {
-        $this->data = $data->get($this->name);
+        $this->value = $data->get($this->name);
     }
 
     public function check()

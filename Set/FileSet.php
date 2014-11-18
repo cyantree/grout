@@ -20,7 +20,7 @@ abstract class FileSet extends Set
     {
         foreach ($this->contents as $name => $content) {
             if ($content->storeInSet) {
-                $this->saveData[$name] = $content->getData();
+                $this->saveData[$name] = $content->getValue();
             }
         }
     }
@@ -53,7 +53,7 @@ abstract class FileSet extends Set
 
         foreach ($this->contents as $name => $content) {
             if ($content->storeInSet) {
-                $content->setData($this->saveData[$name]);
+                $content->setValue($this->saveData[$name]);
             }
         }
 

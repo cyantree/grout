@@ -13,7 +13,7 @@ class FileContentRenderer extends ContentRenderer
     public function render(Content $content, $mode)
     {
         /** @var FileContent $content */
-        $data = $content->getData();
+        $data = $content->getValue();
 
         $url = $content->getFileUrl();
 

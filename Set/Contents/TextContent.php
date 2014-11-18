@@ -43,30 +43,30 @@ class TextContent extends Content
     }
 
 
-    public function getData()
+    public function getValue()
     {
-        return $this->data === null ? '' : $this->data;
+        return $this->value === null ? '' : $this->value;
     }
 
     public function check()
     {
-        $l = mb_strlen($this->data);
+        $l = mb_strlen($this->value);
 
         if ($this->required && !$l) {
             $this->postError('invalid');
             return;
         }
 
-        if ($this->pattern !== null && !preg_match($this->pattern, $this->data)) {
+        if ($this->pattern !== null && !preg_match($this->pattern, $this->value)) {
             $this->postError('invalidPattern');
             return;
         }
 
-        if ($this->type == self::TYPE_EMAIL && !StringTools::isEmailAddress($this->data)) {
+        if ($this->type == self::TYPE_EMAIL && !StringTools::isEmailAddress($this->value)) {
             $this->postError('invalidEmail');
             return;
 
-        } elseif ($this->type == self::TYPE_URL && !StringTools::isUrl($this->data)) {
+        } elseif ($this->type == self::TYPE_URL && !StringTools::isUrl($this->value)) {
             $this->postError('invalidUrl');
             return;
         }

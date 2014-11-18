@@ -12,7 +12,7 @@ class TextContentRenderer extends ContentRenderer
     public function render(Content $content, $mode)
     {
         /** @var TextContent $content */
-        $data = $content->getData();
+        $data = $content->getValue();
 
         if ($mode == Set::MODE_EXPORT) {
             return $data;

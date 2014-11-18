@@ -15,12 +15,12 @@ class InternalContent extends Content
         $this->config->set('visible', false);
     }
 
-    public function setData($data)
+    public function setValue($data)
     {
         $this->content = $data;
     }
 
-    public function getData()
+    public function getValue()
     {
         return $this->content;
     }

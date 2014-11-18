@@ -46,7 +46,7 @@ abstract class EntitySet extends Set
 
         foreach ($this->contents as $name => $content) {
             if ($content->storeInSet) {
-                $content->setData($data->{$name});
+                $content->setValue($data->{$name});
             }
         }
     }
@@ -57,7 +57,7 @@ abstract class EntitySet extends Set
     {
         foreach ($this->contents as $name => $content) {
             if ($content->storeInSet) {
-                $this->entity->{$name} = $content->getData();
+                $this->entity->{$name} = $content->getValue();
             }
         }
     }

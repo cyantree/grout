@@ -14,7 +14,7 @@ class CheckboxContentRenderer extends ContentRenderer
     {
         /** @var CheckboxContent $content */
         
-        $isChecked = $content->getData();
+        $isChecked = $content->getValue();
 
         if ($mode == Set::MODE_SHOW
                 || $mode == Set::MODE_LIST

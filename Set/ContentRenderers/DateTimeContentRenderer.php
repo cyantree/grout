@@ -14,7 +14,7 @@ class DateTimeContentRenderer extends ContentRenderer
         /** @var DateTimeContent $content */
 
         /** @var \DateTime $data */
-        $data = $content->getData();
+        $data = $content->getValue();
 
         $date = $data ? $data->format($content->format) : '';
 

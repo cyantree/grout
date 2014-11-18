@@ -40,7 +40,7 @@ class FileContent extends Content
 
     public function getFileUrl()
     {
-        return $this->saveDirectoryUrl . $this->data;
+        return $this->saveDirectoryUrl . $this->value;
     }
 
     public function populate($data, $files)
@@ -50,7 +50,7 @@ class FileContent extends Content
 
     public function check()
     {
-        if (!$this->data && !$this->uploadedFile && $this->required) {
+        if (!$this->value && !$this->uploadedFile && $this->required) {
             $this->postError('notSelected');
             return;
         }
@@ -65,12 +65,12 @@ class FileContent extends Content
 
     public function save()
     {
-        if ($this->data) {
-            unlink($this->saveDirectory . $this->data);
+        if ($this->value) {
+            unlink($this->saveDirectory . $this->value);
         }
 
         if ($this->saveFilename) {
-            $this->data = $this->saveFilename;
+            $this->value = $this->saveFilename;
         } else {
             if ($this->keepExtension) {
                 $extension = explode('.', $this->uploadedFile->name);
@@ -79,16 +79,16 @@ class FileContent extends Content
                 $extension = '.dat';
             }
 
-            $this->data = FileTools::createUniqueFilename($this->saveDirectory, $extension, 32, true) . $extension;
+            $this->value = FileTools::createUniqueFilename($this->saveDirectory, $extension, 32, true) . $extension;
         }
 
-        $this->uploadedFile->move($this->saveDirectory . $this->data);
+        $this->uploadedFile->move($this->saveDirectory . $this->value);
     }
 
     public function onDelete()
     {
-        if ($this->data) {
-            unlink($this->saveDirectory . $this->data);
+        if ($this->value) {
+            unlink($this->saveDirectory . $this->value);
         }
     }
 
