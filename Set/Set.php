@@ -172,7 +172,7 @@ abstract class Set
         $files = new ArrayFilter($rawFiles);
 
         foreach ($this->contents as $content) {
-            if (!$content->visible) {
+            if (!$content->enabled) {
                 continue;
             }
 
@@ -187,7 +187,7 @@ abstract class Set
         $this->status->reset();
 
         foreach ($this->contents as $content) {
-            if (!$content->visible) {
+            if (!$content->enabled) {
                 continue;
             }
 
@@ -200,7 +200,7 @@ abstract class Set
     public function save()
     {
         foreach ($this->contents as $content) {
-            if (!$content->visible) {
+            if (!$content->enabled) {
                 continue;
             }
 
@@ -214,7 +214,7 @@ abstract class Set
         $this->doSave();
 
         foreach ($this->contents as $content) {
-            if (!$content->visible) {
+            if (!$content->enabled) {
                 continue;
             }
 
@@ -276,7 +276,7 @@ abstract class Set
         $this->doPrepareRendering();
 
         foreach ($this->contents as $content) {
-            if (!$content->visible) {
+            if (!$content->enabled) {
                 continue;
             }
 
@@ -339,7 +339,7 @@ abstract class Set
         $content = $this->firstContent;
 
         do {
-            if ($content->visible) {
+            if ($content->enabled) {
                 $d[$content->name] = $content->render();
             }
         } while ($content = $content->nextContent);
@@ -350,7 +350,7 @@ abstract class Set
     protected function onLoaded()
     {
         foreach ($this->contents as $content) {
-            if (!$content->visible) {
+            if (!$content->enabled) {
                 continue;
             }
 
@@ -361,14 +361,14 @@ abstract class Set
     public function delete()
     {
         foreach ($this->contents as $content) {
-            if (!$content->visible) {
+            if (!$content->enabled) {
                 continue;
             }
 
             $content->prepareDelete();
         }
         foreach ($this->contents as $content) {
-            if (!$content->visible) {
+            if (!$content->enabled) {
                 continue;
             }
 
@@ -378,7 +378,7 @@ abstract class Set
         $this->doDelete();
 
         foreach ($this->contents as $content) {
-            if (!$content->visible) {
+            if (!$content->enabled) {
                 continue;
             }
 

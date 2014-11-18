@@ -58,7 +58,7 @@ abstract class DoctrineSet extends Set
         $a = array();
 
         foreach ($this->contents as $name => $content) {
-            if (!$content->visible) {
+            if (!$content->enabled) {
                 continue;
             }
 
@@ -93,7 +93,7 @@ abstract class DoctrineSet extends Set
     protected function collectData()
     {
         foreach ($this->contents as $name => $content) {
-            if (!$content->visible) {
+            if (!$content->enabled) {
                 continue;
             }
 
@@ -121,7 +121,7 @@ abstract class DoctrineSet extends Set
         $this->entity = $e;
 
         foreach ($this->contents as $name => $content) {
-            if (!$content->visible) {
+            if (!$content->enabled) {
                 continue;
             }
 
@@ -153,7 +153,7 @@ abstract class DoctrineSet extends Set
         $searchQueries = & $data['searchQueries'];
         if ($search != '') {
             foreach ($this->contents as $content) {
-                if (!$content->visible) {
+                if (!$content->enabled) {
                     continue;
                 }
 
@@ -176,7 +176,7 @@ abstract class DoctrineSet extends Set
         $orderClause = '';
         if ($sortingField) {
             foreach ($this->contents as $content) {
-                if (!$content->visible) {
+                if (!$content->enabled) {
                     continue;
                 }
 
