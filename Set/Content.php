@@ -11,6 +11,7 @@ abstract class Content
     public $set;
 
     public $errorMessages = array();
+    public $warningMessages = array();
     public $infoMessages = array();
     public $successMessages = array();
 
@@ -40,6 +41,8 @@ abstract class Content
     public $renderer;
 
     protected $mode;
+    protected $format;
+    protected $context;
 
     protected $value;
 
@@ -48,8 +51,12 @@ abstract class Content
         $this->config = new ArrayFilter();
     }
 
-    final public function init()
+    final public function init($mode, $format, $context = null)
     {
+        $this->mode = $mode;
+        $this->format = $format;
+        $this->context = $context;
+
         $this->onInit();
     }
 
@@ -95,6 +102,20 @@ abstract class Content
         return '';
     }
 
+    protected function getWarningMessage($code)
+    {
+        if (isset($this->warningMessages[$code])) {
+            return $this->warningMessages[$code];
+        }
+
+        return $this->getDefaultWarningMessage($code);
+    }
+
+    protected function getDefaultWarningMessage($code)
+    {
+        return '';
+    }
+
     protected function onInit()
     {
 
@@ -122,16 +143,11 @@ abstract class Content
 
     public function render()
     {
-        return $this->renderer->render($this, $this->mode);
-    }
-
-    public function prepareRendering($mode)
-    {
-        $this->mode = $mode;
-
         if ($this->renderer === null) {
             $this->renderer = $this->getDefaultRenderer();
         }
+
+        return $this->renderer->render($this, $this->mode);
     }
 
     /**
@@ -176,30 +192,42 @@ abstract class Content
 
     public function postError($code, $messageReplaces = null, $message = null)
     {
+        if ($message === null) {
+            $message = $this->getErrorMessage($code);
+        }
+
         $this->addStatus($this->set->status->error, $code, $message, $messageReplaces);
     }
 
     public function postWarning($code, $messageReplaces = null, $message = null)
     {
+        if ($message === null) {
+            $message = $this->getWarningMessage($code);
+        }
+
         $this->addStatus($this->set->status->warning, $code, $message, $messageReplaces);
     }
 
     public function postInfo($code, $messageReplaces = null, $message = null)
     {
+        if ($message === null) {
+            $message = $this->getInfoMessage($code);
+        }
+        
         $this->addStatus($this->set->status->info, $code, $message, $messageReplaces);
     }
 
     public function postSuccess($code, $messageReplaces = null, $message = null)
     {
+        if ($message === null) {
+            $message = $this->getSuccessMessage($code);
+        }
+        
         $this->addStatus($this->set->status->success, $code, $message, $messageReplaces);
     }
 
     private function addStatus(StatusContainer $container, $code, $message, $messageReplaces = null)
     {
-        if (!$message) {
-            $message = $this->getErrorMessage($code);
-        }
-        
         if ($message) {
             if ($messageReplaces === null) {
                 $messageReplaces = array();
