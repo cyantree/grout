@@ -13,6 +13,9 @@ abstract class Set
     const MODE_SHOW = 'show';
     const MODE_EXPORT = 'export';
 
+    const FORMAT_HTML = 'html';
+    const FORMAT_PLAIN = 'plain';
+
     public $allowList = true;
     public $allowShow = true;
     public $allowEdit = true;
@@ -35,6 +38,8 @@ abstract class Set
     public $status;
 
     public $mode;
+    public $context;
+    public $format;
 
     public function __construct()
     {
@@ -42,10 +47,16 @@ abstract class Set
         $this->status = new StatusBag();
     }
 
-    public function init()
+    public function init($mode, $format = null, $context = null)
     {
+        $this->mode = $mode;
+        $this->format = $format;
+        $this->context = $context;
 
+        $this->setup();
     }
+
+    abstract public function setup();
 
     public function onList($elements)
     {
@@ -77,7 +88,9 @@ abstract class Set
         $this->lastContent = $content;
         $this->contents[$content->name] = $content;
 
-        $content->init();
+        if ($content->enabled) {
+            $content->init($this->mode, $this->format, $this->context);
+        }
     }
 
     /** @param $content Content */
@@ -95,7 +108,9 @@ abstract class Set
         $this->firstContent = $content;
         $this->contents[$content->name] = $content;
 
-        $content->init();
+        if ($content->enabled) {
+            $content->init($this->mode, $this->format, $this->context);
+        }
     }
 
     /** @param $content Content */
@@ -117,7 +132,9 @@ abstract class Set
 
         $this->contents[$content->name] = $content;
 
-        $content->init();
+        if ($content->enabled) {
+            $content->init($this->mode, $this->format, $this->context);
+        }
     }
 
     /** @param $content Content */
@@ -139,7 +156,9 @@ abstract class Set
 
         $this->contents[$content->name] = $content;
 
-        $content->init();
+        if ($content->enabled) {
+            $content->init($this->mode, $this->format, $this->context);
+        }
     }
 
     /** @return Content */
@@ -265,26 +284,6 @@ abstract class Set
     }
 
     protected function doSave()
-    {
-
-    }
-
-    public function prepareRendering($mode)
-    {
-        $this->mode = $mode;
-
-        $this->doPrepareRendering();
-
-        foreach ($this->contents as $content) {
-            if (!$content->enabled || !$content->render) {
-                continue;
-            }
-
-            $content->prepareRendering($mode);
-        }
-    }
-
-    protected function doPrepareRendering()
     {
 
     }
