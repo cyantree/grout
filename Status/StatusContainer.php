@@ -120,6 +120,10 @@ class StatusContainer
 
         foreach ($this->statuses as $status) {
             $message = $this->getMessage($status, $outputContext);
+            
+            if (!$message) {
+                continue;
+            }
 
             if ($status->code) {
                 $messages[$status->code] = $message;
