@@ -132,13 +132,13 @@ class ImageContent extends Content
                     $this->postError('minHeight', array('%height%' => $this->minHeight));
                 }
 
-                if ($this->maxWidth && $this->maxHeight && $errors->has(ImageToolsCheckFileResult::ERROR_MIN_SIZE)) {
+                if ($this->maxWidth && $this->maxHeight && $errors->has(ImageToolsCheckFileResult::ERROR_MAX_SIZE)) {
                     $this->postError('maxSize', array('%width%' => $this->maxWidth, '%height%' => $this->maxHeight));
 
-                } elseif ($this->maxWidth && $errors->has(ImageToolsCheckFileResult::ERROR_MIN_WIDTH)) {
+                } elseif ($this->maxWidth && $errors->has(ImageToolsCheckFileResult::ERROR_MAX_WIDTH)) {
                     $this->postError('maxWidth', array('%width%' => $this->maxWidth));
 
-                } elseif ($this->maxHeight && $errors->has(ImageToolsCheckFileResult::ERROR_MIN_HEIGHT)) {
+                } elseif ($this->maxHeight && $errors->has(ImageToolsCheckFileResult::ERROR_MAX_HEIGHT)) {
                     $this->postError('maxHeight', array('%height%' => $this->maxHeight));
                 }
 
