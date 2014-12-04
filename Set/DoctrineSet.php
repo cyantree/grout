@@ -69,23 +69,10 @@ abstract class DoctrineSet extends Set
         return $a;
     }
 
+    /** @return DoctrineSetQueryData */
     protected function getListQueryData(ArrayFilter $options)
     {
-        return array(
-            'clauses' => array(
-                'select' => '{e}',
-                'from' => '{entity}',
-                'where' => '{where}',
-                'order' => '{order}'
-            ),
-            'select' => array(
-                'query' => 'SELECT {select-clause} FROM {from-clause} WHERE {where-clause} ORDER BY {order-clause}',
-                'parameters' => array(),
-                'defaultOrder' => null,
-            ),
-            'searchQueries' => array(),
-            'parameters' => array()
-        );
+        return new DoctrineSetQueryData();
     }
 
 
@@ -146,10 +133,9 @@ abstract class DoctrineSet extends Set
         $parameters = array();
 
         // Create queries
-        $data = $this->getListQueryData($options);
+        $queryData = $this->getListQueryData($options);
 
         // Create search queries
-        $searchQueries = & $data['searchQueries'];
         if ($search != '') {
             foreach ($this->contents as $content) {
                 if (!$content->enabled) {
@@ -158,14 +144,15 @@ abstract class DoctrineSet extends Set
 
                 if ($content->searchable) {
                     $parameters['search'] = '%' . $search . '%';
-                    $searchQueries[] = 'e.' . $content->name . ' LIKE :search';
+                    $queryData->searchClauses[] = 'e.' . $content->name . ' LIKE :search';
                 }
             }
         }
 
         // Create query parts
-        if ($searchQueries) {
-            $filterClause = '(' . implode(' OR ', $searchQueries) . ')';
+        if ($queryData->searchClauses) {
+            // TODO: Surround every clause with (...)
+            $filterClause = '(' . implode(' OR ', $queryData->searchClauses) . ')';
 
         } else {
             $filterClause = '1 = 1';
@@ -187,8 +174,9 @@ abstract class DoctrineSet extends Set
         }
 
         if ($orderClause === '') {
-            if ($data['select']['defaultOrder']) {
-                $orderClause = $data['select']['defaultOrder'];
+            if ($queryData->defaultOrder) {
+                $orderClause = $queryData->defaultOrder;
+
             } else {
                 $orderField = $this->config->get('order');
                 if ($orderField) {
@@ -217,23 +205,22 @@ abstract class DoctrineSet extends Set
         );
 
         $queryClauseLookUps = array(
-            '{select-clause}',
-            '{where-clause}',
-            '{order-clause}',
-            '{from-clause}'
+            '{selectClause}',
+            '{whereClause}',
+            '{orderClause}',
+            '{fromClause}'
         );
         $queryClauseReplaces = array(
-            $data['clauses']['select'],
-            $data['clauses']['where'],
-            $data['clauses']['order'],
-            $data['clauses']['from']
+            $queryData->selectClause,
+            $queryData->whereClause,
+            $queryData->orderClause,
+            $queryData->fromClause
         );
 
         // Get items
-        $queryData = $data['select'];
-        $query = str_replace($queryClauseLookUps, $queryClauseReplaces, $queryData['query']);
+        $query = str_replace($queryClauseLookUps, $queryClauseReplaces, $queryData->selectQuery);
         $query = str_replace($queryLookUps, $queryReplaces, $query);
-        $parameters = array_merge($parameters, $queryData['parameters'], $data['parameters']);
+        $parameters = array_merge($parameters, $queryData->parameters);
 
         $query = $this->getEntityManager()->createQuery($query);
 
