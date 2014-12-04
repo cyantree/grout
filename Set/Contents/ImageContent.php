@@ -3,7 +3,6 @@ namespace Cyantree\Grout\Set\Contents;
 
 use Cyantree\Grout\Filter\ArrayFilter;
 use Cyantree\Grout\Set\Content;
-use Cyantree\Grout\Set\ContentRenderers\ImageContentRenderer;
 use Cyantree\Grout\Tools\FileTools;
 use Cyantree\Grout\Tools\ImageTools;
 use Cyantree\Grout\Types\FileUpload;
@@ -65,22 +64,12 @@ class ImageContent extends Content
 
     public function getImagePath()
     {
-        if ($this->value) {
-            return $this->saveDirectory . $this->value . ($this->valueContainsExtension ? '' : '.' . $this->saveFormat);
-
-        } else {
-            return null;
-        }
+        return $this->getImagePathByValue($this->value);
     }
 
     public function getImageUrl()
     {
-        if ($this->value) {
-            return $this->saveDirectoryUrl . $this->value . ($this->valueContainsExtension ? '' : '.' . $this->saveFormat);
-
-        } else {
-            return null;
-        }
+        return $this->getImageUrlByValue($this->value);
     }
 
     public function populate($data, $files)
@@ -163,82 +152,118 @@ class ImageContent extends Content
         }
     }
 
-
     public function save()
     {
-        if ($this->image) {
-            $this->onProcessImage($this->image);
+        if (!$this->image) {
+            return;
+        }
 
-            $saveFilename = null;
-            $oldSaveFilename = $this->value;
+        $oldValue = $this->value;
+        $this->value = $this->generateValue();
 
-            if ($oldSaveFilename && !$this->valueContainsExtension) {
-                $oldSaveFilename .= '.' . $this->saveFormat;
-            }
+        $image = $this->processImage($this->image);
 
-            if ($this->saveFilename) {
-                $this->value = $saveFilename = $this->saveFilename;
+        $this->saveImage($image);
 
-            } elseif (!$this->saveFilename) {
-                $this->value = FileTools::createUniqueFilename($this->saveDirectory, '.' . $this->saveFormat, 32, true);
+        if ($oldValue != $this->value) {
+            $this->onImageChanged($oldValue);
+        }
 
-                if ($this->valueContainsExtension) {
-                    $saveFilename = $this->value = $this->value . '.' . $this->saveFormat;
-
-                } else {
-                    $saveFilename = $this->value . '.' . $this->saveFormat;
-                }
-            }
-
-            if ($this->resizeToWidth) {
-                $image = ImageTools::resizeImage(
-                    $this->image,
-                    $this->resizeToWidth,
-                    $this->resizeToHeight,
-                    false,
-                    $this->resizeImageToolsScaleMode,
-                    $this->resizeImageToolsBackground
-                );
-
-            } else {
-                $image = $this->image;
-            }
-
-            if ($oldSaveFilename && $oldSaveFilename != $saveFilename) {
-                unlink($this->saveDirectory . $oldSaveFilename);
-            }
-
-            if ($this->saveFormat == 'jpg') {
-                imagejpeg($image, $this->saveDirectory . $saveFilename, $this->saveQuality);
-
-            } elseif ($this->saveFormat == 'png') {
-                imagepng($image, $this->saveDirectory . $saveFilename);
-            }
-
-            $this->onImageProcessed($this->image);
-
-            if ($image != $this->image) {
-                imagedestroy($this->image);
-            }
+        if ($image != $this->image) {
             imagedestroy($image);
+        }
 
-            $this->uploadedFile->delete();
+        imagedestroy($this->image);
+
+        $this->uploadedFile->delete();
+    }
+
+    protected function getImagePathByValue($value)
+    {
+        if (!$value) {
+            return null;
+        }
+
+        if ($this->valueContainsExtension) {
+            return $this->saveDirectory . $value;
+
+        } else {
+            return $this->saveDirectory . $value . '.' . $this->saveFormat;
         }
     }
 
-    public function onProcessImage($image)
+    protected function getImageUrlByValue($value)
     {
+        if (!$value) {
+            return null;
+        }
 
+        if ($this->valueContainsExtension) {
+            return $this->saveDirectoryUrl . $value;
+
+        } else {
+            return $this->saveDirectoryUrl . $value . '.' . $this->saveFormat;
+        }
     }
 
-    public function onImageProcessed($image)
+    protected function generateValue()
     {
+        if ($this->saveFilename) {
+            return $this->saveFilename;
+
+        } else {
+            return FileTools::createUniqueFilename(
+                $this->saveDirectory,
+                '.' . $this->saveFormat,
+                32,
+                !$this->valueContainsExtension);
+        }
+    }
+
+    protected function saveImage($image)
+    {
+        $path = $this->getImagePathByValue($this->value);
+
+        if ($this->saveFormat == 'jpg') {
+            imagejpeg($image, $path, $this->saveQuality);
+
+        } elseif ($this->saveFormat == 'png') {
+            imagepng($image, $path);
+        }
+    }
+
+    protected function processImage($image)
+    {
+        if ($this->resizeToWidth) {
+            $newImage = ImageTools::resizeImage(
+                $image,
+                $this->resizeToWidth,
+                $this->resizeToHeight,
+                false,
+                $this->resizeImageToolsScaleMode,
+                $this->resizeImageToolsBackground
+            );
+
+            imagedestroy($image);
+
+            return $newImage;
+
+        } else {
+            return $image;
+        }
     }
 
     public function onDelete()
     {
         if ($this->value) {
-            unlink($this->saveDirectory . $this->value . ($this->valueContainsExtension ? '' : '.' . $this->saveFormat));
+            unlink($this->getImagePathByValue($this->value));
+        }
+    }
+
+    protected function onImageChanged($oldValue)
+    {
+        if ($oldValue && $oldValue != $this->value) {
+            unlink($this->getImagePathByValue($oldValue));
         }
     }
 }
