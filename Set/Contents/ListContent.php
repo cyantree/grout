@@ -28,9 +28,4 @@ class ListContent extends Content
             $this->postError('invalid');
         }
     }
-
-    protected function getDefaultRenderer()
-    {
-        return new ListContentRenderer();
-    }
 }

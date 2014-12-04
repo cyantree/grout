@@ -2,6 +2,7 @@
 namespace Cyantree\Grout\Set;
 
 use Cyantree\Grout\Filter\ArrayFilter;
+use Cyantree\Grout\Set\ContentRendererProvider\DefaultContentRendererProvider;
 use Cyantree\Grout\Status\StatusBag;
 
 abstract class Set
@@ -15,6 +16,7 @@ abstract class Set
 
     const FORMAT_HTML = 'html';
     const FORMAT_PLAIN = 'plain';
+    const FORMAT_SERIALIZABLE = 'serializable';
 
     public $allowList = true;
     public $allowShow = true;
@@ -41,6 +43,9 @@ abstract class Set
     public $context;
     public $format;
 
+    /** @var DefaultContentRendererProvider */
+    public $contentRenderers;
+
     public function __construct()
     {
         $this->config = new ArrayFilter(null, true);
@@ -52,6 +57,9 @@ abstract class Set
         $this->mode = $mode;
         $this->format = $format;
         $this->context = $context;
+
+        $this->contentRenderers = new DefaultContentRendererProvider();
+        $this->contentRenderers->set = $this;
 
         $this->setup();
     }

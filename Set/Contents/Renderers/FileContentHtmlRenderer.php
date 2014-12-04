@@ -1,5 +1,5 @@
 <?php
-namespace Cyantree\Grout\Set\ContentRenderers;
+namespace Cyantree\Grout\Set\Contents\Renderers;
 
 use Cyantree\Grout\Set\Content;
 use Cyantree\Grout\Set\ContentRenderer;
@@ -8,18 +8,16 @@ use Cyantree\Grout\Set\Contents\TextContent;
 use Cyantree\Grout\Set\Set;
 use Cyantree\Grout\Tools\StringTools;
 
-class FileContentRenderer extends ContentRenderer
+class FileContentHtmlRenderer extends ContentRenderer
 {
-    public function render(Content $content, $mode)
+    public function render(Content $content)
     {
         /** @var FileContent $content */
         $data = $content->getValue();
 
         $url = $content->getFileUrl();
 
-        if ($mode == Set::MODE_EXPORT) {
-            return $url ? $url : $data;
-        }
+        $mode = $content->set->mode;
 
         if ($content->editable && ($mode == Set::MODE_ADD || $mode == Set::MODE_EDIT)) {
             $c = '<input type="file" name="' . $content->name . '" />';

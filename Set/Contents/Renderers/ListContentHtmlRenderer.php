@@ -1,5 +1,5 @@
 <?php
-namespace Cyantree\Grout\Set\ContentRenderers;
+namespace Cyantree\Grout\Set\Contents\Renderers;
 
 use Cyantree\Grout\Set\Content;
 use Cyantree\Grout\Set\ContentRenderer;
@@ -9,20 +9,14 @@ use Cyantree\Grout\Tools\StringTools;
 
 class ListContentRenderer extends ContentRenderer
 {
-    public function render(Content $content, $mode)
+    public function render(Content $content)
     {
         /** @var ListContent $content */
         $data = $content->getValue();
 
-        if ($mode == Set::MODE_EXPORT) {
-            return $content->options[$data];
-        }
+        $mode = $content->set->mode;
 
-        if ($mode == Set::MODE_SHOW || $mode == Set::MODE_DELETE || $mode == Set::MODE_LIST || !$content->editable) {
-            return '<p>' . StringTools::escapeHtml($content->options[$data]) . '</p>';
-
-        } elseif ($mode == Set::MODE_EDIT || $mode == Set::MODE_ADD) {
-
+        if ($content->editable && ($mode == Set::MODE_EDIT || $mode == Set::MODE_ADD)) {
             $c = '<select name="' . $content->name . '">';
 
             $data = strval($data);
@@ -34,8 +28,9 @@ class ListContentRenderer extends ContentRenderer
 
             $c .= '</select>';
             return $c;
-        }
 
-        return $content->options[$data];
+        } else {
+            return '<p>' . StringTools::escapeHtml($content->options[$data]) . '</p>';
+        }
     }
 }

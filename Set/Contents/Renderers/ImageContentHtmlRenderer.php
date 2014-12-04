@@ -1,5 +1,5 @@
 <?php
-namespace Cyantree\Grout\Set\ContentRenderers;
+namespace Cyantree\Grout\Set\Contents\Renderers;
 
 use Cyantree\Grout\Set\Content;
 use Cyantree\Grout\Set\ContentRenderer;
@@ -9,38 +9,16 @@ use Cyantree\Grout\Set\Set;
 use Cyantree\Grout\Tools\ArrayTools;
 use Cyantree\Grout\Tools\StringTools;
 
-class ImageContentRenderer extends ContentRenderer
+class ImageContentHtmlRenderer extends ImageContentRenderer
 {
-    /** @var ImageContentRendererSettings */
-    public $settings;
-
-    public function __construct(ImageContentRendererSettings $settings = null)
-    {
-        $this->settings = $settings ? $settings : new ImageContentRendererSettings();
-    }
-
-
-    public function render(Content $content, $mode)
+    public function render(Content $content)
     {
         /** @var ImageContent $content */
         $data = $content->getValue();
 
         $url = $content->getImageUrl();
 
-        if ($mode == Set::MODE_EXPORT) {
-            if ($this->settings->exportData == ImageContentRendererSettings::EXPORT_URL) {
-                return $url;
-
-            } elseif ($this->settings->exportData == ImageContentRendererSettings::EXPORT_PATH) {
-                return $content->getImagePath();
-
-            } elseif ($this->settings->exportData == ImageContentRendererSettings::EXPORT_VALUE) {
-                return $data;
-
-            } else {
-                return null;
-            }
-        }
+        $mode = $content->set->mode;
 
         if ($content->editable && ($mode == Set::MODE_ADD || $mode == Set::MODE_EDIT)) {
             $c = '<input type="file" name="' . $content->name . '" />';

@@ -40,10 +40,6 @@ abstract class Content
     /** @var ContentRenderer */
     public $renderer;
 
-    protected $mode;
-    protected $format;
-    protected $context;
-
     protected $value;
 
     public function __construct()
@@ -51,13 +47,8 @@ abstract class Content
         $this->config = new ArrayFilter();
     }
 
-    final public function init($mode, $format, $context = null)
+    public function init()
     {
-        $this->mode = $mode;
-        $this->format = $format;
-        $this->context = $context;
-
-        $this->onInit();
     }
 
     protected function getErrorMessage($code)
@@ -116,12 +107,10 @@ abstract class Content
         return '';
     }
 
-    protected function onInit()
+    protected function getRenderer()
     {
-
+        return $this->set->contentRenderers->getContentRenderer(get_class($this));
     }
-
-    abstract protected function getDefaultRenderer();
 
     public function setValue($data)
     {
@@ -144,10 +133,14 @@ abstract class Content
     public function render()
     {
         if ($this->renderer === null) {
-            $this->renderer = $this->getDefaultRenderer();
+            $this->renderer = $this->getRenderer();
         }
 
-        return $this->renderer->render($this, $this->mode);
+        if (!$this->renderer) {
+            throw new \Exception('No renderer found for content ' . get_class($this));
+        }
+
+        return $this->renderer->render($this);
     }
 
     /**

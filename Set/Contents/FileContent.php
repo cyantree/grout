@@ -91,9 +91,4 @@ class FileContent extends Content
             unlink($this->saveDirectory . $this->value);
         }
     }
-
-    protected function getDefaultRenderer()
-    {
-        return new FileContentRenderer();
-    }
 }

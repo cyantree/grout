@@ -24,9 +24,4 @@ class InternalContent extends Content
     {
         return $this->content;
     }
-
-    protected function getDefaultRenderer()
-    {
-        return new InternalContentRenderer();
-    }
 }

@@ -50,9 +50,4 @@ class CheckboxContent extends Content
             $this->postError('notSelected');
         }
     }
-
-    protected function getDefaultRenderer()
-    {
-        return new CheckboxContentRenderer();
-    }
 }

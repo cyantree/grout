@@ -241,9 +241,4 @@ class ImageContent extends Content
             unlink($this->saveDirectory . $this->value . ($this->valueContainsExtension ? '' : '.' . $this->saveFormat));
         }
     }
-
-    protected function getDefaultRenderer()
-    {
-        return new ImageContentRenderer();
-    }
 }

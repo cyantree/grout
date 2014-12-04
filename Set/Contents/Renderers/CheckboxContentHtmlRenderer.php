@@ -1,5 +1,5 @@
 <?php
-namespace Cyantree\Grout\Set\ContentRenderers;
+namespace Cyantree\Grout\Set\Contents\Renderers;
 
 use Cyantree\Grout\Set\Content;
 use Cyantree\Grout\Set\ContentRenderer;
@@ -8,13 +8,14 @@ use Cyantree\Grout\Set\Contents\TextContent;
 use Cyantree\Grout\Set\Set;
 use Cyantree\Grout\Tools\StringTools;
 
-class CheckboxContentRenderer extends ContentRenderer
+class CheckboxContentHtmlRenderer extends ContentRenderer
 {
-    public function render(Content $content, $mode)
+    public function render(Content $content)
     {
         /** @var CheckboxContent $content */
         
         $isChecked = $content->getValue();
+        $mode = $content->set->mode;
 
         if ($mode == Set::MODE_SHOW
                 || $mode == Set::MODE_LIST

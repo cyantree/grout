@@ -1,5 +1,5 @@
 <?php
-namespace Cyantree\Grout\Set\ContentRenderers;
+namespace Cyantree\Grout\Set\Contents\Renderers;
 
 use Cyantree\Grout\Set\Content;
 use Cyantree\Grout\Set\ContentRenderer;
@@ -12,8 +12,8 @@ class FunctionContentRenderer extends ContentRenderer
         $this->callback = $callback;
     }
 
-    public function render(Content $content, $mode)
+    public function render(Content $content)
     {
-        return call_user_func($this->callback, $content, $mode);
+        return call_user_func($this->callback, $content);
     }
 }

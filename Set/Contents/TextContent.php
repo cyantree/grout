@@ -37,12 +37,6 @@ class TextContent extends Content
         return $errors->get($code);
     }
 
-    protected function getDefaultRenderer()
-    {
-        return new TextContentRenderer();
-    }
-
-
     public function getValue()
     {
         return $this->value === null ? '' : $this->value;

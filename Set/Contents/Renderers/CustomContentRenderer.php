@@ -1,5 +1,5 @@
 <?php
-namespace Cyantree\Grout\Set\ContentRenderers;
+namespace Cyantree\Grout\Set\Contents\Renderers;
 
 use Cyantree\Grout\Set\Content;
 use Cyantree\Grout\Set\ContentRenderer;
@@ -9,15 +9,15 @@ use Cyantree\Grout\Tools\StringTools;
 
 class CustomContentRenderer extends ContentRenderer
 {
-    public function render(Content $content, $mode)
+    public function render(Content $content)
     {
         /** @var CustomContent $content */
 
-        if ($mode == Set::MODE_EXPORT || !$content->escapeContent) {
-            return $content->content;
+        if ($content->set->format == Set::FORMAT_HTML && $content->escapeContent) {
+            return StringTools::escapeHtml($content->content);
 
         } else {
-            return StringTools::escapeHtml($content->content);
+            return $content->content;
         }
     }
 }

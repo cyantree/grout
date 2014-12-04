@@ -15,9 +15,4 @@ class DateTimeContent extends Content
     {
 
     }
-
-    protected function getDefaultRenderer()
-    {
-        return new DateTimeContentRenderer();
-    }
 }
