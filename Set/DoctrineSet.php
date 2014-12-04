@@ -196,7 +196,7 @@ abstract class DoctrineSet extends Set
 
                 } else {
                     $identifiers = $this->getEntityManager()
-                        ->getClassMetadata($this->getEntityClass())
+                        ->getMetadataFactory()->getMetadataFor($this->getEntityClass())
                         ->getIdentifierFieldNames();
                     $orderClause = 'e.' . $identifiers[0] . ' DESC';
                 }
