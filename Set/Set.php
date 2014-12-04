@@ -243,41 +243,6 @@ abstract class Set
         }
     }
 
-//    public function processData($data, $saveOnSuccess = true)
-//    {
-//        $data = new ArrayFilter($data);
-//        $errors = array();
-//
-//        foreach ($this->contents as $name => $content) {
-//            $content->populate($data, $name);
-//
-//            $r = $content->check();
-//            if ($r !== true) {
-//                $e = array();
-//                foreach ($r as $k => $v) {
-//                    $e[$k] = str_replace('%name%', $content->adminLabel, $v);
-//                }
-//                $errors[$name] = $e;
-//            }
-//        }
-//
-//        if (count($errors)) {
-//            return $errors;
-//        }
-//
-//        foreach ($this->contents as $name => $content) {
-//            $content->save();
-////            $this->_data[$name] = $content->getData();
-//        }
-//
-//        $this->collectData();
-//
-//        if ($saveOnSuccess) {
-//            $this->save();
-//        }
-//        return true;
-//    }
-
     protected function collectData()
     {
 
