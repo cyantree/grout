@@ -7,7 +7,7 @@ use Cyantree\Grout\Set\Contents\ListContent;
 use Cyantree\Grout\Set\Set;
 use Cyantree\Grout\Tools\StringTools;
 
-class ListContentRenderer extends ContentRenderer
+class ListContentHtmlRenderer extends ContentRenderer
 {
     public function render(Content $content)
     {
