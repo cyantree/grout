@@ -8,6 +8,10 @@ class DefaultContentRendererProvider extends ContentRendererProvider
 
     public function getContentRenderer($contentClass)
     {
+        if ($this->set->format === null) {
+            throw new \Exception('No format has been specified.');
+        }
+
         $formatClassName = ucfirst($this->set->format);
         $rendererClass = null;
 
