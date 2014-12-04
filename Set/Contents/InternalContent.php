@@ -12,7 +12,7 @@ class InternalContent extends Content
     {
         parent::__construct();
 
-        $this->config->set('visible', false);
+        $this->render = false;
     }
 
     public function setValue($data)
