@@ -1,7 +1,6 @@
 <?php
 namespace Cyantree\Grout\Set;
 
-use Cyantree\Grout\Database\Entity\Entity;
 use Cyantree\Grout\Filter\ArrayFilter;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Pagination\Paginator;

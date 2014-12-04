@@ -1,9 +1,7 @@
 <?php
 namespace Cyantree\Grout\Set;
 
-use Cyantree\Grout\App\App;
 use Cyantree\Grout\Filter\ArrayFilter;
-use Cyantree\Grout\Set\Set;
 use Cyantree\Grout\Tools\StringTools;
 
 abstract class FileSet extends Set
