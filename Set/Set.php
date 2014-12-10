@@ -48,7 +48,7 @@ abstract class Set
 
     public function __construct()
     {
-        $this->config = new ArrayFilter(null, true);
+        $this->config = new ArrayFilter();
         $this->status = new StatusBag();
     }
 
