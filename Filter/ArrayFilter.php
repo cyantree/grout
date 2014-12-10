@@ -3,18 +3,17 @@ namespace Cyantree\Grout\Filter;
 
 class ArrayFilter
 {
+    /** @var array */
     public $data;
 
-    public $storeAsObject = false;
-
-    public static function filter($value, $storeAsObject = false)
+    public static function filter($value)
     {
-        return new ArrayFilter($value, $storeAsObject);
+        return new ArrayFilter($value);
     }
 
-    public function __construct($data = null, $storeAsObject = false)
+    public function __construct($data = null)
     {
-        $this->storeAsObject = $storeAsObject;
+        $this->data = $data;
         $this->setData($data);
     }
 
@@ -61,34 +60,23 @@ class ArrayFilter
 
     public function asFilter($key)
     {
-        if ($this->has($key)) {
-            $data = $this->get($key);
-
-        } else {
-            $data = $this->storeAsObject ? new \stdClass() : array();
-//            $this->set($key, $data);
+        $data = $this->get($key);
+        if (!is_array($data)) {
+            $data = null;
         }
 
-        return new ArrayFilter($data, $this->storeAsObject);
+        return new ArrayFilter($data);
     }
 
     public function has($key)
     {
-        return $this->data !== null && (
-            ($this->storeAsObject && property_exists($this->data, $key)) ||
-            (!$this->storeAsObject && array_key_exists($key, $this->data))
-        );
+        return $this->data !== null && array_key_exists($key, $this->data);
     }
 
     public function getData()
     {
         if ($this->data === null) {
-            if ($this->storeAsObject) {
-                return new \stdClass();
-
-            } else {
-                return array();
-            }
+            return array();
         }
 
         return $this->data;
@@ -96,23 +84,6 @@ class ArrayFilter
 
     public function setData($data)
     {
-        if ($this->storeAsObject) {
-            if ($data === null) {
-                $data = new \stdClass();
-
-            } elseif (is_array($data)) {
-                $data = json_decode(json_encode($data)); // TODO: Doesn't work if data is non associative array [1, 2, 3]
-            }
-
-        } else {
-            if ($data === null) {
-                $data = array();
-
-            } elseif (is_object($data)) {
-                $data = json_decode(json_encode($data), true);
-            }
-        }
-
         $this->data = $data;
     }
 
@@ -122,10 +93,7 @@ class ArrayFilter
             return $defaultValue;
         }
 
-        if ($this->storeAsObject && property_exists($this->data, $key)) {
-            return $this->data->{$key};
-
-        } elseif (!$this->storeAsObject && array_key_exists($key, $this->data)) {
+        if (array_key_exists($key, $this->data)) {
             return $this->data[$key];
         }
 
@@ -139,33 +107,28 @@ class ArrayFilter
             return null;
         }
 
-        if ($this->storeAsObject && property_exists($this->data, $key)) {
-            return $this->data->{$key};
-
-        } elseif (!$this->storeAsObject && array_key_exists($key, $this->data)) {
-            return $this->data[$key];
-
-        } else {
+        if (!array_key_exists($key, $this->data)) {
             trigger_error('Key ' . $key . ' not found in data');
             return null;
         }
+
+        return $this->data[$key];
     }
 
     public function set($key, $value)
     {
-        if ($this->storeAsObject) {
-            $this->data->{$key} = $value;
-
-        } else {
-            $this->data[$key] = $value;
+        if ($this->data === null) {
+            $this->data = array();
         }
+
+        $this->data[$key] = $value;
 
         return $this;
     }
 
     public function setAsFilter($key, $value)
     {
-        return $this->set($key, ArrayFilter::filter($value, $this->storeAsObject)->getData());
+        return $this->set($key, ArrayFilter::filter($value)->getData());
     }
 
     public function delete($key)
@@ -174,16 +137,11 @@ class ArrayFilter
             return;
         }
 
-        if (!is_array($key)) {
-            $key = array($key);
-        }
-
-        foreach ($key as $k) {
-            if ($this->storeAsObject && property_exists($this->data, $k)) {
-                unset($this->data->$k);
-
-            } elseif (!$this->storeAsObject && array_key_exists($k, $this->data)) {
-                unset($this->data[$k]);
+        if (is_array($key)) {
+            foreach ($key as $k) {
+                if (array_key_exists($k, $this->data)) {
+                    unset($this->data[$k]);
+                }
             }
         }
     }
