@@ -16,11 +16,6 @@ class CheckboxContent extends Content
     public $valueChecked = true;
     public $valueNotChecked = false;
 
-    public function populate($data, $files)
-    {
-        $this->setValue($data->get($this->name));
-    }
-
     protected function getDefaultErrorMessage($code)
     {
         static $errors = null;

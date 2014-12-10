@@ -74,7 +74,9 @@ class ImageContent extends Content
 
     public function populate($data, $files)
     {
-        $this->uploadedFile = $files->get($this->name);
+        if ($files->has($this->name)) {
+            $this->uploadedFile = $files->get($this->name);
+        }
     }
 
     public function check()

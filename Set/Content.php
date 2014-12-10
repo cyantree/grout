@@ -149,7 +149,9 @@ abstract class Content
      */
     public function populate($data, $files)
     {
-        $this->value = $data->get($this->name);
+        if ($data->has($this->name)) {
+            $this->setValue($data->get($this->name));
+        }
     }
 
     public function check()
