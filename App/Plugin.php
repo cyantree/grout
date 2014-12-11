@@ -101,4 +101,9 @@ class Plugin
     {
         return $this->module->hasRoute($route);
     }
+
+    public function generateContextString($uri)
+    {
+        return ':' . $this->id . ':' . $uri;
+    }
 }
