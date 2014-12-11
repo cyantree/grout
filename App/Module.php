@@ -294,4 +294,9 @@ class Module
 
         return $this->addNamedRoute('GroutError' . $codeDigit, $url, $page, $f->getData(), $priority, $activated);
     }
+
+    public function generateContextString($uri)
+    {
+        return $this->id . '::' . $uri;
+    }
 }
