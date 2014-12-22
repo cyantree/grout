@@ -39,6 +39,16 @@ class CheckboxContent extends Content
         $this->value = $data === $this->valueChecked || strval($data) === strval($this->valueChecked);
     }
 
+    public function populate($data, $files)
+    {
+        /*
+         * TODO
+         * Overridden. Doesn't use has() because property doesn't get transfered at all
+         * when not checking a checkbox in a html form. Maybe this could be configured later.
+         */
+        $this->setValue($data->get($this->name));
+    }
+
     public function check()
     {
         if ($this->required && !$this->value) {
