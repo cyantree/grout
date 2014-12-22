@@ -22,6 +22,10 @@ class TextContentHtmlRenderer extends ContentRenderer
 
         $additionalAttributes = '';
 
+        if ($content->maxLength) {
+            $additionalAttributes .= ' maxlength="'. $content->maxLength . '"';
+        }
+
         $attributes = $content->config->get('attributes');
         if ($attributes) {
             foreach ($attributes as $key => $value) {
