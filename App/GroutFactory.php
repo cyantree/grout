@@ -1,6 +1,7 @@
 <?php
 namespace Cyantree\Grout\App;
 
+use Cyantree\Grout\Event\Event;
 use Cyantree\Grout\Event\Events;
 use Cyantree\Grout\Filter\ArrayFilter;
 use Cyantree\Grout\Tools\ArrayTools;
@@ -28,6 +29,14 @@ class GroutFactory
     private $toolClasses = array();
 
     private $class;
+
+    public static function get(App $app = null)
+    {
+        /** @var GroutFactory $factory */
+        $factory = GroutFactory::getFactory($app, __CLASS__);
+
+        return $factory;
+    }
 
     public static function getFactory($app, $factoryClass, $factoryContext = null, $activeModuleTypeOrInstance = null)
     {
@@ -100,6 +109,12 @@ class GroutFactory
         return $class::get($this->app);
     }
 
+    /** @return GroutFactory */
+    protected function getRootFactory()
+    {
+        return GroutFactory::get($this->app);
+    }
+
     protected function retrieveTool($name, $checkParentFactories = false)
     {
         $tool = $this->tools->get($name);
@@ -166,5 +181,21 @@ class GroutFactory
     public function setTool($name, $tool)
     {
         $this->tools->set($name, $tool);
+    }
+
+    public function linkTools($tools, GroutFactory $providerFactory)
+    {
+        if (!is_array($tools)) {
+            $tools = array($tools);
+        }
+
+        foreach ($tools as $tool) {
+            $this->events->join($tool, function(Event $e, GroutFactory $providerFactory)
+            {
+                if (!$e->data) {
+                    $e->data = $providerFactory->getTool($e->type);
+                }
+            }, $providerFactory);
+        }
     }
 }
