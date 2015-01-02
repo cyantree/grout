@@ -6,6 +6,7 @@ use Cyantree\Grout\Tools\MailTools;
 class Mail
 {
     public static $defaultFrom;
+    public static $headerLineFeed = "\r\n";
 
     public $subject;
     public $text;
@@ -34,41 +35,41 @@ class Mail
 
     public function send()
     {
-        $lineFeed = "\r\n";
+        $headerLineFeed = self::$headerLineFeed;
 
         if (!$this->from) {
             $this->from = self::$defaultFrom;
         }
 
         // Encode sender
-        $headers = 'From: ' . implode(",\r\n ", $this->encodeAddresses($this->from));
+        $headers = 'From: ' . implode(",{$headerLineFeed} ", $this->encodeAddresses($this->from));
 
         // Encode recipients
         $recipients = $this->encodeAddresses($this->recipients);
 
         // Process CC
         if ($this->recipientsCc) {
-            $headers .= $lineFeed . 'CC: ' . implode(",\r\n ", $this->encodeAddresses($this->recipientsCc));
+            $headers .= $headerLineFeed . 'CC: ' . implode(",{$headerLineFeed} ", $this->encodeAddresses($this->recipientsCc));
         }
 
         // Process BCC
         if ($this->recipientsBcc) {
-            $headers .= $lineFeed . 'BCC: ' . implode(",\r\n ", $this->encodeAddresses($this->recipientsBcc));
+            $headers .= $headerLineFeed . 'BCC: ' . implode(",{$headerLineFeed} ", $this->encodeAddresses($this->recipientsBcc));
         }
 
         // Process Reply-To
         if ($this->replyTo) {
-            $headers .= $lineFeed . 'Reply-To: ' . implode(",\r\n ", $this->encodeAddresses($this->replyTo));
+            $headers .= $headerLineFeed . 'Reply-To: ' . implode(",{$headerLineFeed} ", $this->encodeAddresses($this->replyTo));
         }
 
         // Process additional headers
         if (is_array($headers)) {
             foreach ($headers as $name => $value) {
                 if (is_string($name)) {
-                    $headers .= $lineFeed . $name . ': ' . $value;
+                    $headers .= $headerLineFeed . $name . ': ' . $value;
 
                 } else {
-                    $headers .= $lineFeed . $value;
+                    $headers .= $headerLineFeed . $value;
                 }
             }
         }
@@ -76,7 +77,7 @@ class Mail
         // Encode subject
         $subject = MailTools::encodeString($this->subject);
 
-        $headers .= $lineFeed . 'MIME-Version: 1.0';
+        $headers .= $headerLineFeed . 'MIME-Version: 1.0';
 
         // Create body
         if ($this->htmlText !== null && $this->htmlText !== '') {
@@ -84,22 +85,22 @@ class Mail
 
             $boundary = 'bd_' . md5(mt_rand() . time());
 
-            $headers .= $lineFeed . 'Content-Type: multipart/alternative;' . $lineFeed . "\t" . 'boundary="' . $boundary . '"';
+            $headers .= $headerLineFeed . 'Content-Type: multipart/alternative;' . $headerLineFeed . "\t" . 'boundary="' . $boundary . '"';
 
-            $body .= $lineFeed . $lineFeed . "--{$boundary}" . $lineFeed;
-            $body .= 'Content-Type: text/plain; charset=utf-8' . $lineFeed;
-            $body .= 'Content-Transfer-Encoding: quoted-printable' . $lineFeed . $lineFeed;
+            $body .= $headerLineFeed . $headerLineFeed . "--{$boundary}" . $headerLineFeed;
+            $body .= 'Content-Type: text/plain; charset=utf-8' . $headerLineFeed;
+            $body .= 'Content-Transfer-Encoding: quoted-printable' . $headerLineFeed . $headerLineFeed;
             $body .= quoted_printable_encode(str_replace(array("\r\n", "\n"), array("\n", "\r\n"), $this->text));
 
-            $body .= $lineFeed . $lineFeed . "--{$boundary}" . $lineFeed;
-            $body .= 'Content-Type: text/html; charset=utf-8' . $lineFeed;
-            $body .= 'Content-Transfer-Encoding: quoted-printable' . $lineFeed . $lineFeed;
+            $body .= $headerLineFeed . $headerLineFeed . "--{$boundary}" . $headerLineFeed;
+            $body .= 'Content-Type: text/html; charset=utf-8' . $headerLineFeed;
+            $body .= 'Content-Transfer-Encoding: quoted-printable' . $headerLineFeed . $headerLineFeed;
             $body .= quoted_printable_encode(str_replace(array("\r\n", "\n"), array("\n", "\r\n"), $this->htmlText));
-            $body .= $lineFeed . $lineFeed . "--{$boundary}--" . $lineFeed . $lineFeed . $lineFeed;
+            $body .= $headerLineFeed . $headerLineFeed . "--{$boundary}--" . $headerLineFeed . $headerLineFeed . $headerLineFeed;
 
         } else {
-            $headers .= $lineFeed . 'Content-Type: text/plain; charset=utf-8' .
-                  $lineFeed . 'Content-Transfer-Encoding: quoted-printable';
+            $headers .= $headerLineFeed . 'Content-Type: text/plain; charset=utf-8' .
+                    $headerLineFeed . 'Content-Transfer-Encoding: quoted-printable';
             $body = quoted_printable_encode(str_replace(array("\r\n", "\n"), array("\n", "\r\n"), $this->text));
         }
 
@@ -110,7 +111,7 @@ class Mail
             $additionalParameters = null;
         }
 
-        mail(implode(",\r\n ", $recipients), $subject, $body, $headers, $additionalParameters);
+        mail(implode(",{$headerLineFeed} ", $recipients), $subject, $body, $headers, $additionalParameters);
     }
 
     private function encodeAddresses($addresses)
