@@ -7,6 +7,7 @@ class Mail
 {
     public static $defaultFrom;
     public static $headerLineFeed = "\r\n";
+    public static $bodyLineFeed = "\r\n";
 
     public $subject;
     public $text;
@@ -90,18 +91,18 @@ class Mail
             $body .= $headerLineFeed . $headerLineFeed . "--{$boundary}" . $headerLineFeed;
             $body .= 'Content-Type: text/plain; charset=utf-8' . $headerLineFeed;
             $body .= 'Content-Transfer-Encoding: quoted-printable' . $headerLineFeed . $headerLineFeed;
-            $body .= quoted_printable_encode(str_replace(array("\r\n", "\n"), array("\n", "\r\n"), $this->text));
+            $body .= $this->encodeText($this->text);
 
             $body .= $headerLineFeed . $headerLineFeed . "--{$boundary}" . $headerLineFeed;
             $body .= 'Content-Type: text/html; charset=utf-8' . $headerLineFeed;
             $body .= 'Content-Transfer-Encoding: quoted-printable' . $headerLineFeed . $headerLineFeed;
-            $body .= quoted_printable_encode(str_replace(array("\r\n", "\n"), array("\n", "\r\n"), $this->htmlText));
+            $body .= $this->encodeText($this->htmlText);
             $body .= $headerLineFeed . $headerLineFeed . "--{$boundary}--" . $headerLineFeed . $headerLineFeed . $headerLineFeed;
 
         } else {
             $headers .= $headerLineFeed . 'Content-Type: text/plain; charset=utf-8' .
                     $headerLineFeed . 'Content-Transfer-Encoding: quoted-printable';
-            $body = quoted_printable_encode(str_replace(array("\r\n", "\n"), array("\n", "\r\n"), $this->text));
+            $body = $this->encodeText($this->text);
         }
 
         if ($this->returnPath) {
@@ -112,6 +113,19 @@ class Mail
         }
 
         mail(implode(",{$headerLineFeed} ", $recipients), $subject, $body, $headers, $additionalParameters);
+    }
+
+    private function encodeText($text)
+    {
+        if (self::$bodyLineFeed !== null) {
+            $text = str_replace("\r", "", $text);
+
+            if (self::$bodyLineFeed !== "\n") {
+                $text = str_replace("\n", self::$bodyLineFeed, $text);
+            }
+        }
+
+        return quoted_printable_encode($text);
     }
 
     private function encodeAddresses($addresses)
