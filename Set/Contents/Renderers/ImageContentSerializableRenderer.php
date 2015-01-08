@@ -2,10 +2,11 @@
 namespace Cyantree\Grout\Set\Contents\Renderers;
 
 use Cyantree\Grout\Set\Content;
+use Cyantree\Grout\Set\ContentRenderer;
 use Cyantree\Grout\Set\ContentRendererSettings\ImageContentRendererSettings;
 use Cyantree\Grout\Set\Contents\ImageContent;
 
-class ImageContentSerializableRenderer extends ImageContentRenderer
+class ImageContentSerializableRenderer extends ContentRenderer
 {
     public function render(Content $content)
     {
@@ -14,13 +15,13 @@ class ImageContentSerializableRenderer extends ImageContentRenderer
 
         $url = $content->getImageUrl();
 
-        if ($this->settings->exportData == ImageContentRendererSettings::EXPORT_URL) {
+        if ($content->rendererSettings->exportData == ImageContentRendererSettings::EXPORT_URL) {
             return $url;
 
-        } elseif ($this->settings->exportData == ImageContentRendererSettings::EXPORT_PATH) {
+        } elseif ($content->rendererSettings->exportData == ImageContentRendererSettings::EXPORT_PATH) {
             return $content->getImagePath();
 
-        } elseif ($this->settings->exportData == ImageContentRendererSettings::EXPORT_VALUE) {
+        } elseif ($content->rendererSettings->exportData == ImageContentRendererSettings::EXPORT_VALUE) {
             return $data;
 
         } else {

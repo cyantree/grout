@@ -3,13 +3,12 @@ namespace Cyantree\Grout\Set\Contents\Renderers;
 
 use Cyantree\Grout\Set\Content;
 use Cyantree\Grout\Set\ContentRenderer;
-use Cyantree\Grout\Set\ContentRendererSettings\ImageContentRendererSettings;
 use Cyantree\Grout\Set\Contents\ImageContent;
 use Cyantree\Grout\Set\Set;
 use Cyantree\Grout\Tools\ArrayTools;
 use Cyantree\Grout\Tools\StringTools;
 
-class ImageContentHtmlRenderer extends ImageContentRenderer
+class ImageContentHtmlRenderer extends ContentRenderer
 {
     public function render(Content $content)
     {
@@ -33,9 +32,9 @@ class ImageContentHtmlRenderer extends ImageContentRenderer
             }
 
             if ($url) {
-                $width = ArrayTools::get($this->settings->displayWidths, $mode);
+                $width = ArrayTools::get($content->rendererSettings->displayWidths, $mode);
                 if ($width == '') {
-                    $width = ArrayTools::get($this->settings->displayWidths, 'default');
+                    $width = ArrayTools::get($content->rendererSettings->displayWidths, 'default');
                 }
 
                 if ($width != '') {

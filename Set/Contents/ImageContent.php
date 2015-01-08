@@ -3,6 +3,7 @@ namespace Cyantree\Grout\Set\Contents;
 
 use Cyantree\Grout\Filter\ArrayFilter;
 use Cyantree\Grout\Set\Content;
+use Cyantree\Grout\Set\ContentRendererSettings\ImageContentRendererSettings;
 use Cyantree\Grout\Tools\FileTools;
 use Cyantree\Grout\Tools\ImageTools;
 use Cyantree\Grout\Types\FileUpload;
@@ -34,10 +35,21 @@ class ImageContent extends Content
 
     public $valueContainsExtension = true;
 
+    /** @var ImageContentRendererSettings */
+    public $rendererSettings;
+
     /** @var FileUpload */
     public $uploadedFile;
 
     protected $image;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->rendererSettings = new ImageContentRendererSettings();
+    }
+
 
     protected function getDefaultErrorMessage($code)
     {
@@ -163,16 +175,12 @@ class ImageContent extends Content
         $oldValue = $this->value;
         $this->value = $this->generateValue();
 
-        $image = $this->processImage($this->image);
+        $this->image = $this->processImage($this->image);
 
-        $this->saveImage($image);
+        $this->saveImage();
 
         if ($oldValue != $this->value) {
             $this->onImageChanged($oldValue);
-        }
-
-        if ($image != $this->image) {
-            imagedestroy($image);
         }
 
         imagedestroy($this->image);
@@ -214,23 +222,29 @@ class ImageContent extends Content
             return $this->saveFilename;
 
         } else {
-            return FileTools::createUniqueFilename(
+            $value = FileTools::createUniqueFilename(
                 $this->saveDirectory,
                 '.' . $this->saveFormat,
                 32,
-                !$this->valueContainsExtension);
+                true);
+
+            if ($this->valueContainsExtension) {
+                $value .= '.' . $this->saveFormat;
+            }
+
+            return $value;
         }
     }
 
-    protected function saveImage($image)
+    protected function saveImage()
     {
         $path = $this->getImagePathByValue($this->value);
 
         if ($this->saveFormat == 'jpg') {
-            imagejpeg($image, $path, $this->saveQuality);
+            imagejpeg($this->image, $path, $this->saveQuality);
 
         } elseif ($this->saveFormat == 'png') {
-            imagepng($image, $path);
+            imagepng($this->image, $path);
         }
     }
 
