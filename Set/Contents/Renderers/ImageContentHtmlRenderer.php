@@ -32,17 +32,25 @@ class ImageContentHtmlRenderer extends ContentRenderer
             }
 
             if ($url) {
-                $width = ArrayTools::get($content->rendererSettings->displayWidths, $mode);
-                if ($width == '') {
-                    $width = ArrayTools::get($content->rendererSettings->displayWidths, 'default');
+                $maxDisplayWidth = $content->rendererSettings->maxDisplayWidth;
+                $maxDisplayHeight = $content->rendererSettings->maxDisplayHeight;
+
+                $styles = array();
+                if ($maxDisplayWidth) {
+                    $styles[] = 'max-width:' . $maxDisplayWidth . 'px';
                 }
 
-                if ($width != '') {
-                    $width = ' width="' . $width . '"';
+                if ($maxDisplayHeight) {
+                    $styles[] = 'max-height:' . $maxDisplayHeight . 'px';
                 }
 
-                $c .= '<img id="' . $content->name . '_preview" src="' .
-                        StringTools::escapeHtml($url) . '"' . $width . ' alt="" />';
+                $attributes = '';
+
+                if ($styles) {
+                    $attributes .= ' style="' . implode(';', $styles) . '"';
+                }
+
+                $c .= "<img src=\"{$url}\"{$attributes} />";
 
             } else {
                 $c .= StringTools::escapeHtml($data);
