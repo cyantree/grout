@@ -10,7 +10,7 @@ class TextContent extends Content
 {
     public $multiline = false;
 
-    public $type;
+    public $type = self::TYPE_TEXT;
     public $password = false;
     public $minLength = 0;
     public $maxLength = 0;
@@ -18,6 +18,8 @@ class TextContent extends Content
 
     const TYPE_URL = 'url';
     const TYPE_EMAIL = 'email';
+    const TYPE_TEXT = 'text';
+    const TYPE_HTML = 'html';
 
     protected function getDefaultErrorMessage($code)
     {
@@ -71,6 +73,7 @@ class TextContent extends Content
             if ($this->minLength && $l < $this->minLength) {
                 $code = 'minLength';
                 $length = $this->minLength;
+
             } elseif ($this->maxLength && $l > $this->maxLength) {
                 $code = 'maxLength';
                 $length = $this->maxLength;

@@ -17,7 +17,12 @@ class TextContentHtmlRenderer extends ContentRenderer
         $mode = $content->set->mode;
 
         if ($mode == Set::MODE_SHOW || $mode == Set::MODE_DELETE || $mode == Set::MODE_LIST || !$content->editable) {
-            return '<p>' . StringTools::escapeHtml($data) . '</p>';
+            if ($content->type == TextContent::TYPE_HTML) {
+                return $data;
+
+            } else {
+                return StringTools::escapeHtml($data);
+            }
         }
 
         $additionalAttributes = '';
