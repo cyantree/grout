@@ -526,6 +526,9 @@ class App
         if ($this->currentTask) {
             /** @var $response Response */
             $this->currentTask->page->parseError(ResponseCode::CODE_500, $reason);
+
+        } else {
+            // TODO: Happens when parsing error occurred. Should be possible to show error page
         }
 
 
