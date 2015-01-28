@@ -30,8 +30,8 @@ class FileContent extends Content
 
         if ($errors === null) {
             $errors = new ArrayFilter(array(
-                    'notSelected' => _('Im Feld „%name%“ wurde keine Datei ausgewählt.'),
-                    'invalidFilesize' => _('Die Datei „%name%“ darf nicht größer als %size% MB sein.')
+                    'required' => _('Im Feld „%name%“ wurde keine Datei ausgewählt.'),
+                    'filesize' => _('Die Datei „%name%“ darf nicht größer als %size% MB sein.')
             ));
         }
 
@@ -40,6 +40,29 @@ class FileContent extends Content
 
     public function getFileUrl()
     {
+        return $this->getFileUrlByValue($this->value);
+    }
+
+    public function getFilePath()
+    {
+        return $this->getFilePathByValue($this->value);
+    }
+
+    public function getFilePathByValue($value)
+    {
+        if (!$value) {
+            return null;
+        }
+
+        return $this->saveDirectory . $value;
+    }
+
+    public function getFileUrlByValue($value)
+    {
+        if (!$value) {
+            return null;
+        }
+
         return $this->saveDirectoryUrl . $this->value;
     }
 
@@ -53,44 +76,90 @@ class FileContent extends Content
     public function check()
     {
         if (!$this->value && !$this->uploadedFile && $this->required) {
-            $this->postError('notSelected');
+            $this->postError('required');
             return;
         }
 
         if ($this->uploadedFile) {
             if ($this->maxFilesize && $this->uploadedFile->size > $this->maxFilesize) {
                 $filesize = round($this->maxFilesize / 1024 / 1024 * 10) / 10;
-                $this->postError('invalidFilesize', array('%size%' => $filesize));
+                $this->postError('filesize', array('%size%' => $filesize));
             }
         }
     }
 
     public function save()
     {
-        if ($this->value) {
-            unlink($this->saveDirectory . $this->value);
+        if (!$this->uploadedFile) {
+            return;
         }
 
+        $oldValue = $this->value;
+        $this->value = $this->generateValue();
+
+        $this->saveFile();
+
+        if ($this->value != $oldValue) {
+            $this->onValueChanged($oldValue);
+        }
+
+        $this->uploadedFile->delete();
+    }
+
+    protected function generateValue()
+    {
         if ($this->saveFilename) {
-            $this->value = $this->saveFilename;
+            return $this->saveFilename;
+
         } else {
             if ($this->keepExtension) {
-                $extension = explode('.', $this->uploadedFile->name);
-                $extension = '.' . strtolower(array_pop($extension));
+                $extension = pathinfo($this->uploadedFile->name, PATHINFO_EXTENSION);
+
+                if ($extension) {
+                    $extension = '.' . $extension;
+                }
+
             } else {
-                $extension = '.dat';
+                $extension = '';
             }
 
-            $this->value = FileTools::createUniqueFilename($this->saveDirectory, $extension, 32, true) . $extension;
-        }
+            $value = FileTools::createUniqueFilename(
+                    $this->saveDirectory,
+                    $extension,
+                    32,
+                    true);
 
-        $this->uploadedFile->move($this->saveDirectory . $this->value);
+            if ($this->keepExtension) {
+                $value .= $extension;
+            }
+
+            return $value;
+        }
+    }
+
+    protected function saveFile()
+    {
+        $path = $this->getFilePathByValue($this->value);
+
+        $this->uploadedFile->move($path);
+    }
+
+    protected function processFile()
+    {
+
     }
 
     public function onDelete()
     {
         if ($this->value) {
-            unlink($this->saveDirectory . $this->value);
+            unlink($this->getFilePathByValue($this->value));
+        }
+    }
+
+    protected function onValueChanged($oldValue)
+    {
+        if ($oldValue && $oldValue != $this->value) {
+            unlink($this->getFilePathByValue($oldValue));
         }
     }
 }
