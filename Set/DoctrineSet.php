@@ -113,6 +113,8 @@ abstract class DoctrineSet extends Set
         $offset = $options->get('offset', 0);
         $count = $options->get('count', 0);
 
+        // TODO: Simplify handling of custom order, search clauses.
+
         $parameters = array();
 
         // Create queries
@@ -144,6 +146,7 @@ abstract class DoctrineSet extends Set
         // Check for ordering
         $orderClause = '';
         if ($sortingField) {
+            // TODO: Can be simplified. ->getContentByName($sortingField)
             foreach ($this->contents as $content) {
                 if (!$content->enabled) {
                     continue;
@@ -222,6 +225,7 @@ abstract class DoctrineSet extends Set
         $result = new DoctrineSetListResult($this, $query);
 
         if ($options->get('getCount', true)) {
+            // TODO: Move to SetListResult and migrate to getCountAll()
             $p = new Paginator($query, true);
             $result->countAll = count($p);
         }
