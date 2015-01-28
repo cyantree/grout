@@ -43,7 +43,6 @@ abstract class DoctrineSet extends Set
 
     public function loadById($id)
     {
-        // TODO: Could be use listSets internally to allow better filtering and joins
         $e = $this->getEntityManager()->find($this->getEntityClass(), $id);
 
         if ($e) {
