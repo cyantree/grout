@@ -50,7 +50,6 @@ class ImageContent extends Content
         $this->rendererSettings = new ImageContentRendererSettings();
     }
 
-
     protected function getDefaultErrorMessage($code)
     {
         static $errors = null;
@@ -188,7 +187,7 @@ class ImageContent extends Content
         $this->uploadedFile->delete();
     }
 
-    protected function getImagePathByValue($value)
+    public function getImagePathByValue($value)
     {
         if (!$value) {
             return null;
@@ -202,7 +201,7 @@ class ImageContent extends Content
         }
     }
 
-    protected function getImageUrlByValue($value)
+    public function getImageUrlByValue($value)
     {
         if (!$value) {
             return null;
