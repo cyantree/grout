@@ -79,4 +79,9 @@ class TemplateGenerator
         $c->parse($file, $in);
         return $c;
     }
+
+    public function exists($name)
+    {
+        return is_file($this->decodeName($name));
+    }
 }

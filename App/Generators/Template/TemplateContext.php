@@ -62,6 +62,15 @@ class TemplateContext
         return $this->generator->load($name, $in, $baseTemplate);
     }
 
+    public function exists($name)
+    {
+        if (substr($name, 0, 2) == './') {
+            $name = $this->uriPath . substr($name, 2);
+        }
+
+        return $this->generator->exists($name);
+    }
+
     public function __toString()
     {
         return $this->content;
