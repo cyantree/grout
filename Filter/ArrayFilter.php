@@ -143,6 +143,11 @@ class ArrayFilter
                     unset($this->data[$k]);
                 }
             }
+
+        } else {
+            if (array_key_exists($key, $this->data)) {
+                unset($this->data[$key]);
+            }
         }
     }
 
