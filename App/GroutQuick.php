@@ -17,6 +17,11 @@ class GroutQuick extends Quick
         parent::__construct();
     }
 
+    public function eu($uri, $parameters = null, $absolute = true, $escapeContext = 'html')
+    {
+        return $this->e($this->u($uri, $parameters, $absolute), $escapeContext);
+    }
+
     public function er($uri, $arguments = null, $parameters = null, $escapeContext = 'html')
     {
         return $this->e($this->r($uri, $arguments, $parameters), $escapeContext);
@@ -27,7 +32,22 @@ class GroutQuick extends Quick
         return $this->e($this->a($uri, $parameters), $escapeContext);
     }
 
-    public function r($uri, $arguments = null, $parameters = null)
+    public function u($uri, $parameters = null, $absolute = true)
+    {
+        $context = AppTools::decodeContext($uri, $this->app, $this->app->currentTask->module, $this->app->currentTask->plugin);
+
+        if ($context->plugin) {
+            return $context->plugin->getUrl($context->uri, $absolute, $parameters);
+
+        } elseif ($context->module) {
+            return $context->module->getUrl($context->uri, $absolute, $parameters);
+
+        } else {
+            throw new \Exception('URL could not be resolved.');
+        }
+    }
+
+    public function r($uri, $arguments = null, $parameters = null, $absolute = true)
     {
         $context = AppTools::decodeContext($uri, $this->app, $this->app->currentTask->module, $this->app->currentTask->plugin);
 
