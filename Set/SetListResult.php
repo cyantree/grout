@@ -1,12 +1,9 @@
 <?php
 namespace Cyantree\Grout\Set;
 
-class SetListResult
+abstract class SetListResult
 {
     public $countAll;
 
-    public function getNext()
-    {
-        return null;
-    }
+    abstract public function getNext();
 }
