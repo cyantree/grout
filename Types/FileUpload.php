@@ -22,6 +22,10 @@ class FileUpload
 
     public function move($target, $copyIfNotUploaded = true)
     {
+        if (!is_file($this->file)) {
+            return false;
+        }
+
         if (is_uploaded_file($this->file)) {
             move_uploaded_file($this->file, $target);
 
@@ -33,13 +37,23 @@ class FileUpload
                 rename($this->file, $target);
             }
         }
+
+        return true;
     }
 
     public function delete($keepIfNotUploaded = true)
     {
+        if (!is_file($this->file)) {
+            return false;
+        }
+
         if (!$keepIfNotUploaded || is_uploaded_file($this->file)) {
             unlink($this->file);
+
+            return true;
         }
+
+        return false;
     }
 
     public static function fromPhpFileArray($data)
