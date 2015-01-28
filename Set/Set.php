@@ -258,9 +258,30 @@ abstract class Set
 
     }
 
-    public function getData()
+    public function getValues()
     {
-        return null;
+        $a = array();
+
+        foreach ($this->contents as $name => $content) {
+            if (!$content->enabled) {
+                continue;
+            }
+
+            $a[$name] = $content->getValue();
+        }
+
+        return $a;
+    }
+
+    public function setValues($values)
+    {
+        foreach ($this->contents as $name => $content) {
+            if (!$content->enabled) {
+                continue;
+            }
+
+            $content->setValue($values[$name]);
+        }
     }
 
     public function getValueByName($name)
