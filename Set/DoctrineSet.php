@@ -52,23 +52,6 @@ abstract class DoctrineSet extends Set
         return $e != null;
     }
 
-    public function getData()
-    {
-        $a = array();
-
-        foreach ($this->contents as $name => $content) {
-            if (!$content->enabled) {
-                continue;
-            }
-
-            if ($content->storeInSet) {
-                $a[$name] = $content->getValue();
-            }
-        }
-
-        return $a;
-    }
-
     /** @return DoctrineSetQueryData */
     protected function getListQueryData(ArrayFilter $options)
     {
