@@ -20,6 +20,7 @@ class DoctrineSetListResult extends SetListResult
         $this->reader->setQuery($query);
         $this->reader->clearEntitiesOnBatch = true;
     }
+
     public function getNext()
     {
         $entity = $this->reader->getNext();
