@@ -179,7 +179,7 @@ class ImageContent extends Content
         $this->saveImage();
 
         if ($oldValue != $this->value) {
-            $this->onImageChanged($oldValue);
+            $this->onValueChanged($oldValue);
         }
 
         imagedestroy($this->image);
@@ -275,7 +275,7 @@ class ImageContent extends Content
         }
     }
 
-    protected function onImageChanged($oldValue)
+    protected function onValueChanged($oldValue)
     {
         if ($oldValue && $oldValue != $this->value) {
             unlink($this->getImagePathByValue($oldValue));
