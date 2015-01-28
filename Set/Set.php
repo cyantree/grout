@@ -263,6 +263,16 @@ abstract class Set
         return null;
     }
 
+    public function getValueByName($name)
+    {
+        return $this->getContentByName($name)->getValue();
+    }
+
+    public function setValueByName($name, $value)
+    {
+        $this->getContentByName($name)->setValue($value);
+    }
+
     public function populate($rawData, $rawFiles = null)
     {
         $d = new ArrayFilter($rawData);
