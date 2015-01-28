@@ -487,6 +487,11 @@ class App
         return $path;
     }
 
+    public function getPublicAssetPath($path = '')
+    {
+        return $this->publicAssetPath . $path;
+    }
+
     public function getPublicAssetUrl($path = '', $absoluteURL = true, $parameters = null)
     {
         if ($parameters != null) {
