@@ -223,6 +223,7 @@ abstract class DoctrineSet extends Set
         }
 
         $result = new DoctrineSetListResult($this, $query);
+        $result->reader->clearEntitiesOnBatch = $this->mode == Set::MODE_EXPORT;
 
         if ($options->get('getCount', true)) {
             // TODO: Move to SetListResult and migrate to getCountAll()
