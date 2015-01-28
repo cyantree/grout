@@ -14,11 +14,11 @@ class DoctrineSetListResult extends SetListResult
 
     public function __construct(DoctrineSet $set, Query $query)
     {
+        parent::__construct($set);
+
         $this->reader = new DoctrineBatchReader();
         $this->reader->setQuery($query);
         $this->reader->clearEntitiesOnBatch = true;
-
-        $this->set = $set;
     }
     public function getNext()
     {
