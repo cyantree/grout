@@ -32,4 +32,20 @@ class DoctrineSetListResult extends SetListResult
 
         return $this->set;
     }
+
+    public function getNextEntity()
+    {
+        return $this->reader->getNext();
+    }
+
+    public function getAllEntites()
+    {
+        $e = array();
+
+        while ($entity = $this->getNextEntity()) {
+            $e[] = $entity;
+        }
+
+        return $e;
+    }
 }
