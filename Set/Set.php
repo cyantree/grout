@@ -244,7 +244,8 @@ abstract class Set
         if (isset($this->contents[$name])) {
             return $this->contents[$name];
         }
-        return null;
+
+        throw new \Exception('Content ' . $name . ' does not exist.');
     }
 
     public function createNew()
