@@ -30,6 +30,7 @@ abstract class Set
 
     /** @var Content */
     public $firstContent = null;
+
     /** @var Content */
     public $lastContent = null;
 
@@ -109,6 +110,7 @@ abstract class Set
         if ($this->firstContent) {
             $this->firstContent->previousContent = $content;
             $content->nextContent = $this->firstContent;
+
         } else {
             $this->lastContent = $content;
         }
@@ -166,6 +168,73 @@ abstract class Set
 
         if ($content->enabled) {
             $content->init($this->mode, $this->format, $this->context);
+        }
+    }
+
+    public function removeContent(Content $content)
+    {
+        $previousContent = $content->previousContent;
+        $nextContent = $content->nextContent;
+
+        if ($previousContent) {
+            $previousContent->nextContent = $nextContent;
+
+        } else {
+            $this->firstContent = $nextContent;
+        }
+
+        if ($nextContent) {
+            $nextContent->previousContent = $previousContent;
+
+            if (!$nextContent->nextContent) {
+                $this->lastContent = $nextContent->nextContent;
+            }
+
+        } else {
+            $this->lastContent = $previousContent;
+        }
+
+        $content->previousContent = $content->nextContent = null;
+        $content->set = null;
+
+        unset($this->contents[$content->name]);
+    }
+
+    public function replaceContentByName($name, Content $newContent)
+    {
+        $currentContent = $this->getContentByName($name);
+
+        $this->replaceContent($currentContent, $newContent);
+    }
+
+    public function replaceContent(Content $oldContent, Content $newContent)
+    {
+        $newContent->name = $oldContent->name;
+        $this->contents[$oldContent->name] = $newContent;
+
+        $newContent->previousContent = $oldContent->previousContent;
+        $newContent->nextContent = $oldContent->nextContent;
+
+        if ($newContent->previousContent) {
+            $newContent->previousContent->nextContent = $newContent;
+        }
+
+        if ($newContent->nextContent) {
+            $newContent->nextContent->previousContent = $newContent;
+        }
+
+        if ($this->firstContent == $oldContent) {
+            $this->firstContent = $newContent;
+        }
+
+        if ($this->lastContent == $oldContent) {
+            $this->lastContent = $newContent;
+        }
+
+        $newContent->set = $this;
+
+        if ($newContent->enabled) {
+            $newContent->init($this->mode, $this->format, $this->context);
         }
     }
 
