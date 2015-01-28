@@ -243,6 +243,7 @@ class ImageContent extends Content
             imagejpeg($this->image, $path, $this->saveQuality);
 
         } elseif ($this->saveFormat == 'png') {
+            imagesavealpha($this->image, true);
             imagepng($this->image, $path);
         }
     }
