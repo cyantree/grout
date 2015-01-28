@@ -13,6 +13,5 @@ abstract class SetListResult
         $this->set = $set;
     }
 
-
     abstract public function getNext();
 }
