@@ -6,8 +6,6 @@ use Cyantree\Grout\Tools\StringTools;
 
 abstract class FileSet extends Set
 {
-    public $setId;
-
     /** @var SetTypeCapabilities */
     public static $capabilities;
 
