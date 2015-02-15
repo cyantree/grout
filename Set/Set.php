@@ -458,6 +458,7 @@ abstract class Set
             $content->onDeleted();
         }
 
+        // TODO: Remove return or use it
         return true;
     }
 

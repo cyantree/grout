@@ -25,6 +25,8 @@ class Plugin
     /** @var ArrayFilter */
     public $config;
 
+    // TODO: Add asset url prefix
+
     public function init()
     {
     }
@@ -84,6 +86,7 @@ class Plugin
 
     public function getPublicAssetUrl($path = '', $absoluteURL = true, $parameters = null)
     {
+        // TODO: Migrate to assetUrlPrefix
         return $this->module->getPublicAssetUrl($path, $absoluteURL, $parameters);
     }
 
