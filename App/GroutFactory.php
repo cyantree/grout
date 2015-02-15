@@ -181,6 +181,8 @@ class GroutFactory
     public function setTool($name, $tool)
     {
         $this->tools->set($name, $tool);
+
+        $this->events->trigger($name . '.changed', $tool);
     }
 
     public function linkTools($tools, GroutFactory $providerFactory)
