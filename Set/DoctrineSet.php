@@ -29,6 +29,8 @@ abstract class DoctrineSet extends Set
 
     public function setId($id)
     {
+        parent::setId($id);
+
         $this->entity->{$this->getIdField()} = $id;
     }
 
@@ -85,6 +87,8 @@ abstract class DoctrineSet extends Set
     {
         $this->getEntityManager()->persist($this->entity);
         $this->getEntityManager()->flush();
+
+        $this->setId($this->getId()); // Update id to be populated back to set
     }
 
     public function setEntity($e)

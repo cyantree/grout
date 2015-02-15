@@ -34,6 +34,9 @@ abstract class Set
     /** @var Content */
     public $lastContent = null;
 
+    /** @var Content */
+    public $idContent = null;
+
     /** @var ArrayFilter */
     public $config;
 
@@ -79,7 +82,9 @@ abstract class Set
 
     public function setId($id)
     {
-
+        if ($this->idContent !== null) {
+            $this->idContent->setValue($id);
+        }
     }
 
     /** @param $content Content */
