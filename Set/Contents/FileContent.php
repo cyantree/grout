@@ -69,7 +69,13 @@ class FileContent extends Content
     public function populate($data, $files)
     {
         if ($files->has($this->name)) {
-            $this->uploadedFile = $files->get($this->name);
+            $file = $files->get($this->name);
+
+            if (is_array($file)) {
+                $file = null;
+            }
+
+            $this->uploadedFile = $file;
         }
     }
 
