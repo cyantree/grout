@@ -250,7 +250,13 @@ abstract class Set
 
     public function createNew()
     {
+        foreach ($this->contents as $name => $content) {
+            if (!$content->enabled) {
+                continue;
+            }
 
+            $content->reset();
+        }
     }
 
     public function loadById($id)

@@ -34,6 +34,8 @@ abstract class DoctrineSet extends Set
 
     public function createNew()
     {
+        parent::createNew();
+
         $c = $this->getEntityClass();
 
         $this->setEntity(new $c());

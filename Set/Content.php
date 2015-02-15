@@ -51,6 +51,12 @@ abstract class Content
     {
     }
 
+    public function reset()
+    {
+        $this->value = null;
+        // TODO: Reset status
+    }
+
     protected function getErrorMessage($code)
     {
         if (isset($this->errorMessages[$code])) {
