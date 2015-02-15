@@ -45,19 +45,24 @@ class Events
         $e->data = $data;
         $e->context = $context;
 
-        if (!isset($this->events[$type])) {
-            return $e;
+        return $this->triggerEvent($e);
+    }
+
+    public function triggerEvent(Event $event)
+    {
+        if (!isset($this->events[$event->type])) {
+            return $event;
         }
 
-        $callbacks = $this->events[$type];
+        $callbacks = $this->events[$event->type];
 
         foreach ($callbacks as $callback) {
-            call_user_func($callback[0], $e, $callback[1]);
-            if ($e->stopPropagation) {
+            call_user_func($callback[0], $event, $callback[1]);
+            if ($event->stopPropagation) {
                 break;
             }
         }
 
-        return $e;
+        return $event;
     }
 }
