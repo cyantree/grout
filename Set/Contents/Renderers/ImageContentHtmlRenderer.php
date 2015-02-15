@@ -15,8 +15,6 @@ class ImageContentHtmlRenderer extends ContentRenderer
         /** @var ImageContent $content */
         $data = $content->getValue();
 
-        $url = $content->getImageUrl();
-
         $mode = $content->set->mode;
 
         if ($content->editable && ($mode == Set::MODE_ADD || $mode == Set::MODE_EDIT)) {
@@ -30,6 +28,8 @@ class ImageContentHtmlRenderer extends ContentRenderer
             if ($c) {
                 $c .= '<br /><br />';
             }
+
+            $url = $content->getImageUrl();
 
             if ($url) {
                 $maxDisplayWidth = $content->rendererSettings->maxDisplayWidth;
