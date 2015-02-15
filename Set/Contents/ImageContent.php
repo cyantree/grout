@@ -75,18 +75,24 @@ class ImageContent extends Content
 
     public function getImagePath()
     {
-        return $this->getImagePathByValue($this->value);
+        return $this->value !== null ? $this->getImagePathByValue($this->value) : null;
     }
 
     public function getImageUrl()
     {
-        return $this->getImageUrlByValue($this->value);
+        return $this->value !== null ? $this->getImageUrlByValue($this->value) : null;
     }
 
     public function populate($data, $files)
     {
         if ($files->has($this->name)) {
-            $this->uploadedFile = $files->get($this->name);
+            $file = $files->get($this->name);
+
+            if (is_array($file)) {
+                $file = null;
+            }
+
+            $this->uploadedFile = $file;
         }
     }
 
@@ -185,6 +191,8 @@ class ImageContent extends Content
         imagedestroy($this->image);
 
         $this->uploadedFile->delete();
+        $this->uploadedFile = null;
+        $this->image = null;
     }
 
     public function getImagePathByValue($value)
