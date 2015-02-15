@@ -148,16 +148,10 @@ abstract class DoctrineSet extends Set
         // Check for ordering
         $orderClause = '';
         if ($sortingField) {
-            // TODO: Can be simplified. ->getContentByName($sortingField)
-            foreach ($this->contents as $content) {
-                if (!$content->enabled) {
-                    continue;
-                }
+            $content = $this->getContentByName($sortingField);
 
-                if ($content->sortable && $content->name == $sortingField) {
-                    $orderClause = 'e.' . $content->name . ' ' . $sortingDirection;
-                    break;
-                }
+            if ($content->enabled && $content->sortable) {
+                $orderClause = 'e.' . $content->name . ' ' . $sortingDirection;
             }
         }
 

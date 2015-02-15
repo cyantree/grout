@@ -261,7 +261,7 @@ abstract class Set
 
     public function loadById($id)
     {
-
+        return null;
     }
 
     public function getValues()
