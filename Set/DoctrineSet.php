@@ -126,6 +126,14 @@ abstract class DoctrineSet extends Set
         // Create queries
         $queryData = $this->getListQueryData($options);
 
+        if ($queryData->offset !== null) {
+            $offset = $queryData->offset;
+        }
+
+        if ($queryData->count !== null) {
+            $count = $queryData->count;
+        }
+
         // Create search queries
         if ($search != '') {
             foreach ($this->contents as $content) {

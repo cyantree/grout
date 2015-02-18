@@ -13,5 +13,8 @@ class DoctrineSetQueryData
 
     public $defaultOrder;
 
+    public $offset;
+    public $count;
+
     public $parameters = array();
 }
