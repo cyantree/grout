@@ -85,7 +85,7 @@ class FileBucket extends Bucket
         return $b;
     }
 
-    public function load($id, $context = null, $returnNewBucket = true)
+    public function load($id, $context = null, $returnNewBucket = true, $checkExpiration = true)
     {
         if (!Bucket::isValidId($id)) {
             return false;
@@ -99,7 +99,7 @@ class FileBucket extends Bucket
 
         $mod = filemtime($file);
 
-        if ($mod < time()) {
+        if ($checkExpiration && $mod < time()) {
             unlink($file);
             return false;
         }

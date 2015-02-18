@@ -18,7 +18,7 @@ class Bucket
     }
 
     /** @return \Cyantree\Grout\Bucket\Bucket|bool */
-    public function load($id, $context = null, $returnNewBucket = true)
+    public function load($id, $context = null, $returnNewBucket = true, $checkExpiration = true)
     {
     }
 
@@ -59,5 +59,10 @@ class Bucket
     public static function createId()
     {
         return StringTools::random(32);
+    }
+
+    public function isExpired()
+    {
+        return time() > self::mapExpirationDate($this->expires);
     }
 }

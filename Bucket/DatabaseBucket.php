@@ -118,7 +118,7 @@ class DatabaseBucket extends Bucket
         return $b;
     }
 
-    public function load($id, $context = null, $returnNewBucket = true)
+    public function load($id, $context = null, $returnNewBucket = true, $checkExpiration = true)
     {
         if (!Bucket::isValidId($id)) {
             return false;
@@ -137,7 +137,7 @@ class DatabaseBucket extends Bucket
 
         $expires = DateTime::$utc->setBySqlString($data['expires'])->getTimestamp();
 
-        if ($expires < time()) {
+        if ($checkExpiration && $expires < time()) {
             $this->database->exec('DELETE FROM ' . $this->table . ' WHERE id = %t%', array($id));
             return false;
         }

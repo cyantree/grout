@@ -98,7 +98,7 @@ class PhpSessionBucket extends Bucket
         return $b;
     }
 
-    public function load($id, $context = null, $returnNewBucket = true)
+    public function load($id, $context = null, $returnNewBucket = true, $checkExpiration = true)
     {
         if (!Bucket::isValidId($id)) {
             return false;
@@ -110,6 +110,11 @@ class PhpSessionBucket extends Bucket
 
         /** @var $b \Cyantree\Grout\Bucket\PhpSessionBucket */
         $b = $_SESSION[$this->containerName][$id];
+
+        if ($checkExpiration && $b->expires < time()) {
+            unset($_SESSION[$this->containerName][$id]);
+            return false;
+        }
 
         if ($context !== false && $b->context != $context) {
             return false;

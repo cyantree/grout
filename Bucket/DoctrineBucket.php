@@ -173,7 +173,7 @@ class DoctrineBucket extends Bucket
         return $b;
     }
 
-    public function load($id, $context = null, $returnNewBucket = true)
+    public function load($id, $context = null, $returnNewBucket = true, $checkExpiration = true)
     {
         if (!Bucket::isValidId($id)) {
             return false;
@@ -203,7 +203,7 @@ class DoctrineBucket extends Bucket
 
         $expires = DateTime::$utc->setBySqlString($data['expireson'])->getTimestamp();
 
-        if ($expires < time()) {
+        if ($checkExpiration && $expires < time()) {
             DoctrineTools::prepareQuery(
                 $this->connection,
                 'DELETE FROM ' . $this->table . ' WHERE id = %t%',
