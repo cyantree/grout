@@ -13,6 +13,21 @@ class CheckboxContentPlainRenderer extends ContentRenderer
         
         $isChecked = $content->getValue();
 
-        return $isChecked ? $content->labelChecked : $content->labelNotChecked;
+        if ($isChecked) {
+            if ($content->labelChecked !== null) {
+                return $content->labelChecked;
+
+            } else {
+                return $content->label;
+            }
+
+        } else {
+            if ($content->labelNotChecked !== null) {
+                return $content->labelNotChecked;
+
+            } else {
+                return '';
+            }
+        }
     }
 }
