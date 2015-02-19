@@ -3,23 +3,23 @@ namespace Cyantree\Grout\App;
 
 use Cyantree\Grout\Filter\ArrayFilter;
 
-class Plugin
+class Plugin extends Component
 {
     public $id;
 
+    // TODO: Deprecated
     public $type;
 
     /** @var Module */
     public $module;
 
-    /** @var App */
-    public $app;
-
     /** @var Plugin */
     public $parentPlugin;
 
+    // TODO: Deprecated
     public $path;
 
+    // TODO: Deprecated
     public $namespace;
 
     /** @var ArrayFilter */

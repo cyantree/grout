@@ -42,6 +42,9 @@ class App
     /** @var Module[] */
     public $moduleIds = array();
 
+    /** @var ComponentDefinition[] */
+    private $componentDefinitions = array();
+
     /** @var Events */
     public $events;
 
@@ -366,6 +369,45 @@ class App
         return is_file($this->path . 'modules/' . $type . '/' . $type . '.php');
     }
 
+    public function getComponentDefinitions()
+    {
+        return $this->componentDefinitions;
+    }
+
+    public function getComponentDefinition($type)
+    {
+        if (isset($this->componentDefinitions[$type])) {
+            return $this->componentDefinitions[$type];
+        }
+
+        $definition = new ComponentDefinition();
+        $definition->type = $type;
+
+        $pos = strrpos($type, '\\');
+        if ($pos === false) {
+            $class = $type;
+
+        } else {
+            $class = substr($type, strrpos($type, '\\') + 1);
+        }
+
+        $definition->namespace = 'Grout\\' . $type . '\\';
+        $class = $definition->namespace . $class;
+
+        $definition->class = $class;
+
+        $reflection = new \ReflectionClass($class);
+        $definition->path = dirname($reflection->getFileName()) . '/';
+
+        $this->componentDefinitions[$type] = $definition;
+
+        if (method_exists($class, 'setup')) {
+            $class::setup($this);
+        }
+
+        return $definition;
+    }
+
     /**
      * @param $type
      * @param string $urlPrefix
@@ -388,16 +430,7 @@ class App
             return null;
         }
 
-        $pos = strrpos($type, '\\');
-        if ($pos === false) {
-            $class = $type;
-
-        } else {
-            $class = substr($type, strrpos($type, '\\') + 1);
-        }
-
-//        $directory = str_replace('\\', '/', $type);
-//        $path = $this->path . 'modules/' . $directory . '/';
+        $definition = $this->getComponentDefinition($type);
 
         if ($config === null || is_array($config)) {
             $config = new ArrayFilter($config);
@@ -405,21 +438,19 @@ class App
 
         $config->set('_priority', $priority);
 
+        $class = $definition->class;
+
         /** @var $m Module */
-        $c = 'Grout\\' . $type . '\\' . $class;
-
-        $reflection = new \ReflectionClass($c);
-        $path = dirname($reflection->getFileName()) . '/';
-
-        $m = new $c();
+        $m = new $class();
         $m->type = $type;
+        $m->definition = $definition;
         $m->events = new Events();
         $m->app = $this;
         $m->config = & $config;
         $m->urlPrefix = $urlPrefix !== null ? $urlPrefix : '';
         $m->assetUrlPrefix = str_replace('\\', '/', $type) . '/';
-        $m->path = $path;
-        $m->namespace = NamespaceTools::getNamespaceOfInstance($m) . '\\';
+        $m->path = $definition->path;
+        $m->namespace = $definition->namespace;
 
         $m->id = $id;
 
@@ -443,6 +474,11 @@ class App
         }
 
         return $m;
+    }
+
+    public function setupComponent($type)
+    {
+        $this->getComponentDefinition($type);
     }
 
     public function importClass($class, $extension = '.php')

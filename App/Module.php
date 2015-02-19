@@ -8,14 +8,12 @@ use Cyantree\Grout\Filter\ArrayFilter;
 use Cyantree\Grout\Tools\NamespaceTools;
 use Cyantree\Grout\Tools\StringTools;
 
-class Module
+class Module extends Component
 {
     public $id;
 
+    // TODO: Deprecated
     public $type;
-
-    /** @var App */
-    public $app;
 
     public $defaultPageType;
 
@@ -38,8 +36,10 @@ class Module
     public $urlPrefix;
     public $assetUrlPrefix;
 
+    // TODO: Deprecated
     public $path;
 
+    // TODO: Deprecated
     public $namespace;
 
     /** @var ArrayFilter */
@@ -198,37 +198,25 @@ class Module
             $id = str_replace('\\', '', $type);
         }
 
-
         if ($this->getPluginById($id)) {
             return null;
         }
 
-        $pos = strrpos($type, '\\');
-        if ($pos === false) {
-            $class = $type;
-
-        } else {
-            $class = substr($type, strrpos($type, '\\') + 1);
-        }
+        $definition = $this->app->getComponentDefinition($type);
 
         if ($config === null || is_array($config)) {
             $config = new ArrayFilter($config);
         }
 
-//        $directory = str_replace('\\', '/', $type);
-//        $path = $this->app->path . 'plugins/' . $directory . '/';
-
-        $class = 'Grout\\' . $type . '\\' . $class;
-
-        $reflection = new \ReflectionClass($class);
-        $path = dirname($reflection->getFileName()) . '/';
+        $class = $definition->class;
 
         /** @var $p Plugin */
         $p = new $class();
+        $p->definition = $definition;
         $p->type = $type;
         $p->config = $config;
-        $p->path = $path;
-        $p->namespace = NamespaceTools::getNamespaceOfInstance($p) . '\\';
+        $p->path = $definition->path;
+        $p->namespace = $definition->namespace;
         $p->module = $this;
         $p->app = $this->app;
 
