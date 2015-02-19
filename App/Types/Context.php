@@ -27,6 +27,6 @@ class Context
         $this->app = $app;
         $this->module = $module;
         $this->plugin = $plugin;
-        $this->data = null;
+        $this->data = $data;
     }
 }
