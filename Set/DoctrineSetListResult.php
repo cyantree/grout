@@ -7,10 +7,10 @@ use Doctrine\ORM\Query;
 class DoctrineSetListResult extends SetListResult
 {
     /** @var DoctrineSet */
-    private $set;
+    public $set;
 
     /** @var DoctrineBatchReader */
-    private $reader;
+    public $reader;
 
     public function __construct(DoctrineSet $set, Query $query)
     {
