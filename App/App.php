@@ -289,11 +289,11 @@ class App
         }
 
         $context = AppTools::decodeContext($class, $this, $task->route->module, $task->route->plugin);
-        if ($context->plugin) {
-            $class = $context->plugin->namespace . $context->uri;
+        if ($context->pluginDefinition) {
+            $class = $context->pluginDefinition->namespace . $context->uri;
 
-        } elseif ($context->module) {
-            $class = $context->module->namespace . $context->uri;
+        } elseif ($context->moduleDefinition) {
+            $class = $context->moduleDefinition->namespace . $context->uri;
 
         } else {
             throw new \Exception('No page class found for "' . $task->request->url . '" with "' . $task->route->page . '"');

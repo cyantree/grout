@@ -33,11 +33,11 @@ class TemplateGenerator
             $this->defaultPlugin ? $this->defaultPlugin : $this->app->currentTask->plugin
         );
 
-        if ($context->plugin) {
-            $template = $context->plugin->path . 'templates/' . $context->uri . '.php';
+        if ($context->pluginDefinition) {
+            $template = $context->pluginDefinition->path . 'templates/' . $context->uri . '.php';
 
-        } elseif ($context->module) {
-            $template = $context->module->path . 'templates/' . $context->uri . '.php';
+        } elseif ($context->moduleDefinition) {
+            $template = $context->moduleDefinition->path . 'templates/' . $context->uri . '.php';
 
         } else {
             throw new \Exception('Context could not be resolved.');
