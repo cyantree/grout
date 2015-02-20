@@ -44,6 +44,10 @@ class AppTools
 
             if ($moduleString == '') {
 
+            } elseif ($moduleString == 'Module') {
+                $context->module = $module;
+                $context->moduleDefinition = $context->module->definition;
+
             } elseif ($moduleString[0] === '#') {
                 $context->module = $app->getModuleById(substr($moduleString, 1));
                 $context->moduleDefinition = $context->module->definition;
