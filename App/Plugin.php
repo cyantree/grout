@@ -107,6 +107,6 @@ class Plugin extends Component
 
     public function generateContextString($uri)
     {
-        return ':' . $this->id . ':' . $uri;
+        return '#' . $this->module->id . ':#' . $this->id . ':' . $uri;
     }
 }

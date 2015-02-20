@@ -285,6 +285,6 @@ class Module extends Component
 
     public function generateContextString($uri)
     {
-        return $this->id . '::' . $uri;
+        return '#' . $this->id . '::' . $uri;
     }
 }
