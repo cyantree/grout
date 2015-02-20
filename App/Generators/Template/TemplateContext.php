@@ -55,8 +55,14 @@ class TemplateContext
 
     public function load($name, $in = null, $baseTemplate = false)
     {
-        if (substr($name, 0, 2) == './') {
-            $name = $this->uriPath . substr($name, 2);
+        if (strpos($name, ':') === false) {
+            // TODO: Nicht sehr schön hier. Siehe auch exists()
+            if (substr($name, 0, 1) != '/') {
+                $name = $this->uriPath . $name;
+
+            } else {
+                $name = substr($name, 1);
+            }
         }
 
         return $this->generator->load($name, $in, $baseTemplate);
@@ -64,8 +70,13 @@ class TemplateContext
 
     public function exists($name)
     {
-        if (substr($name, 0, 2) == './') {
-            $name = $this->uriPath . substr($name, 2);
+        if (strpos($name, ':') === false) {
+            if (substr($name, 0, 1) != '/') {
+                $name = $this->uriPath . $name;
+
+            } else {
+                $name = substr($name, 1);
+            }
         }
 
         return $this->generator->exists($name);
