@@ -9,62 +9,71 @@ use Cyantree\Grout\App\Types\Context;
 class AppTools
 {
     /**
-     * @param $context
+     * @param $contextString
      * @param $app App
      * @param $module Module
      * @param $plugin Plugin
      * @return Context
      */
-    public static function decodeContext($context, App $app, $module = null, $plugin = null)
+    public static function decodeContext($contextString, App $app, $module = null, $plugin = null)
     {
-        $contextPieces = explode(':', $context, 3);
+        // TODO: Ergebnis ohne Einbeziehung von module und plugin könnte gecachet werden.
+        // TODO: Syntax so gut? #... für ID, .[...] für Typ
+
+        $contextPieces = explode(':', $contextString, 3);
         $c = count($contextPieces);
 
+        $context = new Context();
+        $context->app = $app;
+
         if ($c == 1) {
-            return new Context($contextPieces[0], $app, $module, $plugin);
+            $context->uri = $contextString;
+            $context->module = $module;
+            $context->moduleDefinition = $module ? $module->definition : null;
+            $context->plugin = $plugin;
+            $context->pluginDefinition = $plugin ? $plugin->definition : null;
 
         } elseif ($c == 2) {
-            if ($contextPieces[0] !== '') {
-                $module = $app->getModuleById($contextPieces[0]);
+            throw new \Exception('Invalid context ' . $contextString);
 
-            } elseif ($contextPieces[0] === 'App') {
-                $module = null;
+        } else {
+            $context->uri = $contextPieces[2];
+
+            $moduleString = $contextPieces[0];
+            $pluginString = $contextPieces[1];
+
+            if ($moduleString == '') {
+
+            } elseif ($moduleString[0] === '#') {
+                $context->module = $app->getModuleById(substr($moduleString, 1));
+                $context->moduleDefinition = $context->module->definition;
+
+            } elseif ($moduleString[0] === '.') {
+                $context->moduleDefinition = $app->getComponentDefinition(substr($contextPieces[0], 1));
+
+            } else {
+                throw new \Exception('Invalid context ' . $contextString);
             }
 
-            return new Context($contextPieces[1], $app, $module);
+            if ($pluginString == '') {
 
-        } elseif ($c == 3) {
-            $moduleId = $contextPieces[0];
-            $pluginId = $contextPieces[1];
-
-            if ($moduleId === 'App') {
-                $module = null;
-                $plugin = null;
-
-            } elseif ($moduleId === 'Module' || $moduleId === '') {
-                if ($pluginId !== '') {
-                    $plugin = $module->pluginIds[$pluginId];
-
-                } else {
-                    $plugin = null;
+            } elseif ($pluginString[0] === '#') {
+                if (!$context->module) {
+                    throw new \Exception('Invalid context ' . $contextString);
                 }
 
-            } elseif ($moduleId !== '') {
-                $module = $app->getModuleById($moduleId);
+                $context->plugin = $context->module->pluginIds[substr($pluginString, 1)];
+                $context->pluginDefinition = $context->plugin->definition;
 
-                if ($pluginId !== '') {
-                    $plugin = $module->pluginIds[$pluginId];
+            } elseif ($pluginString[0] === '.') {
+                $context->pluginDefinition = $app->getComponentDefinition(substr($pluginString, 1));
 
-                } else {
-                    $plugin = null;
-                }
-
+            } else {
+                throw new \Exception('Invalid context ' . $contextString);
             }
-
-            return new Context($contextPieces[2], $app, $module, $plugin);
         }
 
-        throw new \Exception('Invalid context ' . $context);
+        return $context;
     }
 
     public static function createConfigChain(
