@@ -34,7 +34,7 @@ class GroutQuick extends Quick
 
     public function u($uri, $parameters = null, $absolute = true)
     {
-        $context = AppTools::decodeContext($uri, $this->app, $this->app->currentTask->module, $this->app->currentTask->plugin);
+        $context = $this->app->decodeContext($uri, $this->app->currentTask->module, $this->app->currentTask->plugin);
 
         if ($context->plugin) {
             return $context->plugin->getUrl($context->uri, $absolute, $parameters);
@@ -49,7 +49,7 @@ class GroutQuick extends Quick
 
     public function r($uri, $arguments = null, $parameters = null, $absolute = true)
     {
-        $context = AppTools::decodeContext($uri, $this->app, $this->app->currentTask->module, $this->app->currentTask->plugin);
+        $context = $this->app->decodeContext($uri, $this->app->currentTask->module, $this->app->currentTask->plugin);
 
         if ($context->plugin) {
             return $context->plugin->getRouteUrl($context->uri, $arguments, true, $parameters);
@@ -64,9 +64,8 @@ class GroutQuick extends Quick
 
     public function a($uri, $parameters = null, $absolute = false)
     {
-        $context = AppTools::decodeContext(
+        $context = $this->app->decodeContext(
                 $uri,
-                $this->app,
                 $this->app->currentTask->module,
                 $this->app->currentTask->plugin
         );

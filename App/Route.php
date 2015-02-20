@@ -103,7 +103,7 @@ class Route
             return;
         }
 
-        $context = AppTools::decodeContext($url, $this->module->app, $this->module, $this->plugin);
+        $context = $this->module->app->decodeContext($url, $this->module, $this->plugin);
 
         $this->permaUrl = '';
 
@@ -126,7 +126,7 @@ class Route
             $this->methods = ArrayTools::convertToKeyArray(explode(',', strtoupper($urlData[1])));
         }
 
-        $context = AppTools::decodeContext($url, $this->module->app, $this->module, $this->plugin);
+        $context = $this->module->app->decodeContext($url, $this->module, $this->plugin);
 
         $this->matchUrl = '';
 

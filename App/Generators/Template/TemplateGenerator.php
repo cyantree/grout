@@ -26,9 +26,8 @@ class TemplateGenerator
 
     private function decodeName($name)
     {
-        $context = AppTools::decodeContext(
+        $context = $this->app->decodeContext(
             $name,
-            $this->app,
             $this->defaultModule ? $this->defaultModule : $this->app->currentTask->module,
             $this->defaultPlugin ? $this->defaultPlugin : $this->app->currentTask->plugin
         );

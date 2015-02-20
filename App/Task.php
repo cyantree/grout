@@ -98,7 +98,7 @@ class Task
     public function redirectToPage($page, $action = 'parseTask')
     {
         if (!is_resource($page)) {
-            $context = AppTools::decodeContext($page, $this->app);
+            $context = $this->app->decodeContext($page);
             $pageClass = $context->uri;
             
             if ($context->plugin) {

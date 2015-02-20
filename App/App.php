@@ -288,7 +288,7 @@ class App
             $action = 'parseTask';
         }
 
-        $context = AppTools::decodeContext($class, $this, $task->route->module, $task->route->plugin);
+        $context = $this->decodeContext($class, $task->route->module, $task->route->plugin);
         if ($context->pluginDefinition) {
             $class = $context->pluginDefinition->namespace . $context->uri;
 
@@ -614,7 +614,7 @@ class App
             $action = 'parseTask';
         }
 
-        $context = AppTools::decodeContext($class, $this, $task->route->module, $task->route->plugin);
+        $context = $this->decodeContext($class, $task->route->module, $task->route->plugin);
         if ($context->plugin) {
             $class = $context->plugin->namespace . $context->uri;
 
@@ -656,5 +656,76 @@ class App
         $task->page->beforeParsing();
         $task->page->{$action}();
         $task->page->afterParsing();
+    }
+
+    /**
+     * @param $contextString
+     * @param $module Module
+     * @param $plugin Plugin
+     * @return Context
+     */
+    public function decodeContext($contextString, Module $module = null, Plugin $plugin = null)
+    {
+        // TODO: Ergebnis ohne Einbeziehung von module und plugin könnte gecachet werden.
+        // TODO: Syntax so gut? #... für ID, .[...] für Typ
+
+        $contextPieces = explode(':', $contextString, 3);
+        $c = count($contextPieces);
+
+        $context = new Context();
+        $context->app = $this;
+
+        if ($c == 1) {
+            $context->uri = $contextString;
+            $context->module = $module;
+            $context->moduleDefinition = $module ? $module->definition : null;
+            $context->plugin = $plugin;
+            $context->pluginDefinition = $plugin ? $plugin->definition : null;
+
+        } elseif ($c == 2) {
+            throw new \Exception('Invalid context ' . $contextString);
+
+        } else {
+            $context->uri = $contextPieces[2];
+
+            $moduleString = $contextPieces[0];
+            $pluginString = $contextPieces[1];
+
+            if ($moduleString == '') {
+
+            } elseif ($moduleString == 'Module') {
+                $context->module = $module;
+                $context->moduleDefinition = $context->module->definition;
+
+            } elseif ($moduleString[0] === '#') {
+                $context->module = $this->getModuleById(substr($moduleString, 1));
+                $context->moduleDefinition = $context->module->definition;
+
+            } elseif ($moduleString[0] === '.') {
+                $context->moduleDefinition = $this->getComponentDefinition(substr($contextPieces[0], 1));
+
+            } else {
+                throw new \Exception('Invalid context ' . $contextString);
+            }
+
+            if ($pluginString == '') {
+
+            } elseif ($pluginString[0] === '#') {
+                if (!$context->module) {
+                    throw new \Exception('Invalid context ' . $contextString);
+                }
+
+                $context->plugin = $context->module->pluginIds[substr($pluginString, 1)];
+                $context->pluginDefinition = $context->plugin->definition;
+
+            } elseif ($pluginString[0] === '.') {
+                $context->pluginDefinition = $this->getComponentDefinition(substr($pluginString, 1));
+
+            } else {
+                throw new \Exception('Invalid context ' . $contextString);
+            }
+        }
+
+        return $context;
     }
 }
