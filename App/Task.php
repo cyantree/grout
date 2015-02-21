@@ -105,7 +105,7 @@ class Task
                 $pageClass = $context->plugin->namespace . $pageClass;
                 
             } elseif ($context->module) {
-                $pageClass = $context->module->namespace . $pageClass;
+                $pageClass = $context->module->definition->namespace . $pageClass;
             }
 
             $page = new $pageClass();

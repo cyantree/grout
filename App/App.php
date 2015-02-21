@@ -448,7 +448,6 @@ class App
         $m->config = & $config;
         $m->urlPrefix = $urlPrefix !== null ? $urlPrefix : '';
         $m->assetUrlPrefix = str_replace('\\', '/', $type) . '/';
-        $m->namespace = $definition->namespace;
 
         $m->id = $id;
 
@@ -617,7 +616,7 @@ class App
             $class = $context->plugin->namespace . $context->uri;
 
         } elseif ($context->module) {
-            $class = $context->module->namespace . $context->uri;
+            $class = $context->module->definition->namespace . $context->uri;
 
         } else {
             throw new \Exception('No page class found for "' . $task->request->url . '" with "' . $task->route->page . '"');

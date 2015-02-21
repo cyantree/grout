@@ -33,9 +33,6 @@ class Module extends Component
     public $urlPrefix;
     public $assetUrlPrefix;
 
-    // TODO: Deprecated
-    public $namespace;
-
     /** @var ArrayFilter */
     public $config;
 
