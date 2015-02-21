@@ -442,7 +442,6 @@ class App
 
         /** @var $m Module */
         $m = new $class();
-        $m->type = $type;
         $m->definition = $definition;
         $m->events = new Events();
         $m->app = $this;

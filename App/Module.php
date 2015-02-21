@@ -12,9 +12,6 @@ class Module extends Component
 {
     public $id;
 
-    // TODO: Deprecated
-    public $type;
-
     public $defaultPageType;
 
     /** @var Plugin[] */
