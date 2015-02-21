@@ -34,9 +34,6 @@ class Module extends Component
     public $assetUrlPrefix;
 
     // TODO: Deprecated
-    public $path;
-
-    // TODO: Deprecated
     public $namespace;
 
     /** @var ArrayFilter */
@@ -157,12 +154,12 @@ class Module extends Component
 
     public function importClass($path, $extension = '.php')
     {
-        require_once($this->path . 'classes/' . $path . $extension);
+        require_once($this->definition->path . 'classes/' . $path . $extension);
     }
 
     public function importConfig($name, $createInstance = true)
     {
-        require_once($this->path . 'Configs/' . $name . '.php');
+        require_once($this->definition->path . 'Configs/' . $name . '.php');
 
         if ($createInstance) {
             $class = NamespaceTools::getNamespaceOfInstance($this) . '\\Configs\\' . $name;

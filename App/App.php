@@ -448,7 +448,6 @@ class App
         $m->config = & $config;
         $m->urlPrefix = $urlPrefix !== null ? $urlPrefix : '';
         $m->assetUrlPrefix = str_replace('\\', '/', $type) . '/';
-        $m->path = $definition->path;
         $m->namespace = $definition->namespace;
 
         $m->id = $id;
