@@ -13,9 +13,6 @@ class Plugin extends Component
     /** @var Plugin */
     public $parentPlugin;
 
-    // TODO: Deprecated
-    public $namespace;
-
     /** @var ArrayFilter */
     public $config;
 

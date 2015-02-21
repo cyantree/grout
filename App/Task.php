@@ -102,7 +102,7 @@ class Task
             $pageClass = $context->uri;
             
             if ($context->plugin) {
-                $pageClass = $context->plugin->namespace . $pageClass;
+                $pageClass = $context->plugin->definition->namespace . $pageClass;
                 
             } elseif ($context->module) {
                 $pageClass = $context->module->definition->namespace . $pageClass;

@@ -613,7 +613,7 @@ class App
 
         $context = $this->decodeContext($class, $task->route->module, $task->route->plugin);
         if ($context->plugin) {
-            $class = $context->plugin->namespace . $context->uri;
+            $class = $context->plugin->definition->namespace . $context->uri;
 
         } elseif ($context->module) {
             $class = $context->module->definition->namespace . $context->uri;
