@@ -204,7 +204,6 @@ class Module extends Component
         /** @var $p Plugin */
         $p = new $class();
         $p->definition = $definition;
-        $p->type = $type;
         $p->config = $config;
         $p->path = $definition->path;
         $p->namespace = $definition->namespace;

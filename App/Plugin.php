@@ -7,9 +7,6 @@ class Plugin extends Component
 {
     public $id;
 
-    // TODO: Deprecated
-    public $type;
-
     /** @var Module */
     public $module;
 
