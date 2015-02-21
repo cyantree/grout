@@ -205,7 +205,6 @@ class Module extends Component
         $p = new $class();
         $p->definition = $definition;
         $p->config = $config;
-        $p->path = $definition->path;
         $p->namespace = $definition->namespace;
         $p->module = $this;
         $p->app = $this->app;

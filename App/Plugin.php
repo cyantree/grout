@@ -14,9 +14,6 @@ class Plugin extends Component
     public $parentPlugin;
 
     // TODO: Deprecated
-    public $path;
-
-    // TODO: Deprecated
     public $namespace;
 
     /** @var ArrayFilter */
