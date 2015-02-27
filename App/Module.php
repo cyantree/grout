@@ -100,8 +100,7 @@ class Module extends Component
     {
     }
 
-    /** @param Task $task */
-    public function initTask($task)
+    public function initTask(Task $task)
     {
     }
 
