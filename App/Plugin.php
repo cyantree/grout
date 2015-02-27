@@ -40,8 +40,7 @@ class Plugin extends Component
         return true;
     }
 
-    /** @param $task Task */
-    public function initTask($task)
+    public function initTask(Task $task)
     {
 
     }
