@@ -104,8 +104,7 @@ class Module extends Component
     {
     }
 
-    /** @param Task $task */
-    public function destroyTask($task)
+    public function destroyTask(Task $task)
     {
     }
 
