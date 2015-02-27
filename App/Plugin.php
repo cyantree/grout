@@ -35,11 +35,7 @@ class Plugin extends Component
         return $p;
     }
 
-    /**
-     * @param Task $task
-     * @param Route $route
-     */
-    public function routeRetrieved($task, $route)
+    public function routeRetrieved(Task $task, Route $route)
     {
         return true;
     }
