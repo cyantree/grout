@@ -4,12 +4,9 @@ namespace Cyantree\Grout\App;
 use Cyantree\Grout\App\Config\ConfigContainer;
 use Cyantree\Grout\App\Types\Context;
 use Cyantree\Grout\App\Types\ResponseCode;
-use Cyantree\Grout\AutoLoader;
 use Cyantree\Grout\DataStorage;
 use Cyantree\Grout\Event\Events;
 use Cyantree\Grout\Filter\ArrayFilter;
-use Cyantree\Grout\Tools\AppTools;
-use Cyantree\Grout\Tools\NamespaceTools;
 use Cyantree\Grout\Tools\StringTools;
 use Cyantree\Grout\Tools\Tools;
 
@@ -141,10 +138,9 @@ class App
     }
 
     /**
-     * @param Request $request
      * @return Response
      */
-    public function processRequest($request)
+    public function processRequest(Request $request)
     {
         $request->prepare();
 
@@ -585,19 +581,14 @@ class App
         }
     }
 
-    /** @param $task Task
-     */
-    public function redirectTaskToUrl($task, $url)
+    public function redirectTaskToUrl(Task $task, $url)
     {
         $task->response->code = ResponseCode::CODE_302;
         $task->response->headers['Location'] = $url;
         $task->response->content = '';
     }
 
-    /** @param $task Task
-     * @param $route Route
-     */
-    public function redirectTaskToRoute($task, $route)
+    public function redirectTaskToRoute(Task $task, Route $route)
     {
         $task->setRoute($route);
 
@@ -634,10 +625,7 @@ class App
         $task->page->afterParsing();
     }
 
-    /** @param $task Task
-     * @param $page Page
-     */
-    public function redirectTaskToPage($task, $page, $action = 'parseTask', Context $context = null)
+    public function redirectTaskToPage(Task $task, Page $page, $action = 'parseTask', Context $context = null)
     {
         if ($context) {
             $task->setContext($context);
@@ -656,9 +644,6 @@ class App
     }
 
     /**
-     * @param $contextString
-     * @param $module Module
-     * @param $plugin Plugin
      * @return Context
      */
     public function decodeContext($contextString, Module $module = null, Plugin $plugin = null)
