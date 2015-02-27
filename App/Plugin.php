@@ -50,8 +50,7 @@ class Plugin extends Component
 
     }
 
-    /** @param $task Task */
-    public function afterParsing($task)
+    public function afterParsing(Task $task)
     {
 
     }
