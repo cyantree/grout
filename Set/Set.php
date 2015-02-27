@@ -50,6 +50,8 @@ abstract class Set
     /** @var DefaultContentRendererProvider */
     public $contentRenderers;
 
+    private $isNew = false;
+
     public function __construct()
     {
         $this->config = new ArrayFilter();
@@ -73,6 +75,11 @@ abstract class Set
     public function onList($elements)
     {
 
+    }
+
+    public function isNew()
+    {
+        return $this->isNew;
     }
 
     public function getId()
@@ -255,6 +262,8 @@ abstract class Set
 
     public function createNew()
     {
+        $this->isNew = true;
+
         foreach ($this->contents as $name => $content) {
             if (!$content->enabled) {
                 continue;
@@ -351,6 +360,8 @@ abstract class Set
         $this->collectData();
 
         $this->doSave();
+
+        $this->isNew = false;
 
         foreach ($this->contents as $content) {
             if (!$content->enabled) {
