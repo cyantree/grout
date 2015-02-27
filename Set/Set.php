@@ -264,6 +264,8 @@ abstract class Set
     {
         $this->isNew = true;
 
+        $this->status->reset();
+
         foreach ($this->contents as $name => $content) {
             if (!$content->enabled) {
                 continue;
