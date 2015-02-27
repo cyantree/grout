@@ -207,6 +207,7 @@ class Module extends Component
         $p->config = $config;
         $p->module = $this;
         $p->app = $this->app;
+        $p->assetUrlPrefix = str_replace('\\', '/', $type) . '/';
 
         $p->id = $id;
 
