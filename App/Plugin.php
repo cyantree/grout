@@ -10,9 +10,6 @@ class Plugin extends Component
     /** @var Module */
     public $module;
 
-    /** @var Plugin */
-    public $parentPlugin;
-
     /** @var ArrayFilter */
     public $config;
 
