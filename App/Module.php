@@ -91,11 +91,7 @@ class Module extends Component
         return null;
     }
 
-    /**
-     * @param Task $task
-     * @param Route $page
-     */
-    public function routeRetrieved($task, $route)
+    public function routeRetrieved(Task $task, Route $route)
     {
         return true;
     }
