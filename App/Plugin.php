@@ -45,8 +45,7 @@ class Plugin extends Component
 
     }
 
-    /** @param $task Task */
-    public function beforeParsing($task)
+    public function beforeParsing(Task $task)
     {
 
     }
