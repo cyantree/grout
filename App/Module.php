@@ -96,8 +96,7 @@ class Module extends Component
         return true;
     }
 
-    /** @param Task $task */
-    public function beforeParsing($task)
+    public function beforeParsing(Task $task)
     {
     }
 
