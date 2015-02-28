@@ -665,8 +665,11 @@ class App
 
             if ($moduleString == '') {
 
-            } elseif ($moduleString == 'Module') {
+            } elseif ($moduleString == '#') {
                 $context->module = $module;
+                $context->moduleDefinition = $context->module->definition;
+
+            } elseif ($moduleString == '.') {
                 $context->moduleDefinition = $context->module->definition;
 
             } elseif ($moduleString[0] === '#') {
@@ -681,6 +684,13 @@ class App
             }
 
             if ($pluginString == '') {
+
+            } elseif ($pluginString == '#') {
+                $context->plugin = $plugin;
+                $context->pluginDefinition = $context->plugin->definition;
+
+            } elseif ($pluginString == '.') {
+                $context->pluginDefinition = $plugin->definition;
 
             } elseif ($pluginString[0] === '#') {
                 if (!$context->module) {
