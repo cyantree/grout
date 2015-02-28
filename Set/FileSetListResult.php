@@ -4,17 +4,17 @@ namespace Cyantree\Grout\Set;
 class FileSetListResult extends SetListResult
 {
     /** @var FileSet */
-    private $set;
+    public $set;
 
     private $ids;
-    public $count;
-    public $countAll;
+
+    private $countAll;
 
     public function __construct($set, $ids)
     {
         $this->set = $set;
         $this->ids = $ids;
-        $this->count = count($ids);
+        $this->countAll = count($this->ids);
     }
 
     public function getNext()
@@ -27,5 +27,10 @@ class FileSetListResult extends SetListResult
         $this->set->loadById($file);
 
         return $this->set;
+    }
+
+    public function getCountAll()
+    {
+        return $this->countAll;
     }
 }

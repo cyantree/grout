@@ -148,13 +148,11 @@ abstract class FileSet extends Set
             }
 
             $result = new FileSetListResult($this, $files);
-            $result->countAll = $i;
 
             return $result;
         }
 
         $result = new FileSetListResult($this, array());
-        $result->countAll = 0;
 
         return $result;
     }
