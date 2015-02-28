@@ -460,7 +460,6 @@ class App
         if ($this->initiated) {
             $m->init();
 
-            /* TODO: War aus nicht mehr bekanntem Grund auskommentiert, weil irgendetwas doppelt aufgerufen wurde */
             if ($this->currentTask) {
                 $m->initTask($this->currentTask);
             }
