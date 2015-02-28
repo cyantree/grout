@@ -9,8 +9,9 @@ class UiElement
     public $attributes;
     public $contents;
 
-    public $escapeContent;
-    public $quickClose;
+    public $escapeContent = false;
+    public $quickClose = true;
+    public $html5 = false;
 
     public $type;
 
@@ -111,7 +112,12 @@ class UiElement
 
         } elseif ($this->tag) {
             if ($this->quickClose) {
-                $cnt .= ' />';
+                if ($this->html5) {
+                    $cnt .= '>';
+
+                } else {
+                    $cnt .= ' />';
+                }
 
             } else {
                 $cnt .= '></' . $this->tag . '>';

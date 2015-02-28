@@ -13,6 +13,23 @@ class Ui
     /** @var array */
     public $currentForm;
 
+    public $html5 = false;
+
+    public function element(
+        $tag = null,
+        $attributes = null,
+        $contents = null,
+        $escapeContent = false,
+        $quickClose = true,
+        $metadata = array()
+    )
+    {
+        $el = new UiElement($tag, $attributes, $contents, $escapeContent, $quickClose, $metadata);
+        $el->html5 = $this->html5;
+
+        return $el;
+    }
+
     public function label($text, $element = null, $parameters = null)
     {
         if (is_string($element)) {
@@ -24,7 +41,7 @@ class Ui
 
         $escape = ArrayTools::get($parameters, 'escape', true);
 
-        $el = new UiElement('label', null, $text, $escape);
+        $el = $this->element('label', null, $text, $escape);
         $el->type = 'Label';
 
         /** @var $element UiElement */
@@ -58,10 +75,10 @@ class Ui
             && ($element->attributes['type'] == 'checkbox' || $element->attributes['type'] == 'radio');
 
         if ($isCheckboxOrRadioButton) {
-            return new UiElement(null, null, array('element' => $element ? $element : $elementContent, 'label' => $el));
+            return $this->element(null, null, array('element' => $element ? $element : $elementContent, 'label' => $el));
 
         } else {
-            return new UiElement(null, null, array('label' => $el, 'element' => $element ? $element : $elementContent));
+            return $this->element(null, null, array('label' => $el, 'element' => $element ? $element : $elementContent));
         }
     }
 
@@ -69,7 +86,7 @@ class Ui
     {
         $attributes = array('src' => $source, 'alt' => $alt);
 
-        $element = new UiElement('img', $attributes);
+        $element = $this->element('img', $attributes);
 
         $this->processGenericParameters($element, $parameters);
 
@@ -89,7 +106,7 @@ class Ui
 
         $escapeTitle = ArrayTools::get($parameters, 'escapeTitle', true) == 1;
 
-        $element = new UiElement('a', $attributes, $title, $escapeTitle);
+        $element = $this->element('a', $attributes, $title, $escapeTitle);
 
         $this->processGenericParameters($element, $parameters);
 
@@ -102,7 +119,7 @@ class Ui
             $action = '.';
         }
 
-        $el = new UiElement('form', array('action' => $action, 'method' => $method,), '[[__CONTENT__]]');
+        $el = $this->element('form', array('action' => $action, 'method' => $method,), '[[__CONTENT__]]');
         $el->type = 'Form';
 
         if ($method == 'file') {
@@ -138,7 +155,7 @@ class Ui
 
     public function checkbox($name, $value = 1, $checked = false, $parameters = array())
     {
-        $el = new UiElement('input', array('type' => 'checkbox'));
+        $el = $this->element('input', array('type' => 'checkbox'));
         $el->type = 'Checkbox';
 
         if ($checked !== false
@@ -159,7 +176,7 @@ class Ui
 
     public function selectOption($value, $label, $selected = false, $parameters = array())
     {
-        $el = new UiElement('option', array('value' => $value), $label);
+        $el = $this->element('option', array('value' => $value), $label);
         $el->type = 'SelectOption';
 
         if ($selected === true
@@ -189,7 +206,7 @@ class Ui
 
     public function button($name, $value = null, $parameters = null)
     {
-        $el = new UiElement('input', array('type' => 'button', 'name' => $name, 'value' => $value));
+        $el = $this->element('input', array('type' => 'button', 'name' => $name, 'value' => $value));
         $el->type = 'Button';
 
         if ($parameters) {
@@ -224,7 +241,7 @@ class Ui
             }
         }
 
-        $el = new UiElement('select', null, $options);
+        $el = $this->element('select', null, $options);
         $el->type = 'Select';
 
         if ($name) {
@@ -249,7 +266,7 @@ class Ui
 
     public function radioButton($name, $value = 1, $selected = false, $parameters = array())
     {
-        $el = new UiElement('input', array('type' => 'radio'));
+        $el = $this->element('input', array('type' => 'radio'));
         $el->type = 'RadioButton';
 
         if ($selected === true || strval($value) === strval($selected)) {
@@ -267,7 +284,7 @@ class Ui
 
     public function textInput($name, $value = '', $maxLength = 128, $parameters = null)
     {
-        $el = new UiElement('input', array('type' => 'text'));
+        $el = $this->element('input', array('type' => 'text'));
         $el->type = 'TextInput';
 
         if ($name) {
@@ -319,7 +336,7 @@ class Ui
 
     public function hiddenInput($name, $value = '', $parameters = null)
     {
-        $el = new UiElement('input', array('type' => 'hidden'));
+        $el = $this->element('input', array('type' => 'hidden'));
         $el->type = 'HiddenInput';
 
         if ($name) {
@@ -354,7 +371,7 @@ class Ui
 
     public function textArea($name, $value = '', $parameters = null)
     {
-        $el = new UiElement('textarea', array('cols' => '30', 'rows' => '5', 'name' => $name), StringTools::escapeHtml(
+        $el = $this->element('textarea', array('cols' => '30', 'rows' => '5', 'name' => $name), StringTools::escapeHtml(
             $value
         ));
         $el->type = 'TextArea';
@@ -410,7 +427,7 @@ class Ui
         if ($isStatusBag) {
             /** @var $status StatusBag */
 
-            $element = new UiElement('div', array('class' => 'GroutStatusBox'));
+            $element = $this->element('div', array('class' => 'GroutStatusBox'));
             $this->processGenericParameters($element, $parameters);
 
             $c = '';
@@ -438,7 +455,7 @@ class Ui
             $element->contents = $c;
 
         } else {
-            $element = new UiElement('div', array('class' => 'GroutStatusBox'), $status);
+            $element = $this->element('div', array('class' => 'GroutStatusBox'), $status);
             $this->processGenericParameters($element, $parameters);
 
         }
@@ -546,18 +563,18 @@ class Ui
             return null;
         }
 
-        $el = new UiElement('div', array('class' => 'status ' . $class));
+        $el = $this->element('div', array('class' => 'status ' . $class));
         if (is_string($text)) {
-            $el->contents = array(new UiElement('p', null, $text));
+            $el->contents = array($this->element('p', null, $text));
 
         } elseif (is_array($text)) {
             $el->contents = array();
             foreach ($text as $t) {
-                array_push($el->contents, new UiElement('p', null, $t));
+                array_push($el->contents, $this->element('p', null, $t));
             }
 
         } else {
-            $el->contents = array(new UiElement('p', null, strval($text)));
+            $el->contents = array($this->element('p', null, strval($text)));
         }
 
         return $el;
@@ -631,7 +648,7 @@ class Ui
         $link = StringTools::escapeHtml($link);
 
         $s = '';
-        $el = new UiElement('div', array('class' => 'GroutPageSelector'));
+        $el = $this->element('div', array('class' => 'GroutPageSelector'));
 
         if ($currentPage > 1) {
             $s .= '<a class="previousPage' . $additionalLinkClasses . '" href="' . str_replace($pagePlaceholder, $currentPage - 1, $link) . '">‹</a>';
