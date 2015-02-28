@@ -11,8 +11,8 @@ class Route
 {
     public $id;
     public $enabled = true;
-    public $matchUrl;
-    public $permaUrl;
+    private $matchUrl;
+    private $permaUrl;
 
     public $methods;
 
@@ -50,6 +50,16 @@ class Route
             $this->setMatchUrl($this->matchUrl);
             $this->setPermaUrl($this->permaUrl);
         }
+    }
+
+    public function getPermaUrl()
+    {
+        return $this->permaUrl;
+    }
+
+    public function getMatchUrl()
+    {
+        return $this->matchUrl;
     }
 
     public function setPermaUrl($url)
