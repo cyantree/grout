@@ -59,8 +59,6 @@ class Module extends Component
         $p->enabled = $enabled;
         $this->routes[$id] = $p;
 
-        $p->init();
-
         return $p;
     }
 
@@ -73,8 +71,6 @@ class Module extends Component
         $p->module = $this;
         $p->enabled = $enabled;
         $this->routes[] = $p;
-
-        $p->init();
 
         return $p;
     }

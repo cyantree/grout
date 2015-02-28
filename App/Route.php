@@ -12,7 +12,9 @@ class Route
     public $id;
     public $enabled = true;
     private $matchUrl;
+    private $matchUrlContextString;
     private $permaUrl;
+    private $permaUrlContextString;
 
     public $methods;
 
@@ -38,50 +40,60 @@ class Route
 
     public function __construct($url, $data = null, $priority = 0)
     {
-        $this->matchUrl = $this->permaUrl = $url;
+        $this->matchUrlContextString = $this->permaUrlContextString = $url;
         $this->priority = $priority;
         $this->data = new ArrayFilter($data);
         $this->events = new Events();
     }
 
-    public function init()
-    {
-        if ($this->page) {
-            $this->setMatchUrl($this->matchUrl);
-            $this->setPermaUrl($this->permaUrl);
-        }
-    }
-
     public function getPermaUrl()
     {
+        if ($this->permaUrl === null) {
+            $this->permaUrl = $this->decodeUrlContextString($this->permaUrlContextString);
+        }
+
         return $this->permaUrl;
     }
 
     public function getMatchUrl()
     {
+        if ($this->matchUrl === null) {
+            $this->matchUrl = $this->decodeUrlContextString($this->matchUrlContextString);
+        }
+
         return $this->matchUrl;
     }
 
     public function setPermaUrl($url)
     {
-        if ($url === null || $url === $this->matchUrl) {
+        if ($url === null || $url === $this->matchUrlContextString) {
             $this->permaUrl = $this->matchUrl;
+            $this->permaUrlContextString = $this->matchUrlContextString;
+
             return;
         }
 
-        $context = $this->module->app->decodeContext($url, $this->module, $this->plugin);
+        $this->permaUrl = null;
+        $this->permaUrlContextString = $url;
+    }
 
-        $this->permaUrl = '';
+    private function decodeUrlContextString($contextString)
+    {
+        $url = '';
+
+        $context = $this->module->app->decodeContext($contextString, $this->module, $this->plugin);
 
         if ($context->plugin) {
             // TODO: Plugins should also have urlPrefix
-            $this->permaUrl .= $context->module->urlPrefix;
+            $url .= $context->module->urlPrefix;
 
         } elseif ($context->module) {
-            $this->permaUrl .= $context->module->urlPrefix;
+            $url .= $context->module->urlPrefix;
         }
 
-        $this->permaUrl .= $context->uri;
+        $url .= $context->uri;
+
+        return $url;
     }
 
     public function setMatchUrl($url)
@@ -92,26 +104,15 @@ class Route
             $this->methods = ArrayTools::convertToKeyArray(explode(',', strtoupper($urlData[1])));
         }
 
-        $context = $this->module->app->decodeContext($url, $this->module, $this->plugin);
-
-        $this->matchUrl = '';
-
-        if ($context->plugin) {
-            // TODO: Plugins should also have urlPrefix
-            $this->matchUrl .= $context->module->urlPrefix;
-
-        } elseif ($context->module) {
-            $this->matchUrl .= $context->module->urlPrefix;
-        }
-
-        $this->matchUrl .= $context->uri;
+        $this->matchUrlContextString = $this->decodeUrlContextString($url);
+        $this->matchUrl = null;
         $this->matchData = null;
     }
 
     public function getMatchData()
     {
-        if (!$this->matchData) {
-            $this->matchData = AppTools::decodePageUrlString($this->matchUrl);
+        if ($this->matchData === null) {
+            $this->matchData = AppTools::decodePageUrlString($this->getMatchUrl());
         }
 
         return $this->matchData;
@@ -145,16 +146,16 @@ class Route
         return array('matches' => false, 'vars' => null);
     }
 
-    public function getUrl($arguments = null, $absoluteURL = true, $parameters = null, $escapeArguments = true)
+    public function getUrl($arguments = null, $absoluteUrl = true, $parameters = null, $escapeArguments = true)
     {
-        $url = $this->permaUrl;
+        $url = $this->getPermaUrl();
 
         $url = AppTools::encodePageUrlString($url, $arguments, $escapeArguments);
         if ($parameters != null) {
             $url .= StringTools::getQueryString($parameters);
         }
 
-        if ($absoluteURL) {
+        if ($absoluteUrl) {
             $url = $this->module->app->url . $url;
         }
 
