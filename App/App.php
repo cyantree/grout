@@ -193,6 +193,8 @@ class App
 
                     $route->registeredInApp = true;
                 }
+
+                $module->routesChanged = false;
             }
         }
 
