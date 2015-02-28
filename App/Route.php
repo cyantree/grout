@@ -18,8 +18,6 @@ class Route
 
     private $matchData;
 
-//    public $callback;
-
     /** @var ArrayFilter */
     public $data;
 
@@ -51,49 +49,7 @@ class Route
         if ($this->page) {
             $this->setMatchUrl($this->matchUrl);
             $this->setPermaUrl($this->permaUrl);
-
-//            $data = AppTools::decodeUri($this->matchUrl, $this->module->app, $this->module, $this->plugin);
-//
-//            $url = '';
-//            if($data[1]){
-//                $url .= $data[1]->urlPrefix;
-//            }elseif($data[0]){
-//                $url .= $data[0]->urlPrefix;
-//            }
-//            $matchUrl = $url.$data[2];
-//
-//            if($this->permaUrl === null || $this->permaUrl === $this->matchUrl){
-//                $permaUrl = $matchUrl;
-//            }else{
-//                $data = AppTools::decodeUri($this->permaUrl, $this->module->app, $this->module, $this->plugin);
-//
-//                $url = '';
-//                if($data[1]){
-//                    $url .= $data[1]->urlPrefix;
-//                }elseif($data[0]){
-//                    $url .= $data[0]->urlPrefix;
-//                }
-//                $permaUrl = $url.$data[2];
-//            }
-
-//            if(substr($matchUrl, strlen($matchUrl) - 1, 1) !== '/'){
-//                $matchUrl .= '/';
-//            }
-
-//            $this->matchUrl = $matchUrl;
-//            $this->permaUrl = $permaUrl;
         }
-
-        // TODO: Weg >>
-//        $this->matchUrl = str_replace('prefix://', $this->module->urlPrefix, $this->matchUrl);
-//        $this->permaUrl = str_replace('prefix://', $this->module->urlPrefix, $this->permaUrl);
-//
-//        if (is_array($this->data)) {
-//            if (isset($this->data['_callback'])) {
-//                $this->callback = $this->data['_callback'];
-//                unset($this->data['_callback']);
-//            }
-//        }
     }
 
     public function setPermaUrl($url)
