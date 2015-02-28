@@ -467,11 +467,6 @@ class App
         $this->getComponentDefinition($type);
     }
 
-    public function importClass($class, $extension = '.php')
-    {
-        require_once($this->path . 'classes/' . $class . $extension);
-    }
-
     /** @return Module[] */
     public function getModulesByType($type)
     {
