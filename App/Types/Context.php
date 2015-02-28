@@ -26,14 +26,11 @@ class Context
     /** @var string */
     public $uri;
 
-    public $data;
-
-    public function __construct($uri = null, App $app = null, Module $module = null, Plugin $plugin = null, $data = null)
+    public function __construct($uri = null, App $app = null, Module $module = null, Plugin $plugin = null)
     {
         $this->uri = $uri;
         $this->app = $app;
         $this->module = $module;
         $this->plugin = $plugin;
-        $this->data = $data;
     }
 }
