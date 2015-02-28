@@ -52,7 +52,7 @@ class Module extends Component
     {
         $this->routesChanged = true;
 
-        $p = new Route($url, $data, $priority);
+        $p = new Route($url, $data, $priority + $this->priority);
         $p->id = $id;
         $p->page = $type ? $type : $this->defaultPageType;
         $p->module = $this;
@@ -66,7 +66,7 @@ class Module extends Component
     {
         $this->routesChanged = true;
 
-        $p = new Route($url, $data, $priority);
+        $p = new Route($url, $data, $priority + $this->priority);
         $p->page = $type ? $type : $this->defaultPageType;
         $p->module = $this;
         $p->enabled = $enabled;
@@ -171,7 +171,7 @@ class Module extends Component
         throw new \Exception('No configuration could be imported.');
     }
 
-    public function importPlugin($type, $config = null, $id = null)
+    public function importPlugin($type, $config = null, $id = null, $priority = 0)
     {
         if ($id === null) {
             $id = str_replace('\\', '', $type);
@@ -191,6 +191,7 @@ class Module extends Component
 
         /** @var $p Plugin */
         $p = new $class();
+        $p->priority = $priority;
         $p->definition = $definition;
         $p->config = $config;
         $p->module = $this;

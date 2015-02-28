@@ -178,25 +178,20 @@ class App
 
         foreach ($this->modules as $module) {
             if ($module->routesChanged) {
-                $modulePriority = $module->config->get('_priority', 0);
-
-                $keys = array_keys($module->routes);
-                foreach ($keys as $key) {
-                    $route = $module->routes[$key];
+                foreach ($module->routes as $name => $route) {
                     if ($route->registeredInApp) {
                         continue;
                     }
 
-                    $route->priority += $modulePriority;
+                    if (!isset($this->routes[$route->priority])) {
+                        $this->routes[$route->priority] = array($route);
+                        $routePrioritiesChanged = true;
+
+                    } else {
+                        $this->routes[$route->priority][] = $route;
+                    }
 
                     $route->registeredInApp = true;
-//                    $route->init();
-
-                    if (!isset($this->routes[$route->priority])) {
-                        $this->routes[$route->priority] = array();
-                        $routePrioritiesChanged = true;
-                    }
-                    $this->routes[$route->priority][] = $route;
                 }
             }
         }
@@ -432,12 +427,11 @@ class App
             $config = new ArrayFilter($config);
         }
 
-        $config->set('_priority', $priority);
-
         $class = $definition->class;
 
         /** @var $m Module */
         $m = new $class();
+        $m->priority = $priority;
         $m->definition = $definition;
         $m->events = new Events();
         $m->app = $this;

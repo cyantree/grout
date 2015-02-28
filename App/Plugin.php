@@ -21,7 +21,7 @@ class Plugin extends Component
 
     public function addNamedRoute($id, $url, $type = null, $data = null, $priority = 0, $enabled = true)
     {
-        $p = $this->module->addNamedRoute($id, $url, $type, $data, $priority, $enabled);
+        $p = $this->module->addNamedRoute($id, $url, $type, $data, $priority + $this->priority, $enabled);
         $p->plugin = $this;
 
         return $p;
@@ -29,7 +29,7 @@ class Plugin extends Component
 
     public function addRoute($url, $type = null, $data = null, $priority = 0, $enabled = true)
     {
-        $p = $this->module->addRoute($url, $type, $data, $priority, $enabled);
+        $p = $this->module->addRoute($url, $type, $data, $priority + $this->priority, $enabled);
         $p->plugin = $this;
 
         return $p;

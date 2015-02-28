@@ -8,4 +8,6 @@ class Component
 
     /** @var ComponentDefinition */
     public $definition;
+
+    public $priority = 0;
 }
