@@ -53,7 +53,7 @@ abstract class Content
 
     public function reset()
     {
-        $this->value = null;
+        $this->setValue(null);
     }
 
     protected function getErrorMessage($code)
