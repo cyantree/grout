@@ -1,27 +1,18 @@
 <?php
 namespace Cyantree\Grout\App;
 
-class ConsoleBootstrap
+class ConsoleBootstrap extends Bootstrap
 {
-    /** @var App */
-    public $app;
-
-    public $applicationPath;
-
-    public $assetDirectory = 'assets/';
-
-    public function __construct(App $app)
+    public function initApp()
     {
-        $this->app = $app;
-    }
-
-    public function init()
-    {
-        global $argv;
-
         $this->app->isConsole = true;
 
-        $this->setBasePaths();
+        parent::initApp();
+    }
+
+    public function createRequest()
+    {
+        global $argv;
 
         $r = new Request();
 
@@ -53,13 +44,5 @@ class ConsoleBootstrap
         $r->get->setData($get);
 
         return $r;
-    }
-
-    protected function setBasePaths()
-    {
-        // Set server base paths
-        $this->app->path = str_replace('\\', '/', realpath($this->applicationPath)) . '/';
-        $this->app->publicPath = str_replace('\\', '/', dirname($_SERVER['SCRIPT_FILENAME'])) . '/';
-        $this->app->publicAssetPath = $this->app->publicPath . $this->assetDirectory;
     }
 }
