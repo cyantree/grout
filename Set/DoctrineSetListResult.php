@@ -48,6 +48,8 @@ class DoctrineSetListResult extends SetListResult
 
     public function getAllEntites()
     {
+        $this->reader->resultsPerBatch = 0;
+
         $e = array();
 
         while ($entity = $this->getNextEntity()) {
