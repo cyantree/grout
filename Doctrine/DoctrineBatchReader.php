@@ -10,8 +10,8 @@ class DoctrineBatchReader
 
     public $usePaginator = true;
     public $resultsPerBatch = 500;
-    public $offset = 0;
-    public $limit = 0;
+    public $offset = 0; // TODO: Necessary? Will be retrieved from query
+    public $limit = 0; // TODO: Necessary? Will be retrieved from query
 
     private $countTotal = 0;
 
