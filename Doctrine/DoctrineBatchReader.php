@@ -21,6 +21,8 @@ class DoctrineBatchReader
 
     public $results;
 
+    public $hydrationMode = Query::HYDRATE_OBJECT;
+
     /** @var Query */
     private $query;
 
@@ -31,11 +33,18 @@ class DoctrineBatchReader
     {
         $this->clearEntitiesOnBatch();
 
+        if (!$this->moreBatchesAvailable) {
+            $this->index = 0;
+            $this->count = 0;
+            $this->results = array();
+            return;
+        }
+
         if (!$this->limit && !$this->resultsPerBatch && !$this->offset) {
             if (!$this->countTotal) {
                 $this->query->setFirstResult(null);
                 $this->query->setMaxResults(null);
-                $this->results = $this->query->getResult();
+                $this->results = $this->query->getResult($this->hydrationMode);
 
             } else {
                 $this->results = array();
@@ -64,7 +73,7 @@ class DoctrineBatchReader
                     }
 
                 } else {
-                    $this->results = $this->query->getResult();
+                    $this->results = $this->query->getResult($this->hydrationMode);
                 }
 
             } else {
