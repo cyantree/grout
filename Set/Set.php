@@ -260,6 +260,11 @@ abstract class Set
         throw new \Exception('Content ' . $name . ' does not exist.');
     }
 
+    public function hasContent($name)
+    {
+        return isset($this->contents[$name]);
+    }
+
     public function createNew()
     {
         $this->isNew = true;
