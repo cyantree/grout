@@ -2,6 +2,7 @@
 namespace Cyantree\Grout\App;
 
 use Cyantree\Grout\App\Config\ConfigContainer;
+use Cyantree\Grout\App\Types\ContentType;
 use Cyantree\Grout\App\Types\Context;
 use Cyantree\Grout\App\Types\ResponseCode;
 use Cyantree\Grout\DataStorage;
@@ -549,9 +550,22 @@ class App
 
         if ($this->currentTask) {
             /** @var $response Response */
-            $this->currentTask->page->parseError(ResponseCode::CODE_500, $reason);
+            try {
+                $this->currentTask->page->parseError(ResponseCode::CODE_500, $reason);
+
+            } catch (\Exception $e) {
+                try {
+                    $this->events->trigger('logException', $e);
+
+                } catch(\Exception $e) {
+
+                }
+
+                $this->currentTask->response->postContent('An unknown error occurred.', ContentType::TYPE_HTML, true);
+            }
 
         } else {
+            echo 'An unknown error occurred.';
             // TODO: Happens when parsing error occurred. Should be possible to show error page
         }
 
