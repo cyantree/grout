@@ -83,15 +83,20 @@ class Route
 
         $context = $this->module->app->decodeContext($contextString, $this->module, $this->plugin);
 
-        if ($context->plugin) {
-            // TODO: Plugins should also have urlPrefix
-            $url .= $context->module->urlPrefix;
+        if (substr($context->uri, 0, 1) == '/') {
+            $url .= substr($context->uri, 1);
 
-        } elseif ($context->module) {
-            $url .= $context->module->urlPrefix;
+        } else {
+            if ($context->plugin) {
+                // TODO: Plugins should also have urlPrefix
+                $url .= $context->module->urlPrefix;
+
+            } elseif ($context->module) {
+                $url .= $context->module->urlPrefix;
+            }
+
+            $url .= $context->uri;
         }
-
-        $url .= $context->uri;
 
         return $url;
     }
