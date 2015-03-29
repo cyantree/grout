@@ -83,7 +83,15 @@ class UiElement
 
             if ($this->attributes) {
                 foreach ($this->attributes as $atbName => $atbValue) {
-                    if ($atbValue !== null) {
+                    if ($atbValue === true) {
+                        if ($this->html5) {
+                            $cnt .= ' ' . $atbName;
+
+                        } else {
+                            $cnt .= ' ' . $atbName . '="' . $atbName . '"';
+                        }
+
+                    } elseif ($atbValue !== null) {
                         $cnt .= ' ' . $atbName . '="' . StringTools::escapeHtml($atbValue) . '"';
                     }
                 }
