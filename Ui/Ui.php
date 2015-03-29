@@ -162,7 +162,7 @@ class Ui
             && ($checked === true || (is_array($checked) && array_key_exists($value, $checked))
             || (!is_array($checked) && strval($checked) === strval($value)))
         ) {
-            $el->attributes['checked'] = 'checked';
+            $el->attributes['checked'] = true;
         }
         if ($name) {
             $el->attributes['name'] = $name;
@@ -183,7 +183,7 @@ class Ui
             || strval($selected) === strval($value)
             || (is_array($selected) && in_array($value, $selected))
         ) {
-            $el->attributes['selected'] = 'selected';
+            $el->attributes['selected'] = true;
         }
 
         $this->processGenericParameters($el, $parameters);
@@ -235,7 +235,7 @@ class Ui
             /** @var $o UiElement */
             foreach ($options as $o) {
                 if ($o->attributes['value'] === true || $value === strval($o->attributes['value'])) {
-                    $o->attributes['selected'] = 'selected';
+                    $o->attributes['selected'] = true;
                     break;
                 }
             }
@@ -257,7 +257,7 @@ class Ui
                 $el->attributes['size'] = $parameters['size'];
             }
             if (isset($parameters['multiple']) && $parameters['multiple']) {
-                $el->attributes['multiple'] = 'multiple';
+                $el->attributes['multiple'] = true;
             }
         }
 
@@ -270,7 +270,7 @@ class Ui
         $el->type = 'RadioButton';
 
         if ($selected === true || strval($value) === strval($selected)) {
-            $el->attributes['checked'] = 'checked';
+            $el->attributes['checked'] = true;
         }
         if ($name) {
             $el->attributes['name'] = $name;
@@ -312,7 +312,7 @@ class Ui
             }
 
             if (ArrayTools::get($parameters, 'readOnly')) {
-                $el->attributes['readonly'] = 'readonly';
+                $el->attributes['readonly'] = true;
             }
 
             $this->processGenericParameters($el, $parameters);
@@ -485,7 +485,7 @@ class Ui
             $element->attributes['placeholder'] = $attributes['placeholder'];
         }
         if (isset($attributes['required']) && $attributes['required']) {
-            $element->attributes['required'] = 'required';
+            $element->attributes['required'] = true;
         }
         if (isset($attributes['onkeypress'])) {
             $element->attributes['onkeypress'] = $attributes['onkeypress'];
@@ -522,7 +522,7 @@ class Ui
         }
 
         if (isset($attributes['disabled']) && $attributes['disabled']) {
-            $element->attributes['disabled'] = 'disabled';
+            $element->attributes['disabled'] = true;
         }
 
         if (isset($attributes['data'])) {
