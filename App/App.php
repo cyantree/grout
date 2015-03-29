@@ -214,7 +214,7 @@ class App
         // <<
         /** @var $foundRoute Route */
         $foundRoute = null;
-        $routeVars = array();
+        $foundRouteVars = array();
 
         foreach ($this->routes as $routePriorities) {
             foreach ($routePriorities as $route) {
@@ -229,28 +229,27 @@ class App
                     continue;
                 }
 
-                $event = $route->events->trigger('retrieved', null, array('task' => $task, 'route' => $route));
+                $routeVars = $res['vars'];
 
-                if ($event->data) {
-                    $foundRoute = $event->data;
+                $event = $route->events->trigger('retrieved', null, array('task' => $task, 'route' => $route, 'vars' => $routeVars));
+
+                if ($event->data === false) {
+                    continue;
+
+                } elseif (is_array($event->data)) {
+                    $route = $event->data['route'];
+                    $routeVars = isset($event->data['vars']) ? $event->data['vars'] : array();
+
+                } elseif ($event->data instanceof Route) {
+                    $route = $event->data;
                     $routeVars = array();
-                    break 2;
-                }
-
-                if ($route->data->has('onMatch')) {
-                    /** @var $onMatch callable */
-                    $onMatch = $route->data->get('onMatch');
-
-                    if (!$onMatch($task->request->url, $res['vars'])) {
-                        continue;
-                    }
                 }
 
                 if (($route->module && $route->module->routeRetrieved($task, $route))
                     || ($route->plugin && $route->plugin->routeRetrieved($task, $route))
                 ) {
                     $foundRoute = $route;
-                    $routeVars = $res['vars'];
+                    $foundRouteVars = $routeVars;
                     break 2;
                 }
             }
@@ -264,7 +263,7 @@ class App
 
         // Prepare route
         if ($foundRoute) {
-            $task->setRoute($foundRoute, $routeVars);
+            $task->setRoute($foundRoute, $foundRouteVars);
 
         } else {
             trigger_error('No matching route found for URL "' . $task->request->url . '"', E_USER_ERROR);
