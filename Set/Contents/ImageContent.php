@@ -201,6 +201,10 @@ class ImageContent extends Content
             return null;
         }
 
+        if ($this->saveDirectory === null) {
+            throw new \Exception('saveDirectory has to be specified.');
+        }
+
         if ($this->valueContainsExtension) {
             return $this->saveDirectory . $value;
 
@@ -213,6 +217,10 @@ class ImageContent extends Content
     {
         if (!$value) {
             return null;
+        }
+
+        if ($this->saveDirectory === null) {
+            throw new \Exception('saveDirectoryUrl has to be specified.');
         }
 
         if ($this->valueContainsExtension) {
