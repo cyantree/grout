@@ -7,6 +7,8 @@ class DataStorage
 {
     public $directory;
 
+    private $requestedStorages = array();
+
     public function __construct($directory)
     {
         $this->directory = $directory;
@@ -17,6 +19,8 @@ class DataStorage
         $id = rtrim(str_replace('\\', '/', $id), '/');
         $path = $this->directory . $id . '/';
 
+        $this->requestedStorages[$id] = false;
+
         return $path;
     }
 
@@ -25,7 +29,11 @@ class DataStorage
     {
         $id = rtrim(str_replace('\\', '/', $id), '/');
         $path = $this->directory . $id . '/';
-        FileTools::createDirectory($path);
+
+        if (!isset($this->requestedStorages[$id]) || !$this->requestedStorages[$id]) {
+            FileTools::createDirectory($path);
+            $this->requestedStorages[$id] = true;
+        }
 
         return $path;
     }
@@ -53,6 +61,7 @@ class DataStorage
     {
         $id = rtrim(str_replace('\\', '/', $id), '/');
         FileTools::deleteDirectory($this->directory . $id);
+        $this->requestedStorages[$id] = false;
     }
 
     public function deleteAllStorages()
@@ -63,8 +72,17 @@ class DataStorage
             foreach ($storages as $storage) {
                 if (is_dir($storage)) {
                     FileTools::deleteDirectory($storage);
+
+                    $this->requestedStorages[basename($storage)] = false;
                 }
             }
+        }
+    }
+
+    public function warmUp()
+    {
+        foreach ($this->requestedStorages as $storageId => $status) {
+            FileTools::createDirectory($this->directory . $storageId . '/');
         }
     }
 }
