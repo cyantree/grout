@@ -47,6 +47,10 @@ abstract class DoctrineSet extends Set
 
     public function loadById($id)
     {
+        if ($id === null || $id === '') {
+            return false;
+        }
+
         $e = $this->getEntityManager()->find($this->getEntityClass(), $id);
 
         if ($e) {
