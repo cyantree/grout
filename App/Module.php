@@ -48,11 +48,18 @@ class Module extends Component
     {
     }
 
+    private function calculateRoutePriority($routePriority)
+    {
+        $routePriority = min(max($routePriority, -499), 499);
+
+        return $this->priority * 1000 + $routePriority + 500;
+    }
+
     public function addNamedRoute($id, $url, $type = null, $data = null, $priority = 0, $enabled = true)
     {
         $this->routesChanged = true;
 
-        $p = new Route($url, $data, $priority + $this->priority);
+        $p = new Route($url, $data, $this->calculateRoutePriority($priority));
         $p->id = $id;
         $p->page = $type ? $type : $this->defaultPageType;
         $p->module = $this;
@@ -66,7 +73,7 @@ class Module extends Component
     {
         $this->routesChanged = true;
 
-        $p = new Route($url, $data, $priority + $this->priority);
+        $p = new Route($url, $data, $this->calculateRoutePriority($priority));
         $p->page = $type ? $type : $this->defaultPageType;
         $p->module = $this;
         $p->enabled = $enabled;
@@ -191,7 +198,7 @@ class Module extends Component
 
         /** @var $p Plugin */
         $p = new $class();
-        $p->priority = $priority;
+        $p->priority = max(min($priority, 9), 0);
         $p->definition = $definition;
         $p->config = $config;
         $p->module = $this;
