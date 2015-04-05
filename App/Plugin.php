@@ -19,9 +19,16 @@ class Plugin extends Component
     {
     }
 
+    private function calculateRoutePriority($routePriority)
+    {
+        $routePriority = min(max($routePriority, -49), 49);
+
+        return $this->priority * 100 + $routePriority + 50;
+    }
+
     public function addNamedRoute($id, $url, $type = null, $data = null, $priority = 0, $enabled = true)
     {
-        $p = $this->module->addNamedRoute($id, $url, $type, $data, $priority + $this->priority, $enabled);
+        $p = $this->module->addNamedRoute($id, $url, $type, $data, $this->calculateRoutePriority($priority), $enabled);
         $p->plugin = $this;
 
         return $p;
@@ -29,7 +36,7 @@ class Plugin extends Component
 
     public function addRoute($url, $type = null, $data = null, $priority = 0, $enabled = true)
     {
-        $p = $this->module->addRoute($url, $type, $data, $priority + $this->priority, $enabled);
+        $p = $this->module->addRoute($url, $type, $data, $this->calculateRoutePriority($priority), $enabled);
         $p->plugin = $this;
 
         return $p;
