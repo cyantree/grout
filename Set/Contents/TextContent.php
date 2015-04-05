@@ -39,6 +39,11 @@ class TextContent extends Content
         return $errors->get($code);
     }
 
+    protected function isEmpty()
+    {
+        return !mb_strlen($this->value);
+    }
+
     public function getValue()
     {
         return $this->value === null ? '' : $this->value;
@@ -46,12 +51,15 @@ class TextContent extends Content
 
     public function check()
     {
-        $l = mb_strlen($this->value);
+        if ($this->isEmpty()) {
+            if ($this->required) {
+                $this->postError('invalid');
+            }
 
-        if ($this->required && !$l) {
-            $this->postError('invalid');
             return;
         }
+
+        $length = mb_strlen($this->value);
 
         if ($this->pattern !== null && !preg_match($this->pattern, $this->value)) {
             $this->postError('invalidPattern');
@@ -68,19 +76,19 @@ class TextContent extends Content
         }
 
         if ($this->minLength || $this->maxLength) {
-            $code = $length = null;
+            $code = $errorLength = null;
 
-            if ($this->minLength && $l < $this->minLength) {
+            if ($this->minLength && $length < $this->minLength) {
                 $code = 'minLength';
-                $length = $this->minLength;
+                $errorLength = $this->minLength;
 
-            } elseif ($this->maxLength && $l > $this->maxLength) {
+            } elseif ($this->maxLength && $length > $this->maxLength) {
                 $code = 'maxLength';
-                $length = $this->maxLength;
+                $errorLength = $this->maxLength;
             }
 
             if ($code) {
-                $this->postError($code, array('%length%' => $length));
+                $this->postError($code, array('%length%' => $errorLength));
                 return;
             }
         }
