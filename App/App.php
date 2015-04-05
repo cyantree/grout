@@ -246,7 +246,7 @@ class App
                 }
 
                 if (($route->module && $route->module->routeRetrieved($task, $route))
-                    || ($route->plugin && $route->plugin->routeRetrieved($task, $route))
+                        || ($route->plugin && $route->plugin->routeRetrieved($task, $route))
                 ) {
                     $foundRoute = $route;
                     $foundRouteVars = $routeVars;
@@ -504,6 +504,11 @@ class App
         }
 
         return $path;
+    }
+
+    public function getPublicPath($path = '')
+    {
+        return $this->publicPath . $path;
     }
 
     public function getPublicAssetPath($path = '')
