@@ -12,6 +12,11 @@ class TemporaryFile
 
     public $storeMetadata;
 
+    public function getContent()
+    {
+        return file_get_contents($this->path);
+    }
+
     public function setContent($content)
     {
         file_put_contents($this->path, $content);
@@ -60,8 +65,8 @@ class TemporaryFile
     {
         if ($this->storeMetadata) {
             file_put_contents(
-                $this->path . '.dat',
-                serialize(array('filename' => $this->originalFilename, 'metadata' => $this->metadata))
+                    $this->path . '.dat',
+                    serialize(array('filename' => $this->originalFilename, 'metadata' => $this->metadata))
             );
         }
 
