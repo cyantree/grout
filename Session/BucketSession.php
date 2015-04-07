@@ -6,12 +6,12 @@ use Cyantree\Grout\Filter\ArrayFilter;
 use Cyantree\Grout\Tools\ArrayTools;
 use Cyantree\Grout\Tools\StringTools;
 
-class BucketSession
+class BucketSession extends Session
 {
-    /** @var \Cyantree\Grout\Bucket\Bucket */
+    /** @var Bucket */
     public $bucketBase;
 
-    /** @var \Cyantree\Grout\Bucket\Bucket */
+    /** @var Bucket */
     public $bucket;
 
     public $id;
@@ -58,7 +58,7 @@ class BucketSession
         $this->isNew = !$this->bucket;
 
         if (!$this->isNew) {
-            if ($checkSession && !$this->checkSession()) {
+            if ($checkSession && !$this->isValid()) {
                 $this->reset();
 
             } else {
@@ -146,7 +146,7 @@ class BucketSession
         $this->id = null;
     }
 
-    public function checkSession()
+    public function isValid()
     {
         $f = new ArrayFilter($this->bucket->data);
 

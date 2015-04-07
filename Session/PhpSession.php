@@ -4,7 +4,7 @@ namespace Cyantree\Grout\Session;
 use Cyantree\Grout\Tools\ArrayTools;
 use Cyantree\Grout\Tools\StringTools;
 
-class PhpSession
+class PhpSession extends Session
 {
     public $id;
     public $useCookie = true;
@@ -61,7 +61,7 @@ class PhpSession
         }
 
         if (!$this->isNew) {
-            if ($checkSession && !$this->checkSession()) {
+            if ($checkSession && !$this->isValid()) {
                 $this->reset();
 
             } else {
@@ -105,7 +105,7 @@ class PhpSession
 
         session_destroy();
 
-        if ($this->useCookie) {
+        if ($this->useCookie && !headers_sent()) {
             unset($_COOKIE[$this->name]);
             setcookie(
                 $this->name,
@@ -121,7 +121,7 @@ class PhpSession
         $this->isNew = true;
     }
 
-    public function checkSession()
+    public function isValid()
     {
         return ArrayTools::get($_SESSION, '_name') == $this->name
         && isset($_SESSION['_lastAction'])
