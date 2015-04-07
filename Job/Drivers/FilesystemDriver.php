@@ -16,18 +16,15 @@ class FilesystemDriver extends DriverBase
     /** @return Job[] */
     public function getJobs()
     {
-        $dir = opendir($this->directory);
+        $files = glob($this->directory . '*.job');
+        $files = array_splice($files, 0, 50);
 
         $jobs = array();
 
-        while (($entry = readdir($dir)) !== false) {
-            if (strrpos($entry, '.job') != strlen($entry) - 4) {
-                continue;
-            }
-
+        foreach ($files as $file) {
             /** @var Job $job */
-            $job = unserialize(file_get_contents($this->directory . $entry));
-            $job->internalId = $entry;
+            $job = unserialize(file_get_contents($file));
+            $job->internalId = basename($file);
 
             $jobs[] = $job;
         }
