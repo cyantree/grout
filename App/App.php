@@ -159,7 +159,7 @@ class App
         }
 
         if ($this->currentTask) {
-            $this->otherActiveTasks[] = $task;
+            $this->otherActiveTasks[] = $this->currentTask;
         }
 
         $this->currentTask = $task;
@@ -178,9 +178,9 @@ class App
         $routePrioritiesChanged = false;
 
         foreach ($this->modules as $module) {
-            if ($module->routesChanged) {
+            if ($module->routesChanged && $module->routesEnabled) {
                 foreach ($module->routes as $name => $route) {
-                    if ($route->registeredInApp) {
+                    if ($route->registeredInApp || !$route->enabled) {
                         continue;
                     }
 
