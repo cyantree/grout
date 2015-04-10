@@ -191,13 +191,17 @@ class GroutFactory
             $tools = array($tools);
         }
 
-        foreach ($tools as $tool) {
-            $this->events->join($tool, function(Event $e, GroutFactory $providerFactory)
+        foreach ($tools as $providerName => $targetName) {
+            if (is_integer($providerName)) {
+                $providerName = $targetName;
+            }
+
+            $this->events->join($targetName, function(Event $e) use ($providerFactory, $providerName)
             {
                 if (!$e->data) {
-                    $e->data = $providerFactory->getTool($e->type);
+                    $e->data = $providerFactory->getTool($providerName);
                 }
-            }, $providerFactory);
+            });
         }
     }
 }
