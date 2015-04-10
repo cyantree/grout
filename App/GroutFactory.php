@@ -53,7 +53,7 @@ class GroutFactory
                 $factoryContext = $module->id;
 
             } elseif ($app->currentTask
-                && get_class($app->currentTask->module) == 'Grout\\' . $activeModuleTypeOrInstance
+                    && get_class($app->currentTask->module) == $app->getComponentDefinition($activeModuleTypeOrInstance)->class
             ) {
                 $module = $app->currentTask->module;
                 $factoryContext = $module->id;
