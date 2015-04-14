@@ -4,6 +4,7 @@ namespace Cyantree\Grout\Set\Contents;
 use Cyantree\Grout\Filter\ArrayFilter;
 use Cyantree\Grout\Set\Content;
 use Cyantree\Grout\Set\ContentRenderers\CheckboxContentRenderer;
+use Cyantree\Grout\Set\Set;
 
 class CheckboxContent extends Content
 {
@@ -41,12 +42,12 @@ class CheckboxContent extends Content
 
     public function populate($data, $files)
     {
-        /*
-         * TODO
-         * Overridden. Doesn't use has() because property doesn't get transfered at all
-         * when not checking a checkbox in a html form. Maybe this could be configured later.
-         */
-        $this->setValue($data->get($this->name));
+        if ($this->set->format == Set::FORMAT_HTML) {
+            $this->setValue($data->get($this->name));
+
+        } else {
+            parent::populate($data, $files);
+        }
     }
 
     public function check()
