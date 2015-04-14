@@ -52,11 +52,13 @@ class ConfigContainer
         $method = 'configure' . $id;
 
         $config = $this->defaultConfigs[$id];
-
         foreach ($this->appConfigs as $priority) {
             foreach ($priority as $configFile) {
                 if (method_exists($configFile, $method)) {
                     $configFile->{$method}($config['config'], $config['context']);
+
+                } elseif (method_exists($configFile, 'configure')) {
+                    $configFile->configure($id, $config['config'], $config['context']);
                 }
             }
         }
