@@ -272,4 +272,19 @@ class Module extends Component
     {
         return '#' . $this->id . '::' . $uri;
     }
+
+    public function setDefaultConfig($config)
+    {
+        $this->app->configs->setDefaultConfig($this->id, $config, $this);
+    }
+
+    private $cachedModuleConfig;
+    public function getConfig()
+    {
+        if ($this->cachedModuleConfig === null) {
+            $this->cachedModuleConfig = $this->app->configs->getConfig($this->id);
+        }
+
+        return $this->cachedModuleConfig;
+    }
 }
