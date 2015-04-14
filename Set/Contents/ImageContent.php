@@ -219,7 +219,7 @@ class ImageContent extends Content
             return null;
         }
 
-        if ($this->saveDirectory === null) {
+        if ($this->saveDirectoryUrl === null) {
             throw new \Exception('saveDirectoryUrl has to be specified.');
         }
 
