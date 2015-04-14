@@ -23,8 +23,7 @@ class Response
 
         $this->headersSent = true;
 
-        header('HTTP/1.1 ' . $this->code);
-        header('Content-Type: ' . $this->contentType);
+        header('Content-Type: ' . $this->contentType, null, intval($this->code));
         if ($this->contentLength) {
             header('Content-Length: ' . $this->contentLength);
         }
