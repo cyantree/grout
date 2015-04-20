@@ -210,51 +210,8 @@ class App
         $this->events->trigger('log0', 'Request: ' . $task->request->url);
         $this->events->trigger('log', 'Find matching routes');
 
-        // Get matching route
-        // <<
-        /** @var $foundRoute Route */
-        $foundRoute = null;
-        $foundRouteVars = array();
 
-        foreach ($this->routes as $routePriorities) {
-            foreach ($routePriorities as $route) {
-                /** @var $route Route */
-                if (!$route->enabled || !$route->module->routesEnabled) {
-                    continue;
-                }
-
-                $res = $route->matches($task->request->url, $task->request->method);
-
-                if (!$res['matches']) {
-                    continue;
-                }
-
-                $routeVars = $res['vars'];
-
-                $event = $route->events->trigger('retrieved', null, array('task' => $task, 'route' => $route, 'vars' => $routeVars));
-
-                if ($event->data === false) {
-                    continue;
-
-                } elseif (is_array($event->data)) {
-                    $route = $event->data['route'];
-                    $routeVars = isset($event->data['vars']) ? $event->data['vars'] : array();
-
-                } elseif ($event->data instanceof Route) {
-                    $route = $event->data;
-                    $routeVars = array();
-                }
-
-                if (($route->module && $route->module->routeRetrieved($task, $route))
-                        || ($route->plugin && $route->plugin->routeRetrieved($task, $route))
-                ) {
-                    $foundRoute = $route;
-                    $foundRouteVars = $routeVars;
-                    break 2;
-                }
-            }
-        }
-        // >>
+        $routeData = $this->retrieveRouteByUrl($task, $task->request->url, $task->request->method);
 
         // Set back request url to compatible type
 //        if ($task->request->url == '/') {
@@ -262,66 +219,14 @@ class App
 //        }
 
         // Prepare route
-        if ($foundRoute) {
-            $task->setRoute($foundRoute, $foundRouteVars);
-
-        } else {
+        if (!$routeData) {
             trigger_error('No matching route found for URL "' . $task->request->url . '"', E_USER_ERROR);
+
+            return $task->response;
+
         }
 
-        $this->events->trigger('log', 'Prepare parsing');
-
-        if (strpos($task->route->page, '@')) {
-            $type = explode('@', $task->route->page, 2);
-            $class = $type[0];
-            $action = $type[1];
-
-        } else {
-            $class = $task->route->page;
-            $action = 'parseTask';
-        }
-
-        $context = $this->decodeContext($class, $task->route->module, $task->route->plugin);
-        if ($context->pluginDefinition) {
-            $class = $context->pluginDefinition->namespace . $context->uri;
-
-        } elseif ($context->moduleDefinition) {
-            $class = $context->moduleDefinition->namespace . $context->uri;
-
-        } else {
-            throw new \Exception('No page class found for "' . $task->request->url . '" with "' . $task->route->page . '"');
-        }
-
-        $task->setPage(new $class());
-
-//        if (isset($task->page->callback)) {
-//            call_user_func($task->page->callback, array($task));
-//        }
-
-        $this->events->trigger('beforeParsing', $task);
-
-        foreach ($this->modules as $module) {
-            $module->beforeParsing($task);
-        }
-
-        if (!$task->page) {
-            trigger_error('No page was set', E_USER_ERROR);
-        }
-
-        $this->events->trigger('log', 'Parse request');
-
-        $task->page->task = $task;
-        $task->page->beforeParsing();
-        $task->page->{$action}();
-        $task->page->afterParsing();
-
-        $this->events->trigger('afterParsing', $task);
-
-        foreach ($this->modules as $module) {
-            $module->afterParsing($task);
-        }
-
-        $this->events->trigger('log', 'Request parsed');
+        $this->redirectTaskToRoute($task, $routeData['route'], $routeData['vars']);
 
         // Destroy task
         foreach ($this->modules as $module) {
@@ -589,6 +494,58 @@ class App
         }
     }
 
+    private function retrieveRouteByUrl(Task $task, $url, $method = 'GET')
+    {
+        /** @var $foundRoute Route */
+        $foundRoute = null;
+        $foundRouteVars = array();
+
+        foreach ($this->routes as $routePriorities) {
+            foreach ($routePriorities as $route) {
+                /** @var $route Route */
+                if (!$route->enabled || !$route->module->routesEnabled) {
+                    continue;
+                }
+
+                $res = $route->matches($url, $method);
+
+                if (!$res['matches']) {
+                    continue;
+                }
+
+                $routeVars = $res['vars'];
+
+                $event = $route->events->trigger('retrieved', null, array('task' => $task, 'route' => $route, 'vars' => $routeVars));
+
+                if ($event->data === false) {
+                    continue;
+
+                } elseif (is_array($event->data)) {
+                    $route = $event->data['route'];
+                    $routeVars = isset($event->data['vars']) ? $event->data['vars'] : array();
+
+                } elseif ($event->data instanceof Route) {
+                    $route = $event->data;
+                    $routeVars = array();
+                }
+
+                if (($route->module && $route->module->routeRetrieved($task, $route))
+                        || ($route->plugin && $route->plugin->routeRetrieved($task, $route))
+                ) {
+                    $foundRoute = $route;
+                    $foundRouteVars = $routeVars;
+                    break 2;
+                }
+            }
+        }
+
+        if ($foundRoute) {
+            return array('route' => $foundRoute, 'vars' => $foundRouteVars);
+        }
+
+        return null;
+    }
+
     public function redirectTaskToUrl(Task $task, $url)
     {
         $task->response->code = ResponseCode::CODE_302;
@@ -596,9 +553,25 @@ class App
         $task->response->content = '';
     }
 
-    public function redirectTaskToRoute(Task $task, Route $route)
+    public function redirectTaskToAppUrl(Task $task, $url, $method = 'GET')
     {
-        $task->setRoute($route);
+        $routeData = $this->retrieveRouteByUrl($task, $url, $method);
+
+        if (!$routeData) {
+            trigger_error('No matching route found for URL "' . $url . '"', E_USER_ERROR);
+
+            return $task->response;
+
+        } else {
+            $this->redirectTaskToRoute($task, $routeData['route'], $routeData['vars']);
+        }
+    }
+
+    public function redirectTaskToRoute(Task $task, Route $route, $routeVars = null)
+    {
+        $this->events->trigger('log', 'Prepare parsing');
+
+        $task->setRoute($route, $routeVars);
 
         if (strpos($task->route->page, '@')) {
             $type = explode('@', $task->route->page, 2);
@@ -623,14 +596,28 @@ class App
 
         $task->setPage(new $class());
 
+        $this->events->trigger('beforeParsing', $task);
+
+        foreach ($this->modules as $module) {
+            $module->beforeParsing($task);
+        }
+
         if (!$task->page) {
-            throw new \Exception('No page was set');
+            throw  new \Exception('No page was set');
         }
 
         $task->page->task = $task;
         $task->page->beforeParsing();
         $task->page->{$action}();
         $task->page->afterParsing();
+
+        $this->events->trigger('afterParsing', $task);
+
+        foreach ($this->modules as $module) {
+            $module->afterParsing($task);
+        }
+
+        $this->events->trigger('log', 'Request parsed');
     }
 
     public function redirectTaskToPage(Task $task, Page $page, $action = 'parseTask', Context $context = null)
