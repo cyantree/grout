@@ -1,7 +1,6 @@
 <?php
 namespace Cyantree\Grout\App;
 
-use Cyantree\Grout\App\Types\ResponseCode;
 use Cyantree\Grout\AutoLoader;
 use Cyantree\Grout\Event\Events;
 use Cyantree\Grout\Filter\ArrayFilter;
@@ -257,15 +256,13 @@ class Module extends Component
         $activated = false;
         $priority = 0;
 
-        if ($code == ResponseCode::CODE_404) {
+        if ($code == 404) {
             $url = '%%url,.*%%';
             $activated = true;
             $priority = -1;
         }
 
-        $codeDigit = substr($code, 0, 3);
-
-        return $this->addNamedRoute('GroutError' . $codeDigit, $url, $page, $f->getData(), $priority, $activated);
+        return $this->addNamedRoute('GroutError' . $code, $url, $page, $f->getData(), $priority, $activated);
     }
 
     public function generateContextString($uri)

@@ -2,11 +2,10 @@
 namespace Cyantree\Grout\App;
 
 use Cyantree\Grout\App\Types\ContentType;
-use Cyantree\Grout\App\Types\ResponseCode;
 
 class Response
 {
-    public $code = ResponseCode::CODE_200;
+    public $code = 200;
 
     public $content;
     public $contentType = ContentType::TYPE_HTML_UTF8;
@@ -23,7 +22,7 @@ class Response
 
         $this->headersSent = true;
 
-        header('Content-Type: ' . $this->contentType, null, intval($this->code));
+        header('Content-Type: ' . $this->contentType, null, $this->code);
         if ($this->contentLength) {
             header('Content-Length: ' . $this->contentLength);
         }
@@ -87,7 +86,7 @@ class Response
         return true;
     }
 
-    public function redirect($url, $responseCode = ResponseCode::CODE_301)
+    public function redirect($url, $responseCode = 301)
     {
         $this->code = $responseCode;
         $this->headers['Location'] = $url;

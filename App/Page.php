@@ -3,7 +3,6 @@ namespace Cyantree\Grout\App;
 
 use Cyantree\Grout\App\Task;
 use Cyantree\Grout\App\Types\ContentType;
-use Cyantree\Grout\App\Types\ResponseCode;
 
 class Page
 {
@@ -51,7 +50,7 @@ class Page
 
     public function parseError($code, $data = null)
     {
-        if ($code == ResponseCode::CODE_403) {
+        if ($code == 403) {
             if ($this->task->plugin && $this->task->plugin->hasRoute('GroutError403')) {
                 $this->task->redirectToRoute($this->task->plugin->getRoute('GroutError403'));
 
@@ -59,10 +58,10 @@ class Page
                 $this->task->redirectToRoute($this->task->module->getRoute('GroutError403'));
 
             } else {
-                $this->setResult('You are not allowed to access this page.', ContentType::TYPE_PLAIN_UTF8, ResponseCode::CODE_403);
+                $this->setResult('You are not allowed to access this page.', ContentType::TYPE_PLAIN_UTF8, 403);
             }
 
-        } elseif ($code == ResponseCode::CODE_404) {
+        } elseif ($code == 404) {
             if ($this->task->plugin && $this->task->plugin->hasRoute('GroutError404')) {
                 $this->task->redirectToRoute($this->task->plugin->getRoute('GroutError404'));
 
@@ -70,7 +69,7 @@ class Page
                 $this->task->redirectToRoute($this->task->module->getRoute('GroutError404'));
 
             } else {
-                $this->setResult('The requested page does not exist.', ContentType::TYPE_PLAIN_UTF8, ResponseCode::CODE_404);
+                $this->setResult('The requested page does not exist.', ContentType::TYPE_PLAIN_UTF8, 404);
             }
 
         } else {
@@ -81,7 +80,7 @@ class Page
                 $this->task->redirectToRoute($this->task->module->getRoute('GroutError500'));
 
             } else {
-                $this->setResult('An unknown error has occurred.', ContentType::TYPE_PLAIN_UTF8, ResponseCode::CODE_500);
+                $this->setResult('An unknown error has occurred.', ContentType::TYPE_PLAIN_UTF8, 500);
             }
         }
     }

@@ -4,7 +4,6 @@ namespace Cyantree\Grout\App;
 use Cyantree\Grout\App\Config\ConfigContainer;
 use Cyantree\Grout\App\Types\ContentType;
 use Cyantree\Grout\App\Types\Context;
-use Cyantree\Grout\App\Types\ResponseCode;
 use Cyantree\Grout\DataStorage;
 use Cyantree\Grout\Event\Events;
 use Cyantree\Grout\Filter\ArrayFilter;
@@ -460,7 +459,7 @@ class App
         if ($this->currentTask) {
             /** @var $response Response */
             try {
-                $this->currentTask->page->parseError(ResponseCode::CODE_500, $reason);
+                $this->currentTask->page->parseError(500, $reason);
 
             } catch (\Exception $e) {
                 try {
@@ -548,7 +547,7 @@ class App
 
     public function redirectTaskToUrl(Task $task, $url)
     {
-        $task->response->code = ResponseCode::CODE_302;
+        $task->response->code = 302;
         $task->response->headers['Location'] = $url;
         $task->response->content = '';
     }
