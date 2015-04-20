@@ -84,12 +84,28 @@ class Task
         $this->app->redirectTaskToUrl($this, $url);
     }
 
-    /**
-     * @param $route Route
-     */
-    public function redirectToRoute($route)
+    public function redirectToAppUrl($url, $method = 'GET')
     {
-        $this->app->redirectTaskToRoute($this, $route);
+        $this->app->redirectTaskToAppUrl($this, $url, $method);
+    }
+
+    /**
+     * @param $route Route|string
+     */
+    public function redirectToRoute($route, $vars = null)
+    {
+        if (!($route instanceof Route)) {
+            $data = $this->app->decodeContext($route, $this->module, $this->plugin);
+
+            if ($data->plugin) {
+                $route = $data->plugin->getRoute($data->uri);
+
+            } elseif ($data->module) {
+                $route = $data->module->getRoute($data->uri);
+            }
+        }
+
+        $this->app->redirectTaskToRoute($this, $route, $vars);
     }
 
     /**
@@ -100,10 +116,10 @@ class Task
         if (!is_resource($page)) {
             $context = $this->app->decodeContext($page);
             $pageClass = $context->uri;
-            
+
             if ($context->plugin) {
                 $pageClass = $context->plugin->definition->namespace . $pageClass;
-                
+
             } elseif ($context->module) {
                 $pageClass = $context->module->definition->namespace . $pageClass;
             }
