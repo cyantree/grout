@@ -52,10 +52,10 @@ class GroutQuick extends Quick
         $context = $this->app->decodeContext($uri, $this->app->currentTask->module, $this->app->currentTask->plugin);
 
         if ($context->plugin) {
-            return $context->plugin->getRouteUrl($context->uri, $arguments, true, $parameters);
+            return $context->plugin->getRouteUrl($context->uri, $arguments, $absolute, $parameters);
 
         } elseif ($context->module) {
-            return $context->module->getRouteUrl($context->uri, $arguments, true, $parameters);
+            return $context->module->getRouteUrl($context->uri, $arguments, $absolute, $parameters);
 
         } else {
             throw new \Exception('Route could not be resolved.');
