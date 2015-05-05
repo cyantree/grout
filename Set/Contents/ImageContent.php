@@ -83,6 +83,13 @@ class ImageContent extends Content
         return $this->value !== null ? $this->getImageUrlByValue($this->value) : null;
     }
 
+    public function reset()
+    {
+        parent::reset();
+
+        $this->uploadedFile = null;
+    }
+
     public function populate($data, $files)
     {
         if ($files->has($this->name)) {

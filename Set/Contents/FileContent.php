@@ -66,6 +66,13 @@ class FileContent extends Content
         return $this->saveDirectoryUrl . $this->value;
     }
 
+    public function reset()
+    {
+        parent::reset();
+
+        $this->uploadedFile = null;
+    }
+
     public function populate($data, $files)
     {
         if ($files->has($this->name)) {
