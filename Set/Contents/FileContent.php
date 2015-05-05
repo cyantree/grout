@@ -54,6 +54,10 @@ class FileContent extends Content
             return null;
         }
 
+        if ($this->saveDirectory === null) {
+            throw new \Exception('saveDirectory has to be specified.');
+        }
+
         return $this->saveDirectory . $value;
     }
 
@@ -61,6 +65,10 @@ class FileContent extends Content
     {
         if (!$value) {
             return null;
+        }
+
+        if ($this->saveDirectoryUrl === null) {
+            throw new \Exception('saveDirectoryUrl has to be specified.');
         }
 
         return $this->saveDirectoryUrl . $this->value;
