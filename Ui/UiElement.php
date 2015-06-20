@@ -38,6 +38,14 @@ class UiElement
         $this->metadata = $metadata;
     }
 
+    public static function html5($tag, $attributes = null, $contents = null, $escapeContent = true, $quickClose = true)
+    {
+        $e = new UiElement($tag, $attributes, $contents, $escapeContent, $quickClose);
+        $e->html5 = true;
+
+        return $e;
+    }
+
     public function addClass($class)
     {
         if (isset($this->attributes['class'])) {
