@@ -114,12 +114,14 @@ class UiElement
                 $cnt .= $this->escapeContent ? StringTools::escapeHtml($this->contents) : $this->contents;
 
             } elseif (is_array($this->contents)) {
-                $c = '';
                 foreach ($this->contents as $content) {
-                    $c .= $content;
-                }
+                    if ($content instanceof UiElement) {
+                        $cnt .= $content;
 
-                $cnt .= $this->escapeContent ? StringTools::escapeHtml($c) : $c;
+                    } else {
+                        $cnt .= $this->escapeContent ? StringTools::escapeHtml($content) : $content;
+                    }
+                }
             }
 
             if ($this->tag) {
